@@ -71,4 +71,83 @@ CIRCLE 包括两个 stage，train 和 test. 在 train stage 先使用 prompt fun
 
 用 "Buggy Line: " 和 "Context: " 来指示 buggy code 和 context，使用 "the fixed code is: " 来指示根据前面的输入生成修复后的代码。 
 
+![](./imgs/prompted_example.png)
+
 由于 T5 是在自然语言上的 fill-in-the-blank 进行与训练，因此在 prompted 的输入上进行微调是更加自然的。
+
+我们使用 sub tokenization method 来处理 OOV 问题。
+
+我们没有使用新建立的 vocab，因为我们想尽量利用 T5 预训练的知识，而且 token 在整个语料上的频率也无法得到。
+
+## 基于 T5 的模型架构
+
+T5 是一个 encoder-decoder 架构的 transformer 模型，在超过 750 GB 的语料上训练，研究表明它在代码相关的任务上也有不错的表现
+
+T5 的 encoder 是一些列 transformer block，decoder 也有类似的结构，但是在每个 self-attention 之后使用了注意力机制，这样就可以在 encoder 的输出上 attend。
+
+> In addition, the attention is causality enabled to avoid information leaking during decoding.
+>
+> 这句什么意思不太懂
+
+文章中使用 t5-base 作为训练起点。
+
+## 基于难度的训练样例重用
+
+直觉：那些在前面的任务训练中表现不好的数据通常更容易被遗忘。
+
+因此我们基于这样的标准选择:
+$$
+d_t(x^{i}_t, y^{i}_t) = \frac{L(x^{i}_t, y^{i}_t \mid \theta_t)}{\mid y^{i}_t\mid}
+$$
+$d_t$ 表示在第 $t$ 轮训练之后得到的模型对数据的困难度，分母是正规化因子，因为长代码通常容易得到更大的 loss, 基于这个标准选择 N 个数据加入保留数据集 $E_t$
+
+我们在第 $t+1$ 个任务的训练过程可以表述如下：
+$$
+\theta_{t+1}= \underset{\theta_t}{argmin} \underset{(x,y)\in D_{t+1}\cup E_{1:t}}{\sum} L(x, y | \theta_t)
+$$
+
+## 基于采样的 EWC 正则化
+
+为了减缓遗忘效应，CIRCLE 采用了 EWC 正则化，通过对 “重要”的参数更新做惩罚，来限制对这些参数的更新幅度。通过 Fisher 矩阵来计算参数的重要性。
+$$
+F_i = \bigtriangledown^2 L(x,y|\theta_{t-1,i})\\
+EWC(\theta_t) = \underset{i}{\sum} \lambda F_i(\theta_{t,i} - \theta_{t-1,i })^2
+$$
+由于 $F_i$ 直接计算会带来扩展性的问题，因此我们只从 sample 的 data，也就是 $E_{1:t}$ 抽样 $M$ 个数据来计算，因此，训练过程可以被进一步写为.
+$$
+\theta_{t+1}= \underset{\theta_t}{argmin} (EWC(\theta_t) + \underset{(x,y)\in D_{t+1}\cup E_{1:t}}{\sum} L(x, y | \theta_t))
+$$
+
+## 跨语言的再修复
+
+经过了训练的过程，模型已经学习了修复程序的潜在模式，能够生成正确的代码。
+
+但是依然面临以下三个问题:
+
+- keywords mismatch: 生成了别的语言中语义相近的关键字，比如 Java 程序中生成了 None
+- format mismatch: 多了空白符导致语法错误，比如 == 生成成 = =
+- OOV: 有些特殊符号被当作 unk
+
+解决办法:
+
+- keywords mismatch: 建立一个简单的 map table
+- format mismatch: 使用正则表达式来去除多余的空格
+- OOV：用特殊的符号替代 unk
+
+## 实现细节
+
+训练阶段:
+
+使用 pytorch 编写模型代码
+
+使用 huggingface 的 T5 实现，选择 t5-base
+
+使用 AdamW 优化器，学习率 3e-4
+
+在每个 task 上最多 train 20 个 epoch，采用 early stop ，validation loss 3 个 epoch 不下降就结束
+
+bacth_size: 64, max_input_length=512, $\lambda: 11000$, $\mid E_{1:t}\mid = 20000$ 
+
+> In inference stage, we use beam search with 250 beam size. Meanwhile, we apply top-k and top-p sampling during each step’s token selection. Then, we re-repair the generated patches using the map ping table mentioned in Section 3.6. As a result, at most 1000 candi date patches are created by CIRCLE. For evaluation purpose only, following previous works [25, 45], three authors manually verify plausible patches (i.e. patches that successfully pass the test) based on ground truth patches (i.e., developer patches). And the plausible patches is considered to be correct only if all three authors agree it is equivalent to ground truth data semantically. All the training and evaluation of our methods are conducted on one CentOS 7.7 server with eight Tesla V100-SXM2 GPUs.
+>
+> 开头那段没看懂，先抄原文 mark 一下
