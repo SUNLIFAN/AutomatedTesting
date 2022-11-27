@@ -1,0 +1,2174 @@
+buggy_code,fixed_code
+"}
+} else {
+// If S is not a store, it must be an ExternalCall.
+          TORCH_INTERNAL_ASSERT(to<ExternalCall>(stores[0].s));
+}
+}
+","}
+} else {
+// If S is not a store, it must be an ExternalCall.
+          TORCH_INTERNAL_ASSERT(
+              to<ExternalCall>(stores[0].s),
+              buildErrorMessage(
+                  ""Expected stmt: "" + std::to_string(stores[0].s) +
+                  ""\nto be either a Store or an ExternalCall in the fuser.""));
+}
+}
+"
+"parent->replace_stmt(loops.front(), empty_block);
+for (size_t i = 1; i < loops.size(); ++i) {
+auto block = to<Block>(loops[i]->get_parent());
+    TORCH_INTERNAL_ASSERT(block);
+block->remove_stmt(loops[i]);
+}
+","parent->replace_stmt(loops.front(), empty_block);
+for (size_t i = 1; i < loops.size(); ++i) {
+auto block = to<Block>(loops[i]->get_parent());
+    TORCH_INTERNAL_ASSERT(
+        block,
+        buildErrorMessage(
+            ""Expected parent stmt to be a non-null Block in reorder transformation the fuser.""));
+block->remove_stmt(loops[i]);
+}
+"
+"// Modify all access to reflect the removed dims.
+auto get_new_indices = [&](const std::vector<ExprPtr>& indices) {
+    TORCH_INTERNAL_ASSERT(indices.size() == dims.size());
+std::vector<ExprPtr> new_indices(indices);
+for (size_t i = 0; i < dims.size(); ++i) {
+if (dims[i]) {
+","// Modify all access to reflect the removed dims.
+auto get_new_indices = [&](const std::vector<ExprPtr>& indices) {
+    TORCH_INTERNAL_ASSERT(
+        indices.size() == dims.size(),
+        buildErrorMessage(
+            ""Expected ranks to match in compressBuffer in the fuser.""));
+std::vector<ExprPtr> new_indices(indices);
+for (size_t i = 0; i < dims.size(); ++i) {
+if (dims[i]) {
+"
+"return {nullptr, nullptr};
+}
+  TORCH_INTERNAL_ASSERT(bounds_it->second.size() == 1);
+TensorAccessBoundsInfo& info = bounds_it->second[0];
+bool hasReads = info.kind == kLoad || info.kind == kMutate;
+bool hasWrites = info.kind == kStore || info.kind == kMutate;
+","return {nullptr, nullptr};
+}
+  TORCH_INTERNAL_ASSERT(
+      bounds_it->second.size() == 1,
+      buildErrorMessage(
+          ""Unexpected number of bound info entries in cacheAccesses in the fuser.""));
+TensorAccessBoundsInfo& info = bounds_it->second[0];
+bool hasReads = info.kind == kLoad || info.kind == kMutate;
+bool hasWrites = info.kind == kStore || info.kind == kMutate;
+"
+"return IRMutator::mutate(v);
+}
+    TORCH_INTERNAL_ASSERT(old_indices_.size() == v->indices().size());
+bool equal_indices = true;
+for (size_t i = 0; i < v->indices().size(); ++i) {
+","return IRMutator::mutate(v);
+}
+    TORCH_INTERNAL_ASSERT(
+        old_indices_.size() == v->indices().size(),
+        buildErrorMessage(
+            ""Expected ranks to match in RfactorStoreRewriter in the fuser.""));
+bool equal_indices = true;
+for (size_t i = 0; i < v->indices().size(); ++i) {
+"
+"return IRMutator::mutate(v);
+}
+    TORCH_INTERNAL_ASSERT(old_indices_.size() == v->indices().size());
+bool equal_indices = true;
+for (size_t i = 0; i < v->indices().size(); ++i) {
+","return IRMutator::mutate(v);
+}
+    TORCH_INTERNAL_ASSERT(
+        old_indices_.size() == v->indices().size(),
+        buildErrorMessage(
+            ""Expected ranks to match in RfactorStoreRewriter in the fuser.""));
+bool equal_indices = true;
+for (size_t i = 0; i < v->indices().size(); ++i) {
+"
+"if (aStrides.empty() || oStrides.empty()) {
+return false;
+}
+  TORCH_INTERNAL_ASSERT(info->bounds().size() == other->bounds().size());
+for (size_t b = 0; b < info->bounds().size(); ++b) {
+ExprPtr aIndexStride = aStrides[b];
+ExprPtr oIndexStride = oStrides[b];
+","if (aStrides.empty() || oStrides.empty()) {
+return false;
+}
+  TORCH_INTERNAL_ASSERT(
+      info->bounds().size() == other->bounds().size(),
+      buildErrorMessage(
+          ""Dimension mismatch for two accesses in mem dep checker in the fuser.""));
+for (size_t b = 0; b < info->bounds().size(); ++b) {
+ExprPtr aIndexStride = aStrides[b];
+ExprPtr oIndexStride = oStrides[b];
+"
+"VarPtr var = v->buffer_var();
+auto it = intermediates_.find(var);
+  TORCH_INTERNAL_ASSERT(it != intermediates_.end());
+IndexBounds bounds = it->second->bounds();
+auto info = std::make_shared<AccessInfo>(
+","VarPtr var = v->buffer_var();
+auto it = intermediates_.find(var);
+  TORCH_INTERNAL_ASSERT(
+      it != intermediates_.end(),
+      buildErrorMessage(
+          ""Expected to find '"" + var->name_hint() +
+          ""' in intermediate vars in mem dep checker in the fuser.""));
+IndexBounds bounds = it->second->bounds();
+auto info = std::make_shared<AccessInfo>(
+"
+"}
+// assume JIT not supporting complex and qint yet
+  TORCH_INTERNAL_ASSERT((typeConstraints & (kQintTypes | kComplexTypes)) == 0);
+return false;
+}
+","}
+// assume JIT not supporting complex and qint yet
+  TORCH_INTERNAL_ASSERT(
+      (typeConstraints & (kQintTypes | kComplexTypes)) == 0,
+      buildErrorMessage(
+          ""Qint and Complex types are not supported in the fuser.""));
+return false;
+}
+"
+"// This attr is constant for ONNX.
+auto attrVal = tryInsertConstant(*graph, attr);
+n->output()->replaceAllUsesWith(*attrVal);
+          n->destroy();
+}
+}
+}
+","// This attr is constant for ONNX.
+auto attrVal = tryInsertConstant(*graph, attr);
+n->output()->replaceAllUsesWith(*attrVal);
+          nodesToDestroy.emplace(n);
+}
+}
+}
+"
+"std::end(nextParameterIValues));
+}
+}
+return parameterIValues;
+}
+","std::end(nextParameterIValues));
+}
+}
+  for (auto n : nodesToDestroy) {
+    n->destroy();
+  }
+return parameterIValues;
+}
+"
+"}
+void ReturnRefCounter(const std::string& handle, uint64_t offset /* unused */) {
+std::lock_guard<std::mutex> lock(
+cuda_ipc_global_entities.ref_counters_mutex_);
+auto& map = cuda_ipc_global_entities.ref_counters_files_;
+","}
+void ReturnRefCounter(const std::string& handle, uint64_t offset /* unused */) {
+  if(!CudaIPCGlobalEntities::alive) {
+    return;
+  }
+std::lock_guard<std::mutex> lock(
+cuda_ipc_global_entities.ref_counters_mutex_);
+auto& map = cuda_ipc_global_entities.ref_counters_files_;
+"
+"if (event_sync_required_) {
+at::cuda::CUDAGuard device_guard(device_.index());
+cudaEventDestroy(event_);
+cuda_ipc_global_entities.sync_events_used_ --;
+}
+} catch (...) { /* No throw */
+","if (event_sync_required_) {
+at::cuda::CUDAGuard device_guard(device_.index());
+cudaEventDestroy(event_);
+      if(!CudaIPCGlobalEntities::alive) {
+        return;
+      }
+cuda_ipc_global_entities.sync_events_used_ --;
+}
+} catch (...) { /* No throw */
+"
+"}
+bool CudaIPCCollect() {
+bool freed_memory = cuda_ipc_global_entities.CudaIPCSentDataLimbo_.collect();
+if (cuda_ipc_global_entities.CudaIPCSentDataLimbo_.size() == 0) {
+cuda_ipc_global_entities.safe_clean_current_file();
+","}
+bool CudaIPCCollect() {
+  if(!CudaIPCGlobalEntities::alive) {
+    return true;
+  }
+bool freed_memory = cuda_ipc_global_entities.CudaIPCSentDataLimbo_.collect();
+if (cuda_ipc_global_entities.CudaIPCSentDataLimbo_.size() == 0) {
+cuda_ipc_global_entities.safe_clean_current_file();
+"
+"
+auto reduce_tensor = result.toTensorVector()[0];
+decompressed_tensor.copy_(reduce_tensor);
+return c10::IValue(decompressed_tensor);
+};
+","
+auto reduce_tensor = result.toTensorVector()[0];
+    TORCH_INTERNAL_ASSERT_DEBUG_ONLY(
+      reduce_tensor.scalar_type() == at::ScalarType::Half,
+      ""Expected reduced tensor to be fp16 in FP16CompressHook, but got type "",
+      reduce_tensor.scalar_type()
+    );
+decompressed_tensor.copy_(reduce_tensor);
+return c10::IValue(decompressed_tensor);
+};
+"
+"}
+if (FLAGS_torch_jit_enable_rethrow_caught_exception) {
+if (future_) {
+          future_->setError(std::make_exception_ptr(e));
+}
+throw;
+}
+","}
+if (FLAGS_torch_jit_enable_rethrow_caught_exception) {
+if (future_) {
+          future_->setError(std::current_exception());
+          return false;
+}
+throw;
+}
+"
+"isOpSupportedInMobile(op),
+toString(op),
+"" is not supported in mobile module."");
+  code_->instructions_.emplace_back(op, X, N);
+  code_->debug_handles_.emplace_back(dbg_handle);
+}
+bool Function::append_operator(
+","isOpSupportedInMobile(op),
+toString(op),
+"" is not supported in mobile module."");
+  code_->instructions_with_handles_.emplace_back(
+      Instruction(op, X, N), dbg_handle);
+}
+bool Function::append_operator(
+"
+"size_t pc = 0;
+while (true) {
+try {
+      Instruction inst = code_->instructions_[pc];
+//    std::cout << ""RUNNING "" << pc << "" "" << code_->instructions_[pc];
+//    if (inst.op == OP) {
+","size_t pc = 0;
+while (true) {
+try {
+      Instruction inst = code_->instructions_with_handles_[pc].instruction;
+//    std::cout << ""RUNNING "" << pc << "" "" << code_->instructions_[pc];
+//    if (inst.op == OP) {
+"
+".sequenceNr(ctx->sequenceNr)
+.fwdThreadId(ctx->fwdThreadId)
+.scope(ctx->recFunScope)
+          .setAsync(fn.isAsync());
+if (ctx->shapes && !ctx->shapes->empty()) {
+kineto_events_.back().shapes(*ctx->shapes);
+}
+",".sequenceNr(ctx->sequenceNr)
+.fwdThreadId(ctx->fwdThreadId)
+.scope(ctx->recFunScope)
+          .setAsync(fn.isAsync())
+          .debugHandle(ctx->debug_handle);
+if (ctx->shapes && !ctx->shapes->empty()) {
+kineto_events_.back().shapes(*ctx->shapes);
+}
+"
+"at::set_record_function_tls_(state.rf_tls_);
+c10::ThreadLocalDebugInfo::_forceCurrentDebugInfo(state.debug_info_);
+c10::impl::_force_tls_local_dispatch_key_set(state.dispatch_key_);
+","at::set_record_function_tls_(state.rf_tls_);
+  SavedTensorDefaultHooks::set_hooks(
+      state.saved_tensors_default_hooks_.first,
+      state.saved_tensors_default_hooks_.second);
+
+c10::ThreadLocalDebugInfo::_forceCurrentDebugInfo(state.debug_info_);
+c10::impl::_force_tls_local_dispatch_key_set(state.dispatch_key_);
+"
+"DWORD low = 1, high = 0;
+OVERLAPPED offset = {0, 0, 0, 0, NULL};
+  if (hdl < 0)
+return -1;
+switch (op) {
+","DWORD low = 1, high = 0;
+OVERLAPPED offset = {0, 0, 0, 0, NULL};
+  if ((intptr_t)hdl < 0)
+return -1;
+switch (op) {
+"
+"}
+#ifdef _WIN32
+  struct timeval timeoutTV = {value.count() / 1000,
+                              (value.count() % 1000) * 1000};
+#else
+struct timeval timeoutTV = {.tv_sec = value.count() / 1000,
+.tv_usec = (value.count() % 1000) * 1000};
+","}
+#ifdef _WIN32
+  struct timeval timeoutTV = {static_cast<long>(value.count() / 1000),
+                              static_cast<long>((value.count() % 1000) * 1000)};
+#else
+struct timeval timeoutTV = {.tv_sec = value.count() / 1000,
+.tv_usec = (value.count() % 1000) * 1000};
+"
+"}
+void PyDefaultSavedVariableHooks::reset_hooks() {
+if (Py_IsInitialized()) {
+py::gil_scoped_acquire gil;
+Py_XDECREF(pack_hook_);
+","}
+void PyDefaultSavedVariableHooks::reset_hooks() {
+    std::lock_guard<std::mutex> lock(mutex_);
+if (Py_IsInitialized()) {
+py::gil_scoped_acquire gil;
+Py_XDECREF(pack_hook_);
+"
+"return std::unique_ptr<AnomalyMetadata>(new PyAnomalyMetadata());
+}
+variable_list PythonEngine::execute(
+const edge_list& roots,
+const variable_list& inputs,
+","return std::unique_ptr<AnomalyMetadata>(new PyAnomalyMetadata());
+}
+std::unique_ptr<SavedVariableHooks> PythonEngine::get_default_saved_variable_hooks() {
+  return PyDefaultSavedVariableHooks::get_hooks();
+}
+
+variable_list PythonEngine::execute(
+const edge_list& roots,
+const variable_list& inputs,
+"
+"if (!is_output || is_leaf_) {
+saved_original_ = true;
+data_ = variable;
+return;
+}
+","if (!is_output || is_leaf_) {
+saved_original_ = true;
+data_ = variable;
+      register_hooks(Engine::get_default_engine().get_default_saved_variable_hooks());
+return;
+}
+"
+"nnapi_processed = pyMethod(wrapped_mod, inp.toTensor());
+} else {
+py::list pyInp;
+    for (torch::Tensor inpElem : inp.toTensorList()) {
+pyInp.append(inpElem);
+}
+nnapi_processed = pyMethod(wrapped_mod, pyInp);
+","nnapi_processed = pyMethod(wrapped_mod, inp.toTensor());
+} else {
+py::list pyInp;
+    for (at::Tensor inpElem : inp.toTensorList()) {
+pyInp.append(inpElem);
+}
+nnapi_processed = pyMethod(wrapped_mod, pyInp);
+"
+"return std::unique_ptr<AnomalyMetadata>(new PyAnomalyMetadata());
+}
+std::unique_ptr<SavedVariableHooks> PythonEngine::get_default_saved_variable_hooks() {
+  return PyDefaultSavedVariableHooks::get_hooks();
+}
+
+variable_list PythonEngine::execute(
+const edge_list& roots,
+const variable_list& inputs,
+","return std::unique_ptr<AnomalyMetadata>(new PyAnomalyMetadata());
+}
+variable_list PythonEngine::execute(
+const edge_list& roots,
+const variable_list& inputs,
+"
+"if (!is_output || is_leaf_) {
+saved_original_ = true;
+data_ = variable;
+      register_hooks(Engine::get_default_engine().get_default_saved_variable_hooks());
+return;
+}
+","if (!is_output || is_leaf_) {
+saved_original_ = true;
+data_ = variable;
+return;
+}
+"
+"// These copies are all shared_ptr copies, so slightly more expensive.
+// Do them here instead of in the init list in case data is undefined.
+data_ = variable.tensor_data();
+    register_hooks(Engine::get_default_engine().get_default_saved_variable_hooks());
+}
+}
+","// These copies are all shared_ptr copies, so slightly more expensive.
+// Do them here instead of in the init list in case data is undefined.
+data_ = variable.tensor_data();
+}
+}
+"
+"static void polygamma_kernel(TensorIteratorBase& iter, int64_t n) {
+if (n == 0) {
+digamma_kernel(iter);
+} else {
+AT_DISPATCH_FLOATING_TYPES_AND(kBFloat16, iter.dtype(), ""polygamma"", [&]() {
+cpu_kernel(
+","static void polygamma_kernel(TensorIteratorBase& iter, int64_t n) {
+if (n == 0) {
+digamma_kernel(iter);
+  } else if (n == 1) {
+    trigamma_kernel(iter);
+} else {
+AT_DISPATCH_FLOATING_TYPES_AND(kBFloat16, iter.dtype(), ""polygamma"", [&]() {
+cpu_kernel(
+"
+"int* ipiv,
+c10::complex<double>* ret,
+int ldb,
+    int* info) {
+TORCH_CUSOLVER_CHECK(cusolverDnZgetrs(
+handle,
+      CUBLAS_OP_N,
+n,
+nrhs,
+reinterpret_cast<cuDoubleComplex*>(dA),
+","int* ipiv,
+c10::complex<double>* ret,
+int ldb,
+    int* info,
+    cublasOperation_t trans) {
+TORCH_CUSOLVER_CHECK(cusolverDnZgetrs(
+handle,
+      trans,
+n,
+nrhs,
+reinterpret_cast<cuDoubleComplex*>(dA),
+"
+"int* ipiv,
+c10::complex<float>* ret,
+int ldb,
+    int* info) {
+TORCH_CUSOLVER_CHECK(cusolverDnCgetrs(
+handle,
+      CUBLAS_OP_N,
+n,
+nrhs,
+reinterpret_cast<cuComplex*>(dA),
+","int* ipiv,
+c10::complex<float>* ret,
+int ldb,
+    int* info,
+    cublasOperation_t trans) {
+TORCH_CUSOLVER_CHECK(cusolverDnCgetrs(
+handle,
+      trans,
+n,
+nrhs,
+reinterpret_cast<cuComplex*>(dA),
+"
+"static void polygamma_kernel(TensorIteratorBase& iter, int64_t n) {
+if (n == 0) {
+digamma_kernel(iter);
+  } else if (n == 1) {
+    trigamma_kernel(iter);
+} else {
+AT_DISPATCH_FLOATING_TYPES_AND(kBFloat16, iter.dtype(), ""polygamma"", [&]() {
+cpu_kernel(
+","static void polygamma_kernel(TensorIteratorBase& iter, int64_t n) {
+if (n == 0) {
+digamma_kernel(iter);
+} else {
+AT_DISPATCH_FLOATING_TYPES_AND(kBFloat16, iter.dtype(), ""polygamma"", [&]() {
+cpu_kernel(
+"
+"return std::unique_ptr<AnomalyMetadata>(new PyAnomalyMetadata());
+}
+variable_list PythonEngine::execute(
+const edge_list& roots,
+const variable_list& inputs,
+","return std::unique_ptr<AnomalyMetadata>(new PyAnomalyMetadata());
+}
+std::unique_ptr<SavedVariableHooks> PythonEngine::get_default_saved_variable_hooks() {
+  return PyDefaultSavedVariableHooks::get_hooks();
+}
+
+variable_list PythonEngine::execute(
+const edge_list& roots,
+const variable_list& inputs,
+"
+"if (!is_output || is_leaf_) {
+saved_original_ = true;
+data_ = variable;
+return;
+}
+","if (!is_output || is_leaf_) {
+saved_original_ = true;
+data_ = variable;
+      register_hooks(Engine::get_default_engine().get_default_saved_variable_hooks());
+return;
+}
+"
+"cudaError_t err = cudaEventQuery(event);
+if (err == cudaErrorNotReady) {
+break;
+} else if (err != cudaSuccess) {
+return err;
+","cudaError_t err = cudaEventQuery(event);
+if (err == cudaErrorNotReady) {
+        // ignore and clear the error if not ready
+        cudaGetLastError();
+break;
+} else if (err != cudaSuccess) {
+return err;
+"
+"struct THCCachingHostAllocator final : public at::Allocator {
+at::DataPtr allocate(size_t size) const override {
+    THAssert(size >= 0);
+void *ptr;
+THCudaCheck(allocator.malloc(&ptr, size));
+return {ptr, ptr, &THCCachingHostDeleter, at::DeviceType::CPU};
+","struct THCCachingHostAllocator final : public at::Allocator {
+at::DataPtr allocate(size_t size) const override {
+void *ptr;
+THCudaCheck(allocator.malloc(&ptr, size));
+return {ptr, ptr, &THCCachingHostDeleter, at::DeviceType::CPU};
+"
+"collectCatNodes(graph_->block());
+bool changed = false;
+for (auto c : cat_nodes_) {
+      changed = changed || replaceWithVariadicCat(c);
+}
+return changed;
+}
+","collectCatNodes(graph_->block());
+bool changed = false;
+for (auto c : cat_nodes_) {
+      changed = replaceWithVariadicCat(c) || changed;
+}
+return changed;
+}
+"
+"}
+at::assert_no_internal_overlap(result);
+  const Tensor* pnotSkippedTensor = [](TensorList tensors) -> const Tensor* {
+for (auto const &tensor : tensors) {
+if (should_skip(tensor)) {
+continue;
+","}
+at::assert_no_internal_overlap(result);
+  const Tensor* pnotSkippedTensor = [](const TensorList &tensors) -> const Tensor* {
+for (auto const &tensor : tensors) {
+if (should_skip(tensor)) {
+continue;
+"
+"return false;
+}
+bool LoopNest::fuseLoops(const std::vector<For*>& loops, For** fused) {
+if (loops.empty()) {
+return false;
+}
+","return false;
+}
+bool LoopNest::unsafeFuseLoops(const std::vector<For*>& loops, For** fused) {
+if (loops.empty()) {
+return false;
+}
+"
+"if (!unsafe) {
+auto min_length = lengths_value.min().item<int64_t>();
+TORCH_CHECK((min_length >= 0), ""lengths contains negative value!"");
+    TORCH_CHECK(min_length != 0 || initial.has_value());
+TORCH_CHECK(lengths_value.sum().item<int64_t>() == data.size(axis));
+}
+","if (!unsafe) {
+auto min_length = lengths_value.min().item<int64_t>();
+TORCH_CHECK((min_length >= 0), ""lengths contains negative value!"");
+TORCH_CHECK(lengths_value.sum().item<int64_t>() == data.size(axis));
+}
+"
+"} else {
+auto stream = c10::cuda::getCurrentCUDAStream(device.index());
+C10_CUDA_CHECK(cudaStreamSynchronize(stream));
+event_sync_required_ = false;
+}
+#else
+","} else {
+auto stream = c10::cuda::getCurrentCUDAStream(device.index());
+C10_CUDA_CHECK(cudaStreamSynchronize(stream));
+    event_ = nullptr;
+event_sync_required_ = false;
+}
+#else
+"
+"if (at::detail::getCUDAHooks().hasPrimaryContext(idx)) {
+#endif
+caller_current_streams_[idx] = guard.getStream({c10::DeviceType::CUDA, idx});
+        caller_default_streams_[idx] = guard.getDefaultStream({c10::DeviceType::CUDA, idx});
+} else {
+caller_current_streams_[idx] = c10::nullopt;
+        caller_default_streams_[idx] = c10::nullopt;
+}
+}
+}
+","if (at::detail::getCUDAHooks().hasPrimaryContext(idx)) {
+#endif
+caller_current_streams_[idx] = guard.getStream({c10::DeviceType::CUDA, idx});
+} else {
+caller_current_streams_[idx] = c10::nullopt;
+}
+}
+}
+"
+"}
+if (will_use_cuda) {
+    // Collects current and default streams for devices where this process has a context,
+// so graphTask::exec_post_processing can sync them with leaf_streams.
+graphTask->stash_current_streams();
+}
+","}
+if (will_use_cuda) {
+    // Collects current streams for devices where this process has a context,
+// so graphTask::exec_post_processing can sync them with leaf_streams.
+graphTask->stash_current_streams();
+}
+"
+"}
+SET roots;
+for (const auto& F : visibleFuncs) {
+      std::string name = F->getName();
+auto demangled = _demangle(name);
+if (RootSymbolPatternLoc.pattern->match(demangled)) {
+roots.insert(name);
+","}
+SET roots;
+for (const auto& F : visibleFuncs) {
+      std::string name = _name(F);
+auto demangled = _demangle(name);
+if (RootSymbolPatternLoc.pattern->match(demangled)) {
+roots.insert(name);
+"
+"SmallVector<Constant*, 16> worklist;
+SmallPtrSet<Constant*, 16> visited;
+    if (auto CS = CallSite(&I)) {
+      Function* callee = CS.getCalledFunction();
+if (callee && !callee->isIntrinsic() && visited.insert(callee).second) {
+CB(callee);
+}
+","SmallVector<Constant*, 16> worklist;
+SmallPtrSet<Constant*, 16> visited;
+    if (_isCallSite(&I)) {
+      Function* callee = _getCalledFunction(&I);
+if (callee && !callee->isIntrinsic() && visited.insert(callee).second) {
+CB(callee);
+}
+"
+"if (!visitedOps->empty()) {
+if (Verbose) {
+std::cerr << ""[INFO] ignore extra op schema str: "" << *schemaStr
+                        << "" in: "" << _demangle(src->getFunction()->getName())
+<< "", because already found valid op schema str: ""
+<< *visitedOps->begin() << std::endl;
+}
+","if (!visitedOps->empty()) {
+if (Verbose) {
+std::cerr << ""[INFO] ignore extra op schema str: "" << *schemaStr
+                        << "" in: "" << _demangle(_name(src->getFunction()))
+<< "", because already found valid op schema str: ""
+<< *visitedOps->begin() << std::endl;
+}
+"
+"return;
+}
+if (visitedFunctions) {
+          (*visitedFunctions).insert(F->getName());
+}
+if (Verbose > 1) {
+          std::cerr << ""[DEBUG][FUNC] "" << _demangle(F->getName()) << std::endl;
+printDebugPath(debugPath.get(), src, V);
+}
+}
+","return;
+}
+if (visitedFunctions) {
+          (*visitedFunctions).insert(_name(F));
+}
+if (Verbose > 1) {
+          std::cerr << ""[DEBUG][FUNC] "" << _demangle(_name(F)) << std::endl;
+printDebugPath(debugPath.get(), src, V);
+}
+}
+"
+"for (auto V : instructions) {
+auto I = dyn_cast<Instruction>(V);
+// We only need to process call/invoke instructions.
+      if (!I || !CallSite(I)) {
+continue;
+}
+auto contextualNamespace = inferContextualNamespace(I);
+","for (auto V : instructions) {
+auto I = dyn_cast<Instruction>(V);
+// We only need to process call/invoke instructions.
+      if (!I || !_isCallSite(I)) {
+continue;
+}
+auto contextualNamespace = inferContextualNamespace(I);
+"
+"std::cerr << op << "" "";
+}
+std::cerr << "") in a registration call in function: ""
+                  << _demangle(I->getFunction()->getName())
+<< "" contextualNamespace: "" << contextualNamespace
+<< std::endl;
+}
+","std::cerr << op << "" "";
+}
+std::cerr << "") in a registration call in function: ""
+                  << _demangle(_name(I->getFunction()))
+<< "" contextualNamespace: "" << contextualNamespace
+<< std::endl;
+}
+"
+"if (visitedFunctions.empty()) {
+std::cerr << ""[WARNING] could not find registered function for op: ""
+<< op << "" in function: ""
+                    << _demangle(I->getFunction()->getName())
+<< "" contextualNamespace: "" << contextualNamespace
+<< std::endl;
+}
+","if (visitedFunctions.empty()) {
+std::cerr << ""[WARNING] could not find registered function for op: ""
+<< op << "" in function: ""
+                    << _demangle(_name(I->getFunction()))
+<< "" contextualNamespace: "" << contextualNamespace
+<< std::endl;
+}
+"
+"}
+static std::string inferContextualNamespace(Instruction* I) {
+    auto functionName = _demangle(I->getFunction()->getName());
+for (auto& pattern : TorchLibraryInitPattern) {
+if (!pattern.pattern->match(functionName)) {
+continue;
+","}
+static std::string inferContextualNamespace(Instruction* I) {
+    auto functionName = _demangle(_name(I->getFunction()));
+for (auto& pattern : TorchLibraryInitPattern) {
+if (!pattern.pattern->match(functionName)) {
+continue;
+"
+"static void printDebugValue(Value* V) {
+if (auto F = dyn_cast<Function>(V)) {
+      std::cerr << ""[FUNC] "" << _demangle(F->getName());
+} else if (isa<Constant>(V)) {
+std::cerr << ""[CONST] "" << *V;
+} else if (isa<Instruction>(V)) {
+","static void printDebugValue(Value* V) {
+if (auto F = dyn_cast<Function>(V)) {
+      std::cerr << ""[FUNC] "" << _demangle(_name(F));
+} else if (isa<Constant>(V)) {
+std::cerr << ""[CONST] "" << *V;
+} else if (isa<Instruction>(V)) {
+"
+"in0_t, dtype, layout, device, pin_memory, memory_format);
+}
+auto& out_t = p_node->Output(0).toTensor();
+at::native::fill_out(out_t, in1_s);
+};
+});
+","in0_t, dtype, layout, device, pin_memory, memory_format);
+}
+auto& out_t = p_node->Output(0).toTensor();
+    at::native::resize_(out_t, in0_t.sizes(), c10::nullopt);
+at::native::fill_out(out_t, in1_s);
+};
+});
+"
+"const auto operand = operands[i];
+const auto labels = op_labels[i];
+const auto ndims = operand.dim();
+    int64_t nlabels = labels.size();
+bool has_ellipsis = false;
+for (const auto& label : labels) {
+","const auto operand = operands[i];
+const auto labels = op_labels[i];
+const auto ndims = operand.dim();
+    int64_t nlabels = static_cast<int64_t>(labels.size());
+bool has_ellipsis = false;
+for (const auto& label : labels) {
+"
+"TORCH_CHECK(
+operand.size(j) == operand.size(dim),
+""einsum(): subscript "",
+            char(label + 'a'),
+"" is repeated for operand "",
+i,
+"" but the sizes don't match, "",
+","TORCH_CHECK(
+operand.size(j) == operand.size(dim),
+""einsum(): subscript "",
+            einsum_index_to_label(label),
+"" is repeated for operand "",
+i,
+"" but the sizes don't match, "",
+"
+"const auto self_sizes = self.sizes();
+const auto total_nonzero = thread_count_nonzero.back();
+const int64_t ndim = self_sizes.size();
+  resize_output(result, {total_nonzero, ndim});
+if (result.numel() == 0) {
+return result;
+","const auto self_sizes = self.sizes();
+const auto total_nonzero = thread_count_nonzero.back();
+const int64_t ndim = self_sizes.size();
+  if (resize_output(result, {total_nonzero, ndim})) {
+    // Default to fortran-contiguous output (see gh-46224)
+    result.as_strided_({total_nonzero, ndim}, {1, total_nonzero});
+  }
+if (result.numel() == 0) {
+return result;
+"
+"(options.layout() == c10::kStrided));
+if (memory_format == MemoryFormat::Preserve) {
+    if (self.is_non_overlapping_and_dense()) {
+// Copy all strides
+auto r = at::empty_strided(self.sizes(),
+self.strides(),
+","(options.layout() == c10::kStrided));
+if (memory_format == MemoryFormat::Preserve) {
+    if (self.is_non_overlapping_and_dense() && options.device().supports_as_strided()) {
+// Copy all strides
+auto r = at::empty_strided(self.sizes(),
+self.strides(),
+"
+"// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
+CudaIPCSentData::CudaIPCSentData(
+    // NOLINTNEXTLINE(modernize-pass-by-value)
+    std::string handle,
+int64_t offset,
+int64_t* counter_ptr,
+at::Device device)
+","// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
+CudaIPCSentData::CudaIPCSentData(
+    const std::string& handle,
+int64_t offset,
+int64_t* counter_ptr,
+at::Device device)
+"
+"Tensor unbind_backward(const variable_list& grads, int64_t dim) {
+IntArrayRef sizes;
+at::TensorOptions o;
+  // NOLINTNEXTLINE(performance-for-range-copy)
+  for (auto v : grads) {
+if (v.defined()) {
+sizes = v.sizes();
+o = static_cast<Tensor>(v).options();
+","Tensor unbind_backward(const variable_list& grads, int64_t dim) {
+IntArrayRef sizes;
+at::TensorOptions o;
+  for (const auto& v : grads) {
+if (v.defined()) {
+sizes = v.sizes();
+o = static_cast<Tensor>(v).options();
+"
+"}
+}
+bool any_variable_defined(variable_list& variables) {
+  // NOLINTNEXTLINE(performance-for-range-copy)
+  for (auto variable : variables) {
+if (variable.defined()) {
+return true;
+}
+","}
+}
+bool any_variable_defined(const variable_list& variables) {
+  for (const auto& variable : variables) {
+if (variable.defined()) {
+return true;
+}
+"
+"auto start_j = tau.size(-1) - 1;
+for (int64_t j = start_j; j >= 0; j--) {
+    auto v = input_.index({""..."", Slice(), j});
+    // NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
+    auto v1 = v, v2 = v;
+// we need to recompute input[j] * at::outer(v, v)
+auto tau_unsqueezed = tau.index({""..."", j}).unsqueeze(-1);  // tau[..., j][:, None]
+","auto start_j = tau.size(-1) - 1;
+for (int64_t j = start_j; j >= 0; j--) {
+    const auto v = input_.index({""..."", Slice(), j});
+    const auto& v1 = v;
+    const auto& v2 = v;
+// we need to recompute input[j] * at::outer(v, v)
+auto tau_unsqueezed = tau.index({""..."", j}).unsqueeze(-1);  // tau[..., j][:, None]
+"
+"}
+void operator()(int i) {
+if (cuda) {
+      // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions,bugprone-narrowing-conversions)
+      int device_id = i % models_.size();
+auto d = torch::Device(torch::DeviceType::CUDA, device_id);
+to_device(
+models_[device_id].forward(to_device_vec(eg_, d)),
+","}
+void operator()(int i) {
+if (cuda) {
+      const auto device_id = i % models_.size();
+auto d = torch::Device(torch::DeviceType::CUDA, device_id);
+to_device(
+models_[device_id].forward(to_device_vec(eg_, d)),
+"
+"unsigned previous = y - 1;
+for (size_t x = 1; x <= n; ++x) {
+      // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions,bugprone-narrowing-conversions)
+      int old_row = row[x];
+row[x] = std::min(
+previous + (word1[y - 1] == word2[x - 1] ? 0u : 1u),
+std::min(row[x - 1], row[x]) + 1);
+","unsigned previous = y - 1;
+for (size_t x = 1; x <= n; ++x) {
+      const auto old_row = row[x];
+row[x] = std::min(
+previous + (word1[y - 1] == word2[x - 1] ? 0u : 1u),
+std::min(row[x - 1], row[x]) + 1);
+"
+"for (const IValue& v : stack) {
+if (v.isTensor()) {
+      // NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
+      at::Tensor t = v.toTensor();
+if (t.defined() && t.requires_grad()) {
+// requires grad tensors cannot be constants
+return c10::nullopt;
+","for (const IValue& v : stack) {
+if (v.isTensor()) {
+      const at::Tensor& t = v.toTensor();
+if (t.defined() && t.requires_grad()) {
+// requires grad tensors cannot be constants
+return c10::nullopt;
+"
+"return false;
+}
+// NOLINTNEXTLINE(bugprone-branch-clone)
+  auto size = tuple ? PyTuple_GET_SIZE(obj) : PyList_GET_SIZE(obj);
+if (size == 0) {
+return true;
+}
+","return false;
+}
+// NOLINTNEXTLINE(bugprone-branch-clone)
+  const auto size = tuple ? PyTuple_GET_SIZE(obj) : PyList_GET_SIZE(obj);
+if (size == 0) {
+return true;
+}
+"
+"KernelScopedObject::KernelScopedObject() {
+KernelArena* kernel = KernelArena::GetCurrentKernelArena();
+kernel->kernel_objects_.push_back(this);
+}
+","KernelScopedObject::KernelScopedObject() {
+KernelArena* kernel = KernelArena::GetCurrentKernelArena();
+  if (kernel == nullptr) {
+    throw std::runtime_error(
+        ""KernelScope() must be constructed before calling this"");
+  }
+kernel->kernel_objects_.push_back(this);
+}
+"
+"if (v.isTensor()) {
+v = IValue(detach(std::move(v).toTensor()));
+} else if (v.isTensorList()) {
+      c10::List<at::Tensor> lst = std::move(v).toTensorList();
+      for (size_t i = 0; i < lst.size(); ++i) {
+        lst.set(i, detach(lst.extract(i)));
+}
+v = std::move(lst);
+}
+","if (v.isTensor()) {
+v = IValue(detach(std::move(v).toTensor()));
+} else if (v.isTensorList()) {
+      std::vector<at::Tensor> lst = v.toTensorVector();
+      for (auto& tensor : lst) {
+        tensor = detach(tensor);
+}
+v = std::move(lst);
+}
+"
+"cleanupKey_(""cleanup/""),
+regularPrefix_(""/"") {
+if (numWorkers_ < 1) {
+    throw std::runtime_error(
+""Number of workers for FileStore should be greater than zero"");
+}
+}
+","cleanupKey_(""cleanup/""),
+regularPrefix_(""/"") {
+if (numWorkers_ < 1) {
+    TORCH_CHECK(false,
+""Number of workers for FileStore should be greater than zero"");
+}
+}
+"
+"const auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
+std::chrono::steady_clock::now() - start);
+if (timeout != kNoTimeout && elapsed > timeout) {
+      throw std::runtime_error(""Wait timeout"");
+}
+/* sleep override */
+","const auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
+std::chrono::steady_clock::now() - start);
+if (timeout != kNoTimeout && elapsed > timeout) {
+      TORCH_CHECK(false, ""Wait timeout"");
+}
+/* sleep override */
+"
+"makeDeviceForInterface(const std::string& interfaceName) {
+auto device = makeGlooDevice(interfaceName, """");
+if (!device) {
+    throw std::runtime_error(""makeDeviceForInterface(): unsupported gloo device"");
+}
+return device;
+}
+","makeDeviceForInterface(const std::string& interfaceName) {
+auto device = makeGlooDevice(interfaceName, """");
+if (!device) {
+    TORCH_CHECK(false, ""makeDeviceForInterface(): unsupported gloo device"");
+}
+return device;
+}
+"
+"makeDeviceForHostname(const std::string& hostname) {
+auto device = makeGlooDevice("""", hostname);
+if (!device) {
+    throw std::runtime_error(""makeDeviceForHostname(): unsupported gloo device"");
+}
+return device;
+}
+","makeDeviceForHostname(const std::string& hostname) {
+auto device = makeGlooDevice("""", hostname);
+if (!device) {
+    TORCH_CHECK(false, ""makeDeviceForHostname(): unsupported gloo device"");
+}
+return device;
+}
+"
+"if (!completed_) {
+// Throw exception if the wait operation timed out and the work was not
+// completed.
+      throw std::runtime_error(""Operation timed out!"");
+}
+}
+if (exception_) {
+","if (!completed_) {
+// Throw exception if the wait operation timed out and the work was not
+// completed.
+      TORCH_CHECK(false, ""Operation timed out!"");
+}
+}
+if (exception_) {
+"
+"break;
+}
+  throw std::runtime_error(""Unhandled ReduceOp"");
+}
+template <typename T, typename O>
+","break;
+}
+  TORCH_CHECK(false, ""Unhandled ReduceOp"");
+}
+template <typename T, typename O>
+"
+"collectiveCounter_(0) {
+auto& devices = options->devices;
+if (devices.empty()) {
+    throw std::runtime_error(""No device(s) specified"");
+}
+// Create and connect a context for every device.
+","collectiveCounter_(0) {
+auto& devices = options->devices;
+if (devices.empty()) {
+    TORCH_CHECK(false, ""No device(s) specified"");
+}
+// Create and connect a context for every device.
+"
+"invalidArgument(""unsupported layout"");
+}
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+","invalidArgument(""unsupported layout"");
+}
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+"
+"invalidArgument(""unsupported layout"");
+}
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","invalidArgument(""unsupported layout"");
+}
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"opts.reduceOp,
+tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","opts.reduceOp,
+tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"work = c10::make_intrusive<AsyncAllgatherCUDAWork>(
+std::move(context), outputs, inputs, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncAllgatherCUDAWork>(
+std::move(context), outputs, inputs, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  throw std::runtime_error(
+""no support for _allgather_base in Gloo process group"");
+}
+","at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  TORCH_CHECK(false,
+""no support for _allgather_base in Gloo process group"");
+}
+"
+"work = c10::make_intrusive<AsyncGatherCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncGatherCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"work = c10::make_intrusive<AsyncScatterCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncScatterCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"std::vector<at::Tensor>& outputs,
+std::vector<std::vector<at::Tensor>>& inputs,
+const ReduceScatterOptions& opts) {
+  throw std::runtime_error(""ProcessGroupGloo does not support reduce_scatter"");
+}
+namespace {
+","std::vector<at::Tensor>& outputs,
+std::vector<std::vector<at::Tensor>>& inputs,
+const ReduceScatterOptions& opts) {
+  TORCH_CHECK(false, ""ProcessGroupGloo does not support reduce_scatter"");
+}
+namespace {
+"
+"for (const auto& tensor : tensors) {
+if ((tensor.numel() != t_in.numel()) ||
+(tensor.scalar_type() != t_in.scalar_type())) {
+      throw std::runtime_error(""Tensors are not equal in size or data type"");
+}
+checkSingleTensorHelper(tensor);
+}
+","for (const auto& tensor : tensors) {
+if ((tensor.numel() != t_in.numel()) ||
+(tensor.scalar_type() != t_in.scalar_type())) {
+      TORCH_CHECK(false, ""Tensors are not equal in size or data type"");
+}
+checkSingleTensorHelper(tensor);
+}
+"
+"bool ProcessGroupMPI::AsyncWork::isSuccess() const {
+if (request_ != MPI_REQUEST_NULL) {
+    throw std::runtime_error(
+""Invalid call to AsyncWork::isSuccess before work has completed"");
+}
+","bool ProcessGroupMPI::AsyncWork::isSuccess() const {
+if (request_ != MPI_REQUEST_NULL) {
+    TORCH_CHECK(false,
+""Invalid call to AsyncWork::isSuccess before work has completed"");
+}
+"
+"MPI_CHECK(MPI_Comm_size(groupComm, &size));
+if (rank < 0 || size < 0) {
+        throw std::runtime_error(""Failed to get the world_size / rank"");
+}
+}
+}
+","MPI_CHECK(MPI_Comm_size(groupComm, &size));
+if (rank < 0 || size < 0) {
+        TORCH_CHECK(false, ""Failed to get the world_size / rank"");
+}
+}
+}
+"
+"bool isSendRecvSelf) {
+// Sanity check
+if (devicesKey.empty()) {
+    throw std::runtime_error(
+""Not able to create/get the NCCL Communicator since ""
+""the GPU devices are not known"");
+}
+","bool isSendRecvSelf) {
+// Sanity check
+if (devicesKey.empty()) {
+    TORCH_CHECK(false,
+""Not able to create/get the NCCL Communicator since ""
+""the GPU devices are not known"");
+}
+"
+"for (auto i = size_t{}; i < num_devices; ++i) {
+if (tensor_lists[i].size() != world_size * num_devices) {
+      throw std::runtime_error(
+""Tensor list input to scatter/gather must match number of collective""
+"" participants"");
+}
+","for (auto i = size_t{}; i < num_devices; ++i) {
+if (tensor_lists[i].size() != world_size * num_devices) {
+      TORCH_CHECK(false,
+""Tensor list input to scatter/gather must match number of collective""
+"" participants"");
+}
+"
+"void BackgroundThread::initStopSignal() {
+ghStopEvent_ = CreateEvent(NULL, TRUE, FALSE, NULL);
+if (ghStopEvent_ == NULL) {
+    throw std::runtime_error(
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+","void BackgroundThread::initStopSignal() {
+ghStopEvent_ = CreateEvent(NULL, TRUE, FALSE, NULL);
+if (ghStopEvent_ == NULL) {
+    TORCH_CHECK(false,
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+"
+"listenPort = ntohs(addr->sin6_port);
+} else {
+    throw std::runtime_error(""unsupported protocol"");
+}
+return listenPort;
+}
+","listenPort = ntohs(addr->sin6_port);
+} else {
+    TORCH_CHECK(false, ""unsupported protocol"");
+}
+return listenPort;
+}
+"
+"__output != nullptr)
+address[INET6_ADDRSTRLEN] = '\0';
+} else {
+    throw std::runtime_error(""unsupported protocol"");
+}
+return address;
+}
+","__output != nullptr)
+address[INET6_ADDRSTRLEN] = '\0';
+} else {
+    TORCH_CHECK(false, ""unsupported protocol"");
+}
+return address;
+}
+"
+"cleanupKey_(""cleanup/""),
+regularPrefix_(""/"") {
+if (numWorkers_ < 1) {
+    TORCH_CHECK(false,
+""Number of workers for FileStore should be greater than zero"");
+}
+}
+","cleanupKey_(""cleanup/""),
+regularPrefix_(""/"") {
+if (numWorkers_ < 1) {
+    throw std::runtime_error(
+""Number of workers for FileStore should be greater than zero"");
+}
+}
+"
+"makeDeviceForHostname(const std::string& hostname) {
+auto device = makeGlooDevice("""", hostname);
+if (!device) {
+    TORCH_CHECK(false, ""makeDeviceForHostname(): unsupported gloo device"");
+}
+return device;
+}
+","makeDeviceForHostname(const std::string& hostname) {
+auto device = makeGlooDevice("""", hostname);
+if (!device) {
+    throw std::runtime_error(""makeDeviceForHostname(): unsupported gloo device"");
+}
+return device;
+}
+"
+"invalidArgument(""unsupported layout"");
+}
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+","invalidArgument(""unsupported layout"");
+}
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+"
+"invalidArgument(""unsupported layout"");
+}
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+","invalidArgument(""unsupported layout"");
+}
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"work = c10::make_intrusive<AsyncAllgatherCUDAWork>(
+std::move(context), outputs, inputs, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncAllgatherCUDAWork>(
+std::move(context), outputs, inputs, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"work = c10::make_intrusive<AsyncScatterCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncScatterCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"for (const auto& tensor : tensors) {
+if ((tensor.numel() != t_in.numel()) ||
+(tensor.scalar_type() != t_in.scalar_type())) {
+      TORCH_CHECK(false, ""Tensors are not equal in size or data type"");
+}
+checkSingleTensorHelper(tensor);
+}
+","for (const auto& tensor : tensors) {
+if ((tensor.numel() != t_in.numel()) ||
+(tensor.scalar_type() != t_in.scalar_type())) {
+      throw std::runtime_error(""Tensors are not equal in size or data type"");
+}
+checkSingleTensorHelper(tensor);
+}
+"
+"bool ProcessGroupMPI::AsyncWork::isSuccess() const {
+if (request_ != MPI_REQUEST_NULL) {
+    TORCH_CHECK(false,
+""Invalid call to AsyncWork::isSuccess before work has completed"");
+}
+","bool ProcessGroupMPI::AsyncWork::isSuccess() const {
+if (request_ != MPI_REQUEST_NULL) {
+    throw std::runtime_error(
+""Invalid call to AsyncWork::isSuccess before work has completed"");
+}
+"
+"MPI_CHECK(MPI_Comm_size(groupComm, &size));
+if (rank < 0 || size < 0) {
+        TORCH_CHECK(false, ""Failed to get the world_size / rank"");
+}
+}
+}
+","MPI_CHECK(MPI_Comm_size(groupComm, &size));
+if (rank < 0 || size < 0) {
+        throw std::runtime_error(""Failed to get the world_size / rank"");
+}
+}
+}
+"
+"bool isSendRecvSelf) {
+// Sanity check
+if (devicesKey.empty()) {
+    TORCH_CHECK(false,
+""Not able to create/get the NCCL Communicator since ""
+""the GPU devices are not known"");
+}
+","bool isSendRecvSelf) {
+// Sanity check
+if (devicesKey.empty()) {
+    throw std::runtime_error(
+""Not able to create/get the NCCL Communicator since ""
+""the GPU devices are not known"");
+}
+"
+"for (auto i = size_t{}; i < num_devices; ++i) {
+if (tensor_lists[i].size() != world_size * num_devices) {
+      TORCH_CHECK(false,
+""Tensor list input to scatter/gather must match number of collective""
+"" participants"");
+}
+","for (auto i = size_t{}; i < num_devices; ++i) {
+if (tensor_lists[i].size() != world_size * num_devices) {
+      throw std::runtime_error(
+""Tensor list input to scatter/gather must match number of collective""
+"" participants"");
+}
+"
+"c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupNCCL::allreduce_coalesced(
+std::vector<at::Tensor>& tensors,
+const AllreduceCoalescedOptions& opts) {
+  TORCH_CHECK(false,
+""allreduce_coalesced is currently not supported with NCCL"");
+}
+","c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupNCCL::allreduce_coalesced(
+std::vector<at::Tensor>& tensors,
+const AllreduceCoalescedOptions& opts) {
+  throw std::runtime_error(
+""allreduce_coalesced is currently not supported with NCCL"");
+}
+"
+"std::vector<at::Tensor>& /* unused */,
+std::vector<at::Tensor>& /* unused */,
+const AllToAllOptions& /* unused */) {
+  TORCH_CHECK(false,
+""ProcessGroupNCCL only supports alltoall* for NCCL lib version >= 2.7.0"");
+}
+","std::vector<at::Tensor>& /* unused */,
+std::vector<at::Tensor>& /* unused */,
+const AllToAllOptions& /* unused */) {
+  throw std::runtime_error(
+""ProcessGroupNCCL only supports alltoall* for NCCL lib version >= 2.7.0"");
+}
+"
+"#else
+void BackgroundThread::initStopSignal() {
+if (pipe(controlPipeFd_.data()) == -1) {
+    TORCH_CHECK(false,
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+","#else
+void BackgroundThread::initStopSignal() {
+if (pipe(controlPipeFd_.data()) == -1) {
+    throw std::runtime_error(
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+"
+"watchHandler(socket);
+} else {
+    TORCH_CHECK(false, ""Unexpected query type"");
+}
+}
+","watchHandler(socket);
+} else {
+    throw std::runtime_error(""Unexpected query type"");
+}
+}
+"
+"if (response == detail::CheckResponseType::NOT_READY) {
+return false;
+}
+  TORCH_CHECK(false, ""ready or not_ready response expected"");
+}
+void TCPStore::wait(const std::vector<std::string>& keys) {
+","if (response == detail::CheckResponseType::NOT_READY) {
+return false;
+}
+  throw std::runtime_error(""ready or not_ready response expected"");
+}
+void TCPStore::wait(const std::vector<std::string>& keys) {
+"
+"auto response = client_->receiveValue<detail::WaitResponseType>();
+if (response != detail::WaitResponseType::STOP_WAITING) {
+    TORCH_CHECK(false, ""Stop_waiting response is expected"");
+}
+}
+","auto response = client_->receiveValue<detail::WaitResponseType>();
+if (response != detail::WaitResponseType::STOP_WAITING) {
+    throw std::runtime_error(""Stop_waiting response is expected"");
+}
+}
+"
+"listenPort = ntohs(addr->sin6_port);
+} else {
+    TORCH_CHECK(false, ""unsupported protocol"");
+}
+return listenPort;
+}
+","listenPort = ntohs(addr->sin6_port);
+} else {
+    throw std::runtime_error(""unsupported protocol"");
+}
+return listenPort;
+}
+"
+"__output != nullptr)
+address[INET6_ADDRSTRLEN] = '\0';
+} else {
+    TORCH_CHECK(false, ""unsupported protocol"");
+}
+return address;
+}
+","__output != nullptr)
+address[INET6_ADDRSTRLEN] = '\0';
+} else {
+    throw std::runtime_error(""unsupported protocol"");
+}
+return address;
+}
+"
+"while (true) {
+int res = tcputil::poll(events.get(), 1, timeout.count());
+if (res == 0) {
+      TORCH_CHECK(false,
+""waiting for processes to ""
+""connect has timed out"");
+} else if (res == -1) {
+","while (true) {
+int res = tcputil::poll(events.get(), 1, timeout.count());
+if (res == 0) {
+      throw std::runtime_error(
+""waiting for processes to ""
+""connect has timed out"");
+} else if (res == -1) {
+"
+"pg_name) { return pg_name.second == *group_name; });
+if (it != pg_names_.end()) {
+    TORCH_CHECK(false,
+""The specified group name has already been ""
+""created, please use a different group name"");
+}
+","pg_name) { return pg_name.second == *group_name; });
+if (it != pg_names_.end()) {
+    throw std::runtime_error(
+""The specified group name has already been ""
+""created, please use a different group name"");
+}
+"
+"void setMemoryFraction(double fraction, int device) {
+TORCH_INTERNAL_ASSERT(
+        0 <= device && device < device_allocator.size(),
+""Allocator not initialized for device "",
+device,
+"": did you call init?"");
+","void setMemoryFraction(double fraction, int device) {
+TORCH_INTERNAL_ASSERT(
+        0 <= device && static_cast<size_t>(device) < device_allocator.size(),
+""Allocator not initialized for device "",
+device,
+"": did you call init?"");
+"
+"}
+void emptyCache() {
+    int count = device_allocator.size();
+    for (int i = 0; i < count; i++)
+      device_allocator[i]->emptyCache();
+}
+void* getBaseAllocation(void* ptr, size_t* outSize) {
+","}
+void emptyCache() {
+    for (auto& da : device_allocator)
+      da->emptyCache();
+}
+void* getBaseAllocation(void* ptr, size_t* outSize) {
+"
+"std::vector<SegmentInfo> snapshot() {
+std::vector<SegmentInfo> result;
+    int count = device_allocator.size();
+    for (int i = 0; i < count; i++) {
+      auto snap = device_allocator[i]->snapshot();
+result.insert(result.end(), snap.begin(), snap.end());
+}
+","std::vector<SegmentInfo> snapshot() {
+std::vector<SegmentInfo> result;
+    for (auto& da : device_allocator) {
+      auto snap = da->snapshot();
+result.insert(result.end(), snap.begin(), snap.end());
+}
+"
+"}
+static inline void assertValidDevice(int device) {
+  int device_num = caching_allocator.device_allocator.size();
+TORCH_CHECK(0 <= device && device < device_num, ""Invalid device argument."");
+}
+","}
+static inline void assertValidDevice(int device) {
+  const auto device_num = caching_allocator.device_allocator.size();
+TORCH_CHECK(0 <= device && device < device_num, ""Invalid device argument."");
+}
+"
+"cleanupKey_(""cleanup/""),
+regularPrefix_(""/"") {
+if (numWorkers_ < 1) {
+    throw std::runtime_error(
+""Number of workers for FileStore should be greater than zero"");
+}
+}
+","cleanupKey_(""cleanup/""),
+regularPrefix_(""/"") {
+if (numWorkers_ < 1) {
+    TORCH_CHECK(false,
+""Number of workers for FileStore should be greater than zero"");
+}
+}
+"
+"makeDeviceForInterface(const std::string& interfaceName) {
+auto device = makeGlooDevice(interfaceName, """");
+if (!device) {
+    throw std::runtime_error(""makeDeviceForInterface(): unsupported gloo device"");
+}
+return device;
+}
+","makeDeviceForInterface(const std::string& interfaceName) {
+auto device = makeGlooDevice(interfaceName, """");
+if (!device) {
+    TORCH_CHECK(false, ""makeDeviceForInterface(): unsupported gloo device"");
+}
+return device;
+}
+"
+"makeDeviceForHostname(const std::string& hostname) {
+auto device = makeGlooDevice("""", hostname);
+if (!device) {
+    throw std::runtime_error(""makeDeviceForHostname(): unsupported gloo device"");
+}
+return device;
+}
+","makeDeviceForHostname(const std::string& hostname) {
+auto device = makeGlooDevice("""", hostname);
+if (!device) {
+    TORCH_CHECK(false, ""makeDeviceForHostname(): unsupported gloo device"");
+}
+return device;
+}
+"
+"break;
+}
+  throw std::runtime_error(""Unhandled ReduceOp"");
+}
+template <typename T, typename O>
+","break;
+}
+  TORCH_CHECK(false, ""Unhandled ReduceOp"");
+}
+template <typename T, typename O>
+"
+"collectiveCounter_(0) {
+auto& devices = options->devices;
+if (devices.empty()) {
+    throw std::runtime_error(""No device(s) specified"");
+}
+// Create and connect a context for every device.
+","collectiveCounter_(0) {
+auto& devices = options->devices;
+if (devices.empty()) {
+    TORCH_CHECK(false, ""No device(s) specified"");
+}
+// Create and connect a context for every device.
+"
+"invalidArgument(""unsupported layout"");
+}
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+","invalidArgument(""unsupported layout"");
+}
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+"
+"invalidArgument(""unsupported layout"");
+}
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","invalidArgument(""unsupported layout"");
+}
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"opts.reduceOp,
+tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","opts.reduceOp,
+tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"work = c10::make_intrusive<AsyncAllgatherCUDAWork>(
+std::move(context), outputs, inputs, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncAllgatherCUDAWork>(
+std::move(context), outputs, inputs, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  throw std::runtime_error(
+""no support for _allgather_base in Gloo process group"");
+}
+","at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  TORCH_CHECK(false,
+""no support for _allgather_base in Gloo process group"");
+}
+"
+"work = c10::make_intrusive<AsyncGatherCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncGatherCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"work = c10::make_intrusive<AsyncScatterCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    throw std::runtime_error(""Invalid backend"");
+}
+enqueue(work);
+return work;
+","work = c10::make_intrusive<AsyncScatterCUDAWork>(
+std::move(context), outputs, inputs, opts.rootRank, tag);
+} else {
+    TORCH_CHECK(false, ""Invalid backend"");
+}
+enqueue(work);
+return work;
+"
+"std::vector<at::Tensor>& outputs,
+std::vector<std::vector<at::Tensor>>& inputs,
+const ReduceScatterOptions& opts) {
+  throw std::runtime_error(""ProcessGroupGloo does not support reduce_scatter"");
+}
+namespace {
+","std::vector<at::Tensor>& outputs,
+std::vector<std::vector<at::Tensor>>& inputs,
+const ReduceScatterOptions& opts) {
+  TORCH_CHECK(false, ""ProcessGroupGloo does not support reduce_scatter"");
+}
+namespace {
+"
+"for (const auto& tensor : tensors) {
+if ((tensor.numel() != t_in.numel()) ||
+(tensor.scalar_type() != t_in.scalar_type())) {
+      throw std::runtime_error(""Tensors are not equal in size or data type"");
+}
+checkSingleTensorHelper(tensor);
+}
+","for (const auto& tensor : tensors) {
+if ((tensor.numel() != t_in.numel()) ||
+(tensor.scalar_type() != t_in.scalar_type())) {
+      TORCH_CHECK(false, ""Tensors are not equal in size or data type"");
+}
+checkSingleTensorHelper(tensor);
+}
+"
+"bool ProcessGroupMPI::AsyncWork::isSuccess() const {
+if (request_ != MPI_REQUEST_NULL) {
+    throw std::runtime_error(
+""Invalid call to AsyncWork::isSuccess before work has completed"");
+}
+","bool ProcessGroupMPI::AsyncWork::isSuccess() const {
+if (request_ != MPI_REQUEST_NULL) {
+    TORCH_CHECK(false,
+""Invalid call to AsyncWork::isSuccess before work has completed"");
+}
+"
+"MPI_CHECK(MPI_Comm_size(groupComm, &size));
+if (rank < 0 || size < 0) {
+        throw std::runtime_error(""Failed to get the world_size / rank"");
+}
+}
+}
+","MPI_CHECK(MPI_Comm_size(groupComm, &size));
+if (rank < 0 || size < 0) {
+        TORCH_CHECK(false, ""Failed to get the world_size / rank"");
+}
+}
+}
+"
+"std::vector<std::vector<at::Tensor>>& /* unused */,
+std::vector<at::Tensor>& /* unused */,
+const AllgatherOptions& /* unused */) {
+  throw std::runtime_error(
+""ProcessGroupMPI does not support allgather_coalesced"");
+}
+","std::vector<std::vector<at::Tensor>>& /* unused */,
+std::vector<at::Tensor>& /* unused */,
+const AllgatherOptions& /* unused */) {
+  TORCH_CHECK(false,
+""ProcessGroupMPI does not support allgather_coalesced"");
+}
+"
+"at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  throw std::runtime_error(
+""no support for _allgather_base in MPI process group"");
+}
+","at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  TORCH_CHECK(false,
+""no support for _allgather_base in MPI process group"");
+}
+"
+""" ran for "",
+timeElapsed.count(),
+"" milliseconds before timing out."");
+        throw std::runtime_error(exceptionMsg);
+}
+// Check for errors and throw appropriate exception.
+checkAndThrowException();
+",""" ran for "",
+timeElapsed.count(),
+"" milliseconds before timing out."");
+        TORCH_CHECK(false, exceptionMsg);
+}
+// Check for errors and throw appropriate exception.
+checkAndThrowException();
+"
+"bool isSendRecvSelf) {
+// Sanity check
+if (devicesKey.empty()) {
+    throw std::runtime_error(
+""Not able to create/get the NCCL Communicator since ""
+""the GPU devices are not known"");
+}
+","bool isSendRecvSelf) {
+// Sanity check
+if (devicesKey.empty()) {
+    TORCH_CHECK(false,
+""Not able to create/get the NCCL Communicator since ""
+""the GPU devices are not known"");
+}
+"
+"for (auto i = size_t{}; i < num_devices; ++i) {
+if (tensor_lists[i].size() != world_size * num_devices) {
+      throw std::runtime_error(
+""Tensor list input to scatter/gather must match number of collective""
+"" participants"");
+}
+","for (auto i = size_t{}; i < num_devices; ++i) {
+if (tensor_lists[i].size() != world_size * num_devices) {
+      TORCH_CHECK(false,
+""Tensor list input to scatter/gather must match number of collective""
+"" participants"");
+}
+"
+"std::vector<at::Tensor>& /* unused */,
+int /* unused */,
+int /* unused */) {
+  throw std::runtime_error(
+""ProcessGroupNCCL only supports send for NCCL lib version >= 2.7.0"");
+}
+","std::vector<at::Tensor>& /* unused */,
+int /* unused */,
+int /* unused */) {
+  TORCH_CHECK(false,
+""ProcessGroupNCCL only supports send for NCCL lib version >= 2.7.0"");
+}
+"
+"std::vector<at::Tensor>& /* unused */,
+int /* unused */,
+int /* unused */) {
+  throw std::runtime_error(
+""ProcessGroupNCCL only supports recv for NCCL lib version >= 2.7.0"");
+}
+#endif
+","std::vector<at::Tensor>& /* unused */,
+int /* unused */,
+int /* unused */) {
+  TORCH_CHECK(false,
+""ProcessGroupNCCL only supports recv for NCCL lib version >= 2.7.0"");
+}
+#endif
+"
+"at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  throw std::runtime_error(
+""no support for _allgather_base in RoundRobin process group"");
+}
+","at::Tensor& /*unused */,
+at::Tensor& /*unused */,
+const AllgatherOptions& /*unused */) {
+  TORCH_CHECK(false,
+""no support for _allgather_base in RoundRobin process group"");
+}
+"
+"void BackgroundThread::initStopSignal() {
+ghStopEvent_ = CreateEvent(NULL, TRUE, FALSE, NULL);
+if (ghStopEvent_ == NULL) {
+    throw std::runtime_error(
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+","void BackgroundThread::initStopSignal() {
+ghStopEvent_ = CreateEvent(NULL, TRUE, FALSE, NULL);
+if (ghStopEvent_ == NULL) {
+    TORCH_CHECK(false,
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+"
+"#else
+void BackgroundThread::initStopSignal() {
+if (pipe(controlPipeFd_.data()) == -1) {
+    throw std::runtime_error(
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+","#else
+void BackgroundThread::initStopSignal() {
+if (pipe(controlPipeFd_.data()) == -1) {
+    TORCH_CHECK(false,
+""Failed to create the control pipe to start the ""
+""BackgroundThread run"");
+}
+"
+"watchHandler(socket);
+} else {
+    throw std::runtime_error(""Unexpected query type"");
+}
+}
+","watchHandler(socket);
+} else {
+    TORCH_CHECK(false, ""Unexpected query type"");
+}
+}
+"
+"auto response = client_->receiveValue<detail::WaitResponseType>();
+if (response != detail::WaitResponseType::STOP_WAITING) {
+    throw std::runtime_error(""Stop_waiting response is expected"");
+}
+}
+","auto response = client_->receiveValue<detail::WaitResponseType>();
+if (response != detail::WaitResponseType::STOP_WAITING) {
+    TORCH_CHECK(false, ""Stop_waiting response is expected"");
+}
+}
+"
+"listenPort = ntohs(addr->sin6_port);
+} else {
+    throw std::runtime_error(""unsupported protocol"");
+}
+return listenPort;
+}
+","listenPort = ntohs(addr->sin6_port);
+} else {
+    TORCH_CHECK(false, ""unsupported protocol"");
+}
+return listenPort;
+}
+"
+"__output != nullptr)
+address[INET6_ADDRSTRLEN] = '\0';
+} else {
+    throw std::runtime_error(""unsupported protocol"");
+}
+return address;
+}
+","__output != nullptr)
+address[INET6_ADDRSTRLEN] = '\0';
+} else {
+    TORCH_CHECK(false, ""unsupported protocol"");
+}
+return address;
+}
+"
+"if (timeout != kNoTimeout) {
+const auto elapsed = std::chrono::high_resolution_clock::now() - start;
+if (elapsed > timeout) {
+        throw std::runtime_error(kConnectTimeoutMsg);
+}
+}
+std::this_thread::sleep_for(std::chrono::seconds(1));
+","if (timeout != kNoTimeout) {
+const auto elapsed = std::chrono::high_resolution_clock::now() - start;
+if (elapsed > timeout) {
+        TORCH_CHECK(false, kConnectTimeoutMsg);
+}
+}
+std::this_thread::sleep_for(std::chrono::seconds(1));
+"
+"while (true) {
+int res = tcputil::poll(events.get(), 1, timeout.count());
+if (res == 0) {
+      throw std::runtime_error(
+""waiting for processes to ""
+""connect has timed out"");
+} else if (res == -1) {
+","while (true) {
+int res = tcputil::poll(events.get(), 1, timeout.count());
+if (res == 0) {
+      TORCH_CHECK(false,
+""waiting for processes to ""
+""connect has timed out"");
+} else if (res == -1) {
+"
+"pg_name) { return pg_name.second == *group_name; });
+if (it != pg_names_.end()) {
+    throw std::runtime_error(
+""The specified group name has already been ""
+""created, please use a different group name"");
+}
+","pg_name) { return pg_name.second == *group_name; });
+if (it != pg_names_.end()) {
+    TORCH_CHECK(false,
+""The specified group name has already been ""
+""created, please use a different group name"");
+}
+"
+"try {
+value = torch::jit::toIValue(obj, c10::TensorType::get());
+} catch (py::cast_error& e) {
+      throw std::runtime_error(""RRef should contain a tensor for .backward()"");
+}
+}
+","try {
+value = torch::jit::toIValue(obj, c10::TensorType::get());
+} catch (py::cast_error& e) {
+      TORCH_CHECK(false, ""RRef should contain a tensor for .backward()"");
+}
+}
+"
+"if (jitFuture.hasError()) {
+auto errMsg = jitFuture.tryRetrieveErrorMessage();
+VLOG(1) << ""Got exception: "" << errMsg;
+    throw std::runtime_error(errMsg);
+}
+}
+","if (jitFuture.hasError()) {
+auto errMsg = jitFuture.tryRetrieveErrorMessage();
+VLOG(1) << ""Got exception: "" << errMsg;
+    TORCH_CHECK(false, errMsg);
+}
+}
+"
+"""tried to send() a message of type "",
+requestMessage->type(),
+"" but RPC is no longer running on this node."");
+    throw std::runtime_error(err);
+}
+const auto& url = findWorkerURL(toWorkerInfo);
+","""tried to send() a message of type "",
+requestMessage->type(),
+"" but RPC is no longer running on this node."");
+    TORCH_CHECK(false, err);
+}
+const auto& url = findWorkerURL(toWorkerInfo);
+"
+"ptr += headerEnt.second;
+}
+if (ptr != endp) {
+    throw std::runtime_error(""failed bounds"");
+}
+return out;
+}
+","ptr += headerEnt.second;
+}
+if (ptr != endp) {
+    TORCH_CHECK(false, ""failed bounds"");
+}
+return out;
+}
+"

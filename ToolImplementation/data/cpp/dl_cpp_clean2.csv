@@ -1,0 +1,2749 @@
+buggy_code,fixer_code
+"cache_.emplace(cacheKey, compileFn);
+}
+  const int64_t size() const { return cache_.size(); }
+/// Clear the cache.
+void clear() { cache_.clear(); }
+","cache_.emplace(cacheKey, compileFn);
+}
+  int64_t size() const { return cache_.size(); }
+/// Clear the cache.
+void clear() { cache_.clear(); }
+"
+"} else {
+bound_ = true;
+dims_.resize(size);
+            for (ssize_t i = 0; i < size; ++i) {
+dims_[i] = Dim::create(py::unicode_from_format(""%S%i"", name_.ptr(), (int)i));
+}
+}
+","} else {
+bound_ = true;
+dims_.resize(size);
+            for (Py_ssize_t i = 0; i < size; ++i) {
+dims_[i] = Dim::create(py::unicode_from_format(""%S%i"", name_.ptr(), (int)i));
+}
+}
+"
+"py::sequence_view seq = sizes;
+auto size = seq.size();
+self->bind_len(size);
+    for (ssize_t i = 0; i < size; ++i) {
+self->dims_[i]->set_size(py::to_int(seq[i]));
+}
+Py_RETURN_NONE;
+","py::sequence_view seq = sizes;
+auto size = seq.size();
+self->bind_len(size);
+    for (Py_ssize_t i = 0; i < size; ++i) {
+self->dims_[i]->set_size(py::to_int(seq[i]));
+}
+Py_RETURN_NONE;
+"
+"if (!self->is_bound()) {
+py::raise_error(DimensionBindError(), ""DimList not bound"");
+}
+    if (idx >= self->dims_.size()) {
+py::raise_error(PyExc_IndexError, ""index out of bounds"");
+}
+py::object r = self->dims_[idx];
+","if (!self->is_bound()) {
+py::raise_error(DimensionBindError(), ""DimList not bound"");
+}
+    if (idx < 0 || (size_t) idx >= self->dims_.size()) {
+py::raise_error(PyExc_IndexError, ""index out of bounds"");
+}
+py::object r = self->dims_[idx];
+"
+"PyMappingMethods DimList_mapping = {
+0, //lenfunc mp_length;
+    (binaryfunc) DimList_subscript, //binaryfunc mp_subscript;
+0, //objobjargproc mp_ass_subscript;
+};
+","PyMappingMethods DimList_mapping = {
+0, //lenfunc mp_length;
+    (binaryfunc)(void*) DimList_subscript, //binaryfunc mp_subscript;
+0, //objobjargproc mp_ass_subscript;
+};
+"
+"std::vector<py::obj<Dim>> dims;
+size_t size = s.size();
+dims.reserve(size);
+            for (ssize_t i = 0; i < size; ++i) {
+auto r = s[i];","std::vector<py::obj<Dim>> dims;
+size_t size = s.size();
+dims.reserve(size);
+            for (size_t i = 0; i < size; ++i) {
+auto r = s[i];"
+"if (!py::is_none(size)) {
+d->set_size(py::to_int(size));
+}
+    return d;
+}
+py::object create_dimlist(py::object name, py::handle size) {
+","if (!py::is_none(size)) {
+d->set_size(py::to_int(size));
+}
+    return std::move(d);
+}
+py::object create_dimlist(py::object name, py::handle size) {
+"
+"const T* X_ptr = X_data + i * inner_size;
+T mean_val;
+T rstd_val;
+      std::tie(mean_val, rstd_val) = RowwiseMoments(X_ptr, inner_size);
+rstd_val = T(1) / std::sqrt(std::max(rstd_val, T(0)) + eps);
+if (gamma_null && beta_null) {
+T* Y_ptr = Y_data + i * inner_size;
+","const T* X_ptr = X_data + i * inner_size;
+T mean_val;
+T rstd_val;
+      std::tie(mean_val, rstd_val) = utils::RowwiseMoments(X_ptr, inner_size);
+rstd_val = T(1) / std::sqrt(std::max(rstd_val, T(0)) + eps);
+if (gamma_null && beta_null) {
+T* Y_ptr = Y_data + i * inner_size;
+"
+"size_t idx = stack_.back().toInt();
+stack_.pop_back();
+// stack is: <functor_arg>
+globals_.at(idx)();
+} break;
+case PickleOpCode::BINPERSID: {
+","size_t idx = stack_.back().toInt();
+stack_.pop_back();
+// stack is: <functor_arg>
+      TORCH_CHECK(
+          idx < globals_.size(),
+          ""Parsing error: out of bounds access to globals_"");
+globals_.at(idx)();
+} break;
+case PickleOpCode::BINPERSID: {
+"
+"std::string op_schema_str{};
+const auto op_schema = fn.operator_schema();
+if (op_schema.has_value()) {
+        op_schema_str = c10::toString(op_schema.value());
+}
+writeJsonNode(
+","std::string op_schema_str{};
+const auto op_schema = fn.operator_schema();
+if (op_schema.has_value()) {
+        op_schema_str = json_str_escape(c10::toString(op_schema.value()));
+}
+writeJsonNode(
+"
+"const T* X_ptr = X_data + i * inner_size;
+T mean_val;
+T rstd_val;
+      std::tie(mean_val, rstd_val) = utils::RowwiseMoments(X_ptr, inner_size);
+rstd_val = T(1) /","const T* X_ptr = X_data + i * inner_size;
+T mean_val;
+T rstd_val;
+      std::tie(mean_val, rstd_val) = RowwiseMoments(X_ptr, inner_size);
+rstd_val = T(1) /"
+"T* Y_ptr = Y_data + i * N;
+T mean_val;
+T rstd_val;
+      std::tie(mean_val, rstd_val) = utils::RowwiseMoments(X_ptr, N);
+rstd_val = T(1) / std::sqrt(rstd_val + eps);
+const T_ACC scale = rstd_val;
+const T_ACC bias = -rstd_val * mean_val;
+","T* Y_ptr = Y_data + i * N;
+T mean_val;
+T rstd_val;
+      std::tie(mean_val, rstd_val) = RowwiseMoments(X_ptr, N);
+rstd_val = T(1) / std::sqrt(rstd_val + eps);
+const T_ACC scale = rstd_val;
+const T_ACC bias = -rstd_val * mean_val;
+"
+"output_data + start_idx * output_shape[1]);
+});
+} else {
+      const auto weight_data = weight.data_ptr<float>();
+at::parallel_for(
+0, embedding_rows, 1, [&](int64_t start_idx, int64_t end_idx) {
+fbgemm::FloatOrHalfToFusedNBitRowwiseQuantizedSBHalf<float>(
+","output_data + start_idx * output_shape[1]);
+});
+} else {
+      const auto weight_data = weight_contig.data_ptr<float>();
+at::parallel_for(
+0, embedding_rows, 1, [&](int64_t start_idx, int64_t end_idx) {
+fbgemm::FloatOrHalfToFusedNBitRowwiseQuantizedSBHalf<float>(
+"
+"if (new_values.size(0) == 1) {
+return new_values[0];
+} else {
+        return new_values.sum(0);
+}
+} else {
+auto dimIndices = (arange(
+","if (new_values.size(0) == 1) {
+return new_values[0];
+} else {
+        // sum promotes integral type to int64 when dtype is not specified.
+        return at::sum(new_values, 0, false, new_values.scalar_type());
+}
+} else {
+auto dimIndices = (arange(
+"
+"vTensor v_output{
+context,
+      broadcast_first_input(v_self, v_other) ? v_other.sizes() : v_self.sizes(),
+v_self.options(),
+};
+","vTensor v_output{
+context,
+      broadcast_size(self_arg, other_arg),
+v_self.options(),
+};
+"
+"vTensor v_output{
+context,
+      broadcast_first_input(v_self, v_other) ? v_other.sizes() : v_self.sizes(),
+self.options().dtype(c10::kQUInt8),
+scale,
+zero_point};
+","vTensor v_output{
+context,
+      broadcast_size(self_arg, other_arg),
+self.options().dtype(c10::kQUInt8),
+scale,
+zero_point};
+"
+"if (self.dim() < 2) {
+channel_dim = 0;
+}
+  auto self_ = self;
+auto target_ = target.unsqueeze(channel_dim);
+auto grad_output_ = grad_output;
+","if (self.dim() < 2) {
+channel_dim = 0;
+}
+auto target_ = target.unsqueeze(channel_dim);
+auto grad_output_ = grad_output;
+"
+"Tensor weight_;
+if (weight && weight->defined()) {
+auto shape = weight->sizes();
+VmapDimVector new_shape(self_.dim(), 1);
+new_shape[channel_dim] = shape[0];
+","Tensor weight_;
+if (weight && weight->defined()) {
+    auto self_ = self;
+auto shape = weight->sizes();
+VmapDimVector new_shape(self_.dim(), 1);
+new_shape[channel_dim] = shape[0];
+"
+"if (!is_input) {
+set_history(tensor, grad_fn);
+}
+      grad_fn->saved_tensors_.push_back(torch::autograd::SavedVariable(tensor, !is_input));
+}
+}
+torch::jit::push(stack, result);
+","if (!is_input) {
+set_history(tensor, grad_fn);
+}
+      grad_fn->saved_tensors_.emplace_back(tensor, !is_input);
+}
+}
+torch::jit::push(stack, result);
+"
+"}  // namespace
+void index_put__batch_rule(
+    Tensor& self,
+optional<int64_t> self_bdim,
+ArrayRef<optional<Tensor>> indices,
+ArrayRef<optional<int64_t>> indices_bdims,
+","}  // namespace
+void index_put__batch_rule(
+    const Tensor& self,
+optional<int64_t> self_bdim,
+ArrayRef<optional<Tensor>> indices,
+ArrayRef<optional<int64_t>> indices_bdims,
+"
+"}
+void _index_put_impl__batch_rule(
+    Tensor& self,
+optional<int64_t> self_bdim,
+ArrayRef<optional<Tensor>> indices,
+ArrayRef<optional<int64_t>> indices_bdims,
+","}
+void _index_put_impl__batch_rule(
+    const Tensor& self,
+optional<int64_t> self_bdim,
+ArrayRef<optional<Tensor>> indices,
+ArrayRef<optional<int64_t>> indices_bdims,
+"
+"}
+std::tuple<Tensor,optional<int64_t>> index_put_batch_rule(
+    Tensor& self,
+optional<int64_t> self_bdim,
+ArrayRef<optional<Tensor>> indices,
+ArrayRef<optional<int64_t>> indices_bdims,
+","}
+std::tuple<Tensor,optional<int64_t>> index_put_batch_rule(
+    const Tensor& self,
+optional<int64_t> self_bdim,
+ArrayRef<optional<Tensor>> indices,
+ArrayRef<optional<int64_t>> indices_bdims,
+"
+"for (unsigned idx = 0; idx < grads.size(); idx++) {
+auto ivalue = torch::jit::toIValue(PyTuple_GetItem(out.ptr(), idx), TensorType::get());
+    result.push_back(ivalue.toTensor());
+}
+return result;
+}
+","for (unsigned idx = 0; idx < grads.size(); idx++) {
+auto ivalue = torch::jit::toIValue(PyTuple_GetItem(out.ptr(), idx), TensorType::get());
+    result.emplace_back(ivalue.toTensor());
+}
+return result;
+}
+"
+"variable_list grad_inputs(num_inputs_);
+std::vector<Tensor> args;
+  for (const auto& g : grads) {
+    args.push_back(g);
+}
+for (const auto& saved : saved_tensors_) {
+    args.push_back(saved.unpack(shared_from_this()));
+}
+if (should_compute_output({ tensors_ix })) {
+","variable_list grad_inputs(num_inputs_);
+std::vector<Tensor> args;
+  for (auto& g : grads) {
+    args.emplace_back(std::move(g));
+}
+for (const auto& saved : saved_tensors_) {
+    args.emplace_back(saved.unpack(shared_from_this()));
+}
+if (should_compute_output({ tensors_ix })) {
+"
+"std::vector<Tensor> makeBatchedVector(const std::vector<Tensor>& tensors, optional<int64_t> bdim, int64_t level) {
+std::vector<Tensor> res;
+for (size_t idx = 0; idx < tensors.size(); idx++) {
+    res.push_back(makeBatched(tensors[idx], bdim, level));
+}
+return res;
+}
+","std::vector<Tensor> makeBatchedVector(const std::vector<Tensor>& tensors, optional<int64_t> bdim, int64_t level) {
+std::vector<Tensor> res;
+for (size_t idx = 0; idx < tensors.size(); idx++) {
+    res.emplace_back(makeBatched(tensors[idx], bdim, level));
+}
+return res;
+}
+"
+"static void checkForInvalidMutationOnCaptures(
+const c10::OperatorHandle& op,
+    torch::jit::Stack* stack,
+int64_t cur_level) {
+if (!isInplaceOp(op.schema())) {
+return;
+","static void checkForInvalidMutationOnCaptures(
+const c10::OperatorHandle& op,
+    const torch::jit::Stack* stack,
+int64_t cur_level) {
+if (!isInplaceOp(op.schema())) {
+return;
+"
+"ss << ""Tensor"" << tensor.sizes();
+return;
+}
+  if (wrapped->is_alive()) {
+    ss << ""Wrapper["";
+  } else {
+    ss << ""Wrapper["";
+  }
+if (wrapped->level().has_value()) {
+    ss << wrapped->level().value() << "", "";
+} else {
+ss << ""dead, "";
+}
+","ss << ""Tensor"" << tensor.sizes();
+return;
+}
+  ss << ""Wrapper["";
+if (wrapped->level().has_value()) {
+    ss << ""lvl="" << wrapped->level().value() << "", "";
+} else {
+ss << ""dead, "";
+}
+"
+"return dimflags;
+}
+std::vector<int> dynamic_hasher(const LocalState &state, const at::Tensor &v) {
+    std::vector<int> hash = {
+0,
+static_cast<int>(packFlags(state, v)),
+static_cast<int>(state.apply(v.key_set()).raw_repr()),
+","return dimflags;
+}
+hash_key_t dynamic_hasher(const LocalState &state, const at::Tensor &v) {
+    hash_key_t hash = {
+0,
+static_cast<int>(packFlags(state, v)),
+static_cast<int>(state.apply(v.key_set()).raw_repr()),
+"
+"/// Per-tensor cache specialization key targetting static shapes. Recordsdtype,
+/// dispatch options, aliasing, and full shapes and strides.
+std::vector<int> static_hasher(const LocalState &state, const at::Tensor &v) {
+    std::vector<int> hash = {
+1,
+static_cast<int>(packFlags(state, v)),
+static_cast<int>(state.apply(v.key_set()).raw_repr()),
+","/// Per-tensor cache specialization key targetting static shapes. Recordsdtype,
+/// dispatch options, aliasing, and full shapes and strides.
+hash_key_t static_hasher(const LocalState &state, const at::Tensor &v) {
+    hash_key_t hash = {
+1,
+static_cast<int>(packFlags(state, v)),
+static_cast<int>(state.apply(v.key_set()).raw_repr()),
+"
+"/// Cache type mapping specialization keys to compiled kernels.
+class vector_hasher {
+public:
+    std::size_t operator()(std::vector<int> const& vec) const {
+std::size_t seed = vec.size();
+for(auto& i : vec) {
+seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+","/// Cache type mapping specialization keys to compiled kernels.
+class vector_hasher {
+public:
+    std::size_t operator()(hash_key_t const& vec) const {
+std::size_t seed = vec.size();
+for(auto& i : vec) {
+seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+"
+"py::object at(int64_t id, int numArgs, const std::string &hasherType,
+PyObject *args) {
+std::vector<at::Tensor> tensorArgs = parsePythonArgs(numArgs, args);
+    std::vector<int> cacheKey = computeCacheKey(tensorArgs, numArgs, hasherType, id);
+auto item = cache_.find(cacheKey); // protected by GIL
+","py::object at(int64_t id, int numArgs, const std::string &hasherType,
+PyObject *args) {
+std::vector<at::Tensor> tensorArgs = parsePythonArgs(numArgs, args);
+    hash_key_t cacheKey = computeCacheKey(tensorArgs, numArgs, hasherType, id);
+auto item = cache_.find(cacheKey); // protected by GIL
+"
+"const py::object &compileFn, PyObject *args) {
+std::vector<at::Tensor> tensorArgs = parsePythonArgs(numArgs, args);
+LocalState state;
+    std::vector<int> cacheKey= computeCacheKey(tensorArgs, numArgs, hasherType, id);
+cache_.emplace(cacheKey, compileFn);
+}
+","const py::object &compileFn, PyObject *args) {
+std::vector<at::Tensor> tensorArgs = parsePythonArgs(numArgs, args);
+LocalState state;
+    hash_key_t cacheKey= computeCacheKey(tensorArgs, numArgs, hasherType, id);
+cache_.emplace(cacheKey, compileFn);
+}
+"
+"const Tensor& a, bool a_has_bdim,
+const Tensor& b, bool b_has_bdim,
+const Tensor& c, bool c_has_bdim) {
+  int64_t bdim_size = -1;
+Tensor flagpole;
+if (a_has_bdim) {
+    bdim_size = a.size(0);
+flagpole = a;
+} else if (b_has_bdim) {
+    bdim_size = b.size(0);
+flagpole = b;
+} else if (c_has_bdim) {
+    bdim_size = c.size(0);
+flagpole = c;
+} else {
+TORCH_INTERNAL_ASSERT(false);
+","const Tensor& a, bool a_has_bdim,
+const Tensor& b, bool b_has_bdim,
+const Tensor& c, bool c_has_bdim) {
+Tensor flagpole;
+if (a_has_bdim) {
+flagpole = a;
+} else if (b_has_bdim) {
+flagpole = b;
+} else if (c_has_bdim) {
+flagpole = c;
+} else {
+TORCH_INTERNAL_ASSERT(false);
+"
+"VmapDimVector sizes_with_bdim = { sizes.begin(), sizes.end() };
+sizes_with_bdim.insert(sizes_with_bdim.begin(), 1);
+auto self_ = moveBatchDimToFront(self, self_bdim);
+  while (self_.dim() < sizes_with_bdim.size()) {
+self_ = self_.unsqueeze(1);
+}
+return std::make_tuple(self_.repeat(sizes_with_bdim), 0);
+","VmapDimVector sizes_with_bdim = { sizes.begin(), sizes.end() };
+sizes_with_bdim.insert(sizes_with_bdim.begin(), 1);
+auto self_ = moveBatchDimToFront(self, self_bdim);
+  while (self_.dim() < (int64_t)sizes_with_bdim.size()) {
+self_ = self_.unsqueeze(1);
+}
+return std::make_tuple(self_.repeat(sizes_with_bdim), 0);
+"
+"// simplicity. When that is not the case, this code should be updated.
+const auto& argument = (*stack)[arguments_begin + arg_idx];
+if (batched_tensor_inputs_pos_iter == batched_tensor_inputs_position.end()
+          || arg_idx != *batched_tensor_inputs_pos_iter) {
+// argument isn't a BatchedTensor
+torch::jit::push(stack, argument);
+continue;
+","// simplicity. When that is not the case, this code should be updated.
+const auto& argument = (*stack)[arguments_begin + arg_idx];
+if (batched_tensor_inputs_pos_iter == batched_tensor_inputs_position.end()
+          || (int64_t)arg_idx != *batched_tensor_inputs_pos_iter) {
+// argument isn't a BatchedTensor
+torch::jit::push(stack, argument);
+continue;
+"
+"dims = {arguments[dim_arg_pos].toInt()};
+} else if (arguments[dim_arg_pos].isNone())  {
+reduction_case = ReductionCase::DimArray;
+    auto all_dims = range(0, self.dim() - 1);
+    dims = std::vector<int64_t>(all_dims.begin(), all_dims.end());
+} else{
+TORCH_INTERNAL_ASSERT(false, ""Unexpected dtype found at dims"");
+// auto all_dims = range(0, self.dim() - 1);
+","dims = {arguments[dim_arg_pos].toInt()};
+} else if (arguments[dim_arg_pos].isNone())  {
+reduction_case = ReductionCase::DimArray;
+    if (logical_dim == 0) {
+      dims = {0};
+    } else {
+      auto all_dims = range(0, self.dim() - 1);
+      dims = std::vector<int64_t>(all_dims.begin(), all_dims.end());
+    }
+} else{
+TORCH_INTERNAL_ASSERT(false, ""Unexpected dtype found at dims"");
+// auto all_dims = range(0, self.dim() - 1);
+"
+"return { self.repeat(sizes), nullopt };
+}
+  auto self_ = moveBatchDimToFront(self, self_bdim);
+VmapDimVector sizes_with_bdim = { sizes.begin(), sizes.end() };
+sizes_with_bdim.insert(sizes_with_bdim.begin(), 1);
+return { self_.repeat(sizes_with_bdim), 0 };
+}
+","return { self.repeat(sizes), nullopt };
+}
+VmapDimVector sizes_with_bdim = { sizes.begin(), sizes.end() };
+sizes_with_bdim.insert(sizes_with_bdim.begin(), 1);
+  auto self_ = moveBatchDimToFront(self, self_bdim);
+  while (self_.dim() < sizes_with_bdim.size()) {
+    self_ = self_.unsqueeze(1);
+  }
+return { self_.repeat(sizes_with_bdim), 0 };
+}
+"
+"// [start, start + 1, ..., stop - 1]
+static VmapDimVector range(int64_t start, int64_t stop) {
+  TORCH_INTERNAL_ASSERT(stop > start);
+VmapDimVector dims;
+dims.reserve(stop - start);
+for (int64_t i = start; i < stop; i++) {
+","// [start, start + 1, ..., stop - 1]
+static VmapDimVector range(int64_t start, int64_t stop) {
+  TORCH_INTERNAL_ASSERT(stop >= start);
+VmapDimVector dims;
+dims.reserve(stop - start);
+for (int64_t i = start; i < stop; i++) {
+"
+"if (!maybe_tensor_wrapper) {
+continue;
+}
+      maybe_tensor_wrapper->refreshSizesAndStrides();
+}
+// Step 6
+","if (!maybe_tensor_wrapper) {
+continue;
+}
+      maybe_tensor_wrapper->refreshMetadata();
+}
+// Step 6
+"
+"// TODO: need to reset sizes/strides on mutation
+TORCH_INTERNAL_ASSERT(use_value_sizes_strides);
+  refreshSizesAndStrides();
+}
+// The following are some internal inherited methods that we do not support.
+","// TODO: need to reset sizes/strides on mutation
+TORCH_INTERNAL_ASSERT(use_value_sizes_strides);
+  refreshMetadata();
+}
+// The following are some internal inherited methods that we do not support.
+"
+".getElementType());
+py::list pyL;
+        for (int jdx = 0; jdx < l.size(); jdx++) {
+auto nv = l.get(jdx);
+if (nv.isTensor() && isPythonTensor(nv.toTensor())) {
+auto pyTensor = getPythonImpl(nv.toTensor());
+",".getElementType());
+py::list pyL;
+        for (unsigned jdx = 0; jdx < l.size(); jdx++) {
+auto nv = l.get(jdx);
+if (nv.isTensor() && isPythonTensor(nv.toTensor())) {
+auto pyTensor = getPythonImpl(nv.toTensor());
+"
+".getElementType());
+py::list pyL;
+        for (int jdx = 0; jdx < l.size(); jdx++) {
+auto nv = l.get(jdx);
+if (nv.isTensor() && isPythonTensor(nv.toTensor())) {
+auto pyTensor = getPythonImpl(nv.toTensor());
+",".getElementType());
+py::list pyL;
+        for (unsigned jdx = 0; jdx < l.size(); jdx++) {
+auto nv = l.get(jdx);
+if (nv.isTensor() && isPythonTensor(nv.toTensor())) {
+auto pyTensor = getPythonImpl(nv.toTensor());
+"
+"auto B_ = moveBatchDimToFront(B, B_bdim);
+if (A_bdim && B_bdim) {
+return {at::matmul(A_.unsqueeze(-2), B_.unsqueeze(-1)).squeeze(-1).squeeze(-1), 0};
+}
+  return {at::matmul(A_, B_.t()), 0};
+}
+","auto B_ = moveBatchDimToFront(B, B_bdim);
+if (A_bdim && B_bdim) {
+return {at::matmul(A_.unsqueeze(-2), B_.unsqueeze(-1)).squeeze(-1).squeeze(-1), 0};
+  } else if (!A_bdim && !B_bdim) {
+    return {at::dot(A_, B_), nullopt};
+  } else {
+    return {at::matmul(A_, B_.t()), 0};
+}
+}
+"
+"std::tuple<Tensor, optional<int64_t>> dot_batch_rule(const Tensor& A, optional<int64_t> A_bdim, const Tensor& B, optional<int64_t> B_bdim) {
+auto A_ = moveBatchDimToFront(A, A_bdim);
+auto B_ = moveBatchDimToFront(B, B_bdim);
+return {at::matmul(A_, B_.t()), 0};
+}
+","std::tuple<Tensor, optional<int64_t>> dot_batch_rule(const Tensor& A, optional<int64_t> A_bdim, const Tensor& B, optional<int64_t> B_bdim) {
+auto A_ = moveBatchDimToFront(A, A_bdim);
+auto B_ = moveBatchDimToFront(B, B_bdim);
+  if (A_bdim && B_bdim) {
+    return {at::matmul(A_.unsqueeze(-2), B_.unsqueeze(-1)).squeeze(-1).squeeze(-1), 0};
+  }
+return {at::matmul(A_, B_.t()), 0};
+}
+"
+"int64_t dim) {
+auto self_ = moveBatchDimToFront(self, self_bdim);
+auto rank = rankWithoutBatchDim(self, self_bdim);
+  dim = maybe_wrap_dim(dim, rank + 1) + 1;
+  return { self.unsqueeze(dim), valIfNonempty(self_bdim, 0) };
+}
+TORCH_LIBRARY_IMPL(aten, FT_BATCHED_KEY, m) {
+","int64_t dim) {
+auto self_ = moveBatchDimToFront(self, self_bdim);
+auto rank = rankWithoutBatchDim(self, self_bdim);
+  dim = maybe_wrap_dim(dim, rank + 1);
+  if (self_bdim) {
+    dim += 1;
+  }
+  return { self_.unsqueeze(dim), valIfNonempty(self_bdim, 0) };
+}
+TORCH_LIBRARY_IMPL(aten, FT_BATCHED_KEY, m) {
+"
+"if (tensor.is_cuda()) {
+key_set = key_set.add(DispatchKey::CUDA);
+}
+return at::detail::make_tensor<BatchedTensorImpl>(key_set, tensor, std::move(bdims));
+}
+","if (tensor.is_cuda()) {
+key_set = key_set.add(DispatchKey::CUDA);
+}
+  auto* batched = maybeGetBatchedImpl(tensor);
+  if (batched) {
+    auto requested_level = bdims.back().level();
+    auto batched_level = batched->bdims().back().level();
+    TORCH_INTERNAL_ASSERT(requested_level > batched_level);
+  }
+return at::detail::make_tensor<BatchedTensorImpl>(key_set, tensor, std::move(bdims));
+}
+"
+"return false;
+}
+auto bdims = batched->bdims();
+  auto* it = std::find_if(bdims.begin(), bdims.end(), [&](const BatchDim& bdim) {
+    return bdim.level() == level;
+  });
+  return it != bdims.end();
+}
+Tensor _add_batch_dim(const Tensor& self, int64_t batch_dim, int64_t level) {
+","return false;
+}
+auto bdims = batched->bdims();
+  return bdims.back().level() >= level;
+}
+Tensor _add_batch_dim(const Tensor& self, int64_t batch_dim, int64_t level) {
+"
+"auto self_sizes = self.sizes();
+VmapDimVector expanded_sizes(self_sizes.begin(), self_sizes.end());
+expanded_sizes.insert(expanded_sizes.begin() + out_dim, batch_size);
+    return self.expand(expanded_sizes);
+}
+// Must be batched if has_level(self, /*any_level*/)
+","auto self_sizes = self.sizes();
+VmapDimVector expanded_sizes(self_sizes.begin(), self_sizes.end());
+expanded_sizes.insert(expanded_sizes.begin() + out_dim, batch_size);
+    auto result = self.expand(expanded_sizes);
+    return result;
+}
+// Must be batched if has_level(self, /*any_level*/)
+"
+"Tensor self_without_bdim;
+int64_t newly_exposed_logical_dim;
+std::tie(self_without_bdim, newly_exposed_logical_dim) = remove_existing_batch_dim(batched, level);
+  return _movedim(self_without_bdim, newly_exposed_logical_dim, out_dim);
+}
+Tensor _wrap_for_grad(const Tensor& self, int64_t level) {
+","Tensor self_without_bdim;
+int64_t newly_exposed_logical_dim;
+std::tie(self_without_bdim, newly_exposed_logical_dim) = remove_existing_batch_dim(batched, level);
+  auto result = _movedim(self_without_bdim, newly_exposed_logical_dim, out_dim);
+  return result;
+}
+Tensor _wrap_for_grad(const Tensor& self, int64_t level) {
+"
+"if (!maybe_dtype_option)
+return {};
+auto dtype =
+          (maybe_dtype_option->isNone() ? at::kDouble
+: maybe_dtype_option->toScalarType());
+return {TensorType::create(
+","if (!maybe_dtype_option)
+return {};
+auto dtype =
+          (maybe_dtype_option->isNone() ? default_dtype
+: maybe_dtype_option->toScalarType());
+return {TensorType::create(
+"
+"if (!maybe_dtype_option)
+return {};
+auto dtype =
+          (maybe_dtype_option->isNone() ? at::kDouble
+: maybe_dtype_option->toScalarType());
+return {TensorType::create(
+","if (!maybe_dtype_option)
+return {};
+auto dtype =
+          (maybe_dtype_option->isNone() ? default_dtype
+: maybe_dtype_option->toScalarType());
+return {TensorType::create(
+"
+"scalar_t* A_working_ptr = &A_data[i * A_mat_stride];
+scalar_t* b_working_ptr = &b_data[i * b_mat_stride];
+lapackCholeskySolve<scalar_t>(uplo, n, nrhs, A_working_ptr, ldab, b_working_ptr, ldab, &info);
+    infos[i] = info;
+if (info != 0) {
+return;
+}
+","scalar_t* A_working_ptr = &A_data[i * A_mat_stride];
+scalar_t* b_working_ptr = &b_data[i * b_mat_stride];
+lapackCholeskySolve<scalar_t>(uplo, n, nrhs, A_working_ptr, ldab, b_working_ptr, ldab, &info);
+    infos_data[i] = info;
+if (info != 0) {
+return;
+}
+"
+"}
+std::tuple<Tensor, Tensor> _symeig_helper_cpu(const Tensor& self, bool eigenvectors, bool upper) {
+  std::vector<int64_t> infos(batchCount(self), 0);
+auto self_sizes = self.sizes().vec();
+self_sizes.pop_back();
+","}
+std::tuple<Tensor, Tensor> _symeig_helper_cpu(const Tensor& self, bool eigenvectors, bool upper) {
+  auto infos = at::zeros({batchCount(self)}, self.options().dtype(kInt));
+auto self_sizes = self.sizes().vec();
+self_sizes.pop_back();
+"
+"}
+template <typename scalar_t>
+void apply_eig(const Tensor& self, bool eigenvectors, Tensor& vals_, Tensor& vecs_, int64_t* info_ptr) {
+#if !AT_BUILD_WITH_LAPACK()
+TORCH_CHECK(false, ""Calling torch.eig on a CPU tensor requires compiling "",
+""PyTorch with LAPACK. Please use PyTorch built with LAPACK support."");
+","}
+template <typename scalar_t>
+void apply_eig(const Tensor& self, bool eigenvectors, Tensor& vals_, Tensor& vecs_, int* info_ptr) {
+#if !AT_BUILD_WITH_LAPACK()
+TORCH_CHECK(false, ""Calling torch.eig on a CPU tensor requires compiling "",
+""PyTorch with LAPACK. Please use PyTorch built with LAPACK support."");
+"
+"char* other_data = data[1];
+for (const auto i : c10::irange(dim_size)) {
+(void)i; //Suppress unused variable warning
+        if (*((scalar_t*)self_data) != *((scalar_t*)other_data)) {
+result = false;
+return;
+}
+","char* other_data = data[1];
+for (const auto i : c10::irange(dim_size)) {
+(void)i; //Suppress unused variable warning
+        if (c10::load<scalar_t>(self_data) != c10::load<scalar_t>(other_data)) {
+result = false;
+return;
+}
+"
+"VaryingShape<size_t> stride_indices;
+VaryingShape<int64_t> strides;
+VaryingShape<int64_t> sizes;
+  if (t.layout() == at::kStrided) {
+sizes = VaryingShape<int64_t>{t.sizes().vec()};
+strides = VaryingShape<int64_t>{t.strides().vec()};
+return TensorType::create(
+","VaryingShape<size_t> stride_indices;
+VaryingShape<int64_t> strides;
+VaryingShape<int64_t> sizes;
+  if (t.layout() == at::kStrided && !t.is_nested()) {
+sizes = VaryingShape<int64_t>{t.sizes().vec()};
+strides = VaryingShape<int64_t>{t.strides().vec()};
+return TensorType::create(
+"
+"bool insertableTensor(const at::Tensor& ten) {
+// bail if tensor has no storage i.e. opaque tensor used in MKLdnn.
+// or gradients because we have no way of serializing them & are mutable
+  return !ten.requires_grad() && ten.has_storage();
+}
+bool insertableIValue(const IValue& ivalue) {
+","bool insertableTensor(const at::Tensor& ten) {
+// bail if tensor has no storage i.e. opaque tensor used in MKLdnn.
+// or gradients because we have no way of serializing them & are mutable
+  return !ten.requires_grad() && ten.has_storage() && !ten.is_nested();
+}
+bool insertableIValue(const IValue& ivalue) {
+"
+"if (lhs.is_mkldnn() || rhs.is_mkldnn()) {
+return false;
+}
+// If device is not equal, lhs.equal(rhs) would throw an error.
+if (lhs.device() != rhs.device()) {
+return false;
+","if (lhs.is_mkldnn() || rhs.is_mkldnn()) {
+return false;
+}
+  if (lhs.is_nested() || rhs.is_nested()) {
+    return false;
+  }
+// If device is not equal, lhs.equal(rhs) would throw an error.
+if (lhs.device() != rhs.device()) {
+return false;
+"
+"// NOLINTNEXTLINE
+strides[i] = 1;
+while (--i >= 0) {
+      strides[i] = sizes[i] * strides[i + 1];
+}
+}
+return from_blob_quantized_per_tensor_affine(
+","// NOLINTNEXTLINE
+strides[i] = 1;
+while (--i >= 0) {
+      strides[i] = sizes[i + 1] * strides[i + 1];
+}
+}
+return from_blob_quantized_per_tensor_affine(
+"
+"annotations_.emplace_back(""Python id"", std::to_string(t.id_));
+annotations_.emplace_back(
+""Python parent id"",
+        !py_metadata_.empty() ? py_metadata_.at(0).name_ : ""null"");
+annotations_.emplace_back(""Python thread"", std::to_string(t.python_tid_));
+}
+","annotations_.emplace_back(""Python id"", std::to_string(t.id_));
+annotations_.emplace_back(
+""Python parent id"",
+        !py_metadata_.empty() ? std::to_string(py_metadata_.at(0).id_)
+                              : ""null"");
+annotations_.emplace_back(""Python thread"", std::to_string(t.python_tid_));
+}
+"
+"at::from_blob(
+data, c10::IntArrayRef(shapes), c10::IntArrayRef(strides), at::kChar)
+.to(at::kCPU);
+  auto options = c10::TensorOptions().dtype(at::kChar).device(at::kCPU);
+// Need clone because at::from_blob does not take ownership of data.
+data_node->t_(Symbol::attr(""value""), data_value.clone());
+","at::from_blob(
+data, c10::IntArrayRef(shapes), c10::IntArrayRef(strides), at::kChar)
+.to(at::kCPU);
+// Need clone because at::from_blob does not take ownership of data.
+data_node->t_(Symbol::attr(""value""), data_value.clone());
+"
+"}
+auto input =
+emitSugaredExpr(apply.inputs()[0], 1)->asValue(loc, method);
+
+return std::make_shared<SimpleValue>(emitIndex(loc, self, {input}));
+}
+default:
+","}
+auto input =
+emitSugaredExpr(apply.inputs()[0], 1)->asValue(loc, method);
+        if (input->type()->kind() == TypeKind::TupleType) {
+          return std::make_shared<SimpleValue>(
+              emitIndex(loc, self, createTupleUnpack(input)));
+        }
+return std::make_shared<SimpleValue>(emitIndex(loc, self, {input}));
+}
+default:
+"
+"static PyObject * THPStorage_elementSize(PyObject *_self, PyObject *noargs)
+{
+HANDLE_TH_ERRORS
+  auto self = (THPStorage*)_self;
+return THPUtils_packInt64(sizeof(uint8_t));
+END_HANDLE_TH_ERRORS
+}
+","static PyObject * THPStorage_elementSize(PyObject *_self, PyObject *noargs)
+{
+HANDLE_TH_ERRORS
+return THPUtils_packInt64(sizeof(uint8_t));
+END_HANDLE_TH_ERRORS
+}
+"
+"HANDLE_TH_ERRORS
+TORCH_CHECK(PyTuple_Size(args) == 2,
+""_new_with_file takes exactly two arguments"");
+  PyObject *fd_obj = PyTuple_GetItem(args, 0);
+int fd = PyObject_AsFileDescriptor(PyTuple_GetItem(args, 0));
+THPUtils_assert(fd != -1, ""_new_with_file couldn't retrieve a file ""
+""descriptor from given object"");
+","HANDLE_TH_ERRORS
+TORCH_CHECK(PyTuple_Size(args) == 2,
+""_new_with_file takes exactly two arguments"");
+int fd = PyObject_AsFileDescriptor(PyTuple_GetItem(args, 0));
+THPUtils_assert(fd != -1, ""_new_with_file couldn't retrieve a file ""
+""descriptor from given object"");
+"
+"const auto num_arguments = arguments.size();
+const auto num_returns = returns.size();
+const auto stack_start = stack->size() - num_arguments;
+  bool any_is_inplace = false;
+at::Tensor aliased_input;
+","const auto num_arguments = arguments.size();
+const auto num_returns = returns.size();
+const auto stack_start = stack->size() - num_arguments;
+at::Tensor aliased_input;
+"
+"const c10::IValue& aliased_input_iv = (*stack)[stack_start + i]; // get a reference to an ivalue on the stack
+TORCH_CHECK(aliased_input_iv.isTensor());
+aliased_input = aliased_input_iv.toTensor();  // TODO: Can we avoid saving this tensor and incurring the refcount bump?
+      } else {
+        any_is_inplace = true;
+}
+}
+}
+","const c10::IValue& aliased_input_iv = (*stack)[stack_start + i]; // get a reference to an ivalue on the stack
+TORCH_CHECK(aliased_input_iv.isTensor());
+aliased_input = aliased_input_iv.toTensor();  // TODO: Can we avoid saving this tensor and incurring the refcount bump?
+}
+}
+}
+"
+"// onnx Sequence type requires element type to be set.
+// If the list to insert is empty, we set the elem type by
+// looking at the tensor being inserted.
+      auto list_node = n->input(0)->node();
+auto seq_node = n->input(0)->node();
+auto t_type = n->input(1)->type()->cast<TensorType>();
+","// onnx Sequence type requires element type to be set.
+// If the list to insert is empty, we set the elem type by
+// looking at the tensor being inserted.
+auto seq_node = n->input(0)->node();
+auto t_type = n->input(1)->type()->cast<TensorType>();
+"
+"""schema"",
+[](Node& n) {
+std::stringstream ss;
+            if (auto sch = n.maybeSchema()) {
+ss << n.schema();
+} else {
+ss << ""(no schema)"";
+","""schema"",
+[](Node& n) {
+std::stringstream ss;
+            if (n.maybeSchema()) {
+ss << n.schema();
+} else {
+ss << ""(no schema)"";
+"
+"}
+void print_init_message(const char* message) {
+  // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+  size_t unused;
+  // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
+  unused = write(1, message, strlen(message));
+  // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
+  unused = write(1, ""\n"", 1);
+}
+bool object_exists(const char* name) {
+","}
+void print_init_message(const char* message) {
+  write(1, message, strlen(message));
+  write(1, ""\n"", 1);
+}
+bool object_exists(const char* name) {
+"
+"cpu_kernel(iter, [](scalar_t a, scalar_t b) -> scalar_t {
+TORCH_CHECK(b != 0, ""ZeroDivisionError"");
+scalar_t r = a % b;
+        if ((r != 0) && ((r < 0) != (b < 0))) {
+r += b;
+}
+return r;
+","cpu_kernel(iter, [](scalar_t a, scalar_t b) -> scalar_t {
+TORCH_CHECK(b != 0, ""ZeroDivisionError"");
+scalar_t r = a % b;
+        if ((r != 0) && (c10::is_negative(r) != c10::is_negative(b))) {
+r += b;
+}
+return r;
+"
+"const std::vector<IterDomain*>& new_root_domain,
+std::vector<IterDomain*>& rfactor_domain) override {
+TORCH_INTERNAL_ASSERT(
+        index_ >= 0 && (index_ + 1) < new_root_domain.size(),
+""Index: \t"",
+index_,
+""\t Domain Size:\t"",
+","const std::vector<IterDomain*>& new_root_domain,
+std::vector<IterDomain*>& rfactor_domain) override {
+TORCH_INTERNAL_ASSERT(
+        (index_ + 1) < new_root_domain.size(),
+""Index: \t"",
+index_,
+""\t Domain Size:\t"",
+"
+"case COMPRESS_ALL_BUFFERS: {
+auto buffers = BufFinder::find(l.root_stmt());
+          if (buffers.size() < 0) {
+            break;
+          }
+message = ""compressAllBuffers(l.root_stmt());\n"";
+randomization_helper::printHistory(n_transform, message);
+","case COMPRESS_ALL_BUFFERS: {
+auto buffers = BufFinder::find(l.root_stmt());
+message = ""compressAllBuffers(l.root_stmt());\n"";
+randomization_helper::printHistory(n_transform, message);
+"
+"if (!func.has_value()) {
+unsupported_op_names.insert(operator_str(opname));
+all_ops_supported = false;
+} else {
+code_.operators_[i] = *func;
+}
+","if (!func.has_value()) {
+unsupported_op_names.insert(operator_str(opname));
+all_ops_supported = false;
+      break;
+} else {
+code_.operators_[i] = *func;
+}
+"
+"if (!func.has_value()) {
+unsupported_op_names.insert(operator_str(opname));
+all_ops_supported = false;
+      break;
+} else {
+code_.operators_[i] = *func;
+}
+","if (!func.has_value()) {
+unsupported_op_names.insert(operator_str(opname));
+all_ops_supported = false;
+} else {
+code_.operators_[i] = *func;
+}
+"
+"variable_list variableIndices;
+int64_t specified_dims = count_specified_dimensions(holder.get());
+if (specified_dims == -1) {
+    return handle_torch_function_indexing(self, index);
+}
+Variable sliced = applySlicing(
+self_, holder.get(), variableIndices, /*is_tracing=*/is_tracing, self_.device(), self_.sizes(), specified_dims);
+","variable_list variableIndices;
+int64_t specified_dims = count_specified_dimensions(holder.get());
+if (specified_dims == -1) {
+    return handle_torch_function_indexing(self, holder.get());
+}
+Variable sliced = applySlicing(
+self_, holder.get(), variableIndices, /*is_tracing=*/is_tracing, self_.device(), self_.sizes(), specified_dims);
+"
+"const Tensor& info,
+const c10::string_view api_name,
+bool is_matrix) {
+if (is_matrix) {
+singleCheckErrors(info.item<int64_t>(), api_name);
+} else {
+","const Tensor& info,
+const c10::string_view api_name,
+bool is_matrix) {
+  if (info.is_meta()) {
+    return;
+  }
+if (is_matrix) {
+singleCheckErrors(info.item<int64_t>(), api_name);
+} else {
+"
+"// placeholder have the same type as conv_w.
+at::ScalarType bias_dtype = bn_rm.scalar_type();
+at::ScalarType weight_dtype = conv_w.scalar_type();
+        at::DeviceType weight_device = conv_w.device().type();
+        if (weight_device == at::kCUDA &&
+            (weight_dtype == at::kHalf || weight_dtype == at::kBFloat16) &&
+bias_dtype == at::kFloat) {
+bias_dtype = weight_dtype;
+}
+","// placeholder have the same type as conv_w.
+at::ScalarType bias_dtype = bn_rm.scalar_type();
+at::ScalarType weight_dtype = conv_w.scalar_type();
+        if ((weight_dtype == at::kHalf || weight_dtype == at::kBFloat16) &&
+bias_dtype == at::kFloat) {
+bias_dtype = weight_dtype;
+}
+"
+"if (is_up_to_date()) {
+return;
+}
+  auto any_updates = apply_updates();
+  if (any_updates) {
+    regenerate_from_base();
+  }
+}
+void FunctionalTensorWrapper::regenerate_from_base() {
+","if (is_up_to_date()) {
+return;
+}
+  apply_updates();
+  regenerate_from_base();
+}
+void FunctionalTensorWrapper::regenerate_from_base() {
+"
+"Tensor d = at::full_like(sizes, D);
+// N * 2, ([[size1, D], [size2, D], ..., [sizeN, D]])
+    sizes = at::cat({sizes, d}, 1);
+return at::_nested_from_padded(t, sizes, false);
+}
+","Tensor d = at::full_like(sizes, D);
+// N * 2, ([[size1, D], [size2, D], ..., [sizeN, D]])
+    sizes = at::cat({sizes, d}, 1).to(kCPU);
+return at::_nested_from_padded(t, sizes, false);
+}
+"
+"}
+alias_info = std::move(container);
+} else if (L.nextIf('?')) {
+      fake_value = c10::TypeFactory::create<c10::OptionalType>(fake_value);
+      real_value = c10::TypeFactory::create<c10::OptionalType>(real_value);
+} else {
+break;
+}
+","}
+alias_info = std::move(container);
+} else if (L.nextIf('?')) {
+      fake_value = c10::OptionalType::get(fake_value);
+      real_value = c10::OptionalType::get(real_value);
+} else {
+break;
+}
+"
+"// A hack to run TensorIterator checks in the meta function.
+// See comment: https://github.com/pytorch/pytorch/pull/65993#discussion_r760307417
+// TODO: (@krshrimali) Try inheriting from TensorIteratorBase instead.
+  if (result.device() == kMeta) {
+auto selfSlice = result.select(dim, 0);
+auto sourceSlice = source.select(dim, 0);
+auto iter = TensorIterator::borrowing_binary_op(selfSlice, selfSlice, sourceSlice);
+","// A hack to run TensorIterator checks in the meta function.
+// See comment: https://github.com/pytorch/pytorch/pull/65993#discussion_r760307417
+// TODO: (@krshrimali) Try inheriting from TensorIteratorBase instead.
+  if (result.device() == kMeta && result.dim() > 0) {
+auto selfSlice = result.select(dim, 0);
+auto sourceSlice = source.select(dim, 0);
+auto iter = TensorIterator::borrowing_binary_op(selfSlice, selfSlice, sourceSlice);
+"
+"static inline Tensor unary_op_impl_with_complex_to_float(const Tensor& self, OutImpl& out_impl) {
+if (self.is_complex()) {
+const auto float_type = c10::toRealValueType(self.scalar_type());
+    Tensor result = at::empty({0}, self.options().dtype(float_type));
+return out_impl(result, self);
+}
+","static inline Tensor unary_op_impl_with_complex_to_float(const Tensor& self, OutImpl& out_impl) {
+if (self.is_complex()) {
+const auto float_type = c10::toRealValueType(self.scalar_type());
+    Tensor result = at::empty_like(self, self.options().dtype(float_type));
+return out_impl(result, self);
+}
+"
+"} else if (strides[a] > strides[b]) {
+return 1;
+} else { // strides[a] == strides[b]
+        if (sizes[a] < sizes[b] || a > b ) {
+return 1;
+}
+}
+","} else if (strides[a] > strides[b]) {
+return 1;
+} else { // strides[a] == strides[b]
+        if (sizes[a] > sizes[b]) {
+return 1;
+}
+}
+"
+"case ConvBackend::SlowTranspose3d:
+{
+input = input.contiguous(backend_memory_format);
+if (params.groups == 1) {
+std::tie(backend_grad_input, backend_grad_weight, backend_grad_bias) =
+_convolution_backward_nogroup_backend(
+","case ConvBackend::SlowTranspose3d:
+{
+input = input.contiguous(backend_memory_format);
+      weight = weight.contiguous(backend_memory_format);
+if (params.groups == 1) {
+std::tie(backend_grad_input, backend_grad_weight, backend_grad_bias) =
+_convolution_backward_nogroup_backend(
+"
+"if (min && max) {
+clamp_stub(device_type(), *this);
+} else if (min) {
+    clamp_min_stub(device_type(), *this);
+} else if (max) {
+    clamp_max_stub(device_type(), *this);
+}
+}
+","if (min && max) {
+clamp_stub(device_type(), *this);
+} else if (min) {
+    maximum_stub(device_type(), *this);
+} else if (max) {
+    minimum_stub(device_type(), *this);
+}
+}
+"
+"if (batch_mode) {
+AT_DISPATCH_FLOATING_AND_COMPLEX_TYPES_AND1(
+        kHalf, input.scalar_type(), ""replication_pad3d_cpu"", [&] {
+auto input_data = input.data_ptr<scalar_t>();
+auto output_data = output.data_ptr<scalar_t>();
+auto nbatch = input.size(0);
+","if (batch_mode) {
+AT_DISPATCH_FLOATING_AND_COMPLEX_TYPES_AND1(
+        kHalf, input.scalar_type(), ""reflection_pad3d_cpu"", [&] {
+auto input_data = input.data_ptr<scalar_t>();
+auto output_data = output.data_ptr<scalar_t>();
+auto nbatch = input.size(0);
+"
+"});
+} else {
+AT_DISPATCH_FLOATING_AND_COMPLEX_TYPES_AND1(
+        kHalf, input.scalar_type(), ""replication_pad3d_cpu"", [&] {
+auto input_data = input.data_ptr<scalar_t>();
+auto output_data = output.data_ptr<scalar_t>();
+reflection_pad3d_out_frame(
+","});
+} else {
+AT_DISPATCH_FLOATING_AND_COMPLEX_TYPES_AND1(
+        kHalf, input.scalar_type(), ""reflection_pad3d_cpu"", [&] {
+auto input_data = input.data_ptr<scalar_t>();
+auto output_data = output.data_ptr<scalar_t>();
+reflection_pad3d_out_frame(
+"
+"public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = std::max(*self_data, *src_data);
+}
+};
+static ReduceMaximum reduce_maximum;
+","public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = at::_isnan<scalar_t>(*src_data) ? *src_data : std::max(*self_data, *src_data);
+}
+};
+static ReduceMaximum reduce_maximum;
+"
+"namespace {
+// TODO: Consider representing debug info as a struct instead so you
+// don't have to allocate strings all the time
+  std::string debugString(std::string file, uint32_t line) {
+#ifdef STRIP_ERROR_MESSAGES
+return std::string();
+#else
+","namespace {
+// TODO: Consider representing debug info as a struct instead so you
+// don't have to allocate strings all the time
+  std::string debugString(const std::string& file, uint32_t line) {
+#ifdef STRIP_ERROR_MESSAGES
+return std::string();
+#else
+"
+"}
+class PythonKernelHolder : public c10::OperatorKernel {
+  SafePyObject func_;
+public:
+PythonKernelHolder(py::object func) : func_(func.release().ptr(), getPyInterpreter()) {}
+","}
+class PythonKernelHolder : public c10::OperatorKernel {
+  c10::SafePyObject func_;
+public:
+PythonKernelHolder(py::object func) : func_(func.release().ptr(), getPyInterpreter()) {}
+"
+"public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = at::_isnan<scalar_t>(*src_data) ? *src_data : std::max(*self_data, *src_data);
+}
+};
+static ReduceMaximum reduce_maximum;
+","public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = std::max(*self_data, *src_data);
+}
+};
+static ReduceMaximum reduce_maximum;
+"
+"public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = at::_isnan<scalar_t>(*src_data) ? *src_data : std::min(*self_data, *src_data);
+}
+};
+static ReduceMinimum reduce_minimum;
+","public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = std::min(*self_data, *src_data);
+}
+};
+static ReduceMinimum reduce_minimum;
+"
+"public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = std::max(*self_data, *src_data);
+}
+};
+static ReduceMaximum reduce_maximum;
+","public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = at::_isnan<scalar_t>(*src_data) ? *src_data : std::max(*self_data, *src_data);
+}
+};
+static ReduceMaximum reduce_maximum;
+"
+"public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = std::min(*self_data, *src_data);
+}
+};
+static ReduceMinimum reduce_minimum;
+","public:
+template <typename scalar_t>
+constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
+    *self_data = at::_isnan<scalar_t>(*src_data) ? *src_data : std::min(*self_data, *src_data);
+}
+};
+static ReduceMinimum reduce_minimum;
+"
+"std::string BackendDevice::toString() const {
+TORCH_INTERNAL_ASSERT(type_);
+  std::string str = type_->toString();
+  if (has_index()) {
+    str.append(std::to_string(ordinal_));
+  }
+  return str;
+}
+int BackendDevice::compare(const BackendDevice& rhs) const {
+","std::string BackendDevice::toString() const {
+TORCH_INTERNAL_ASSERT(type_);
+  return c10::str(type_->toString(), ordinal_);
+}
+int BackendDevice::compare(const BackendDevice& rhs) const {
+"
+"if (!obj) throw python_error();
+PyList_SET_ITEM(list.get(), i, obj);
+auto advance_data_ptr = strides[dim] * elementSize;
+    TORCH_INTERNAL_ASSERT(data || advance_data_ptr == 0);
+data += advance_data_ptr;
+}
+return list.release();
+","if (!obj) throw python_error();
+PyList_SET_ITEM(list.get(), i, obj);
+auto advance_data_ptr = strides[dim] * elementSize;
+    TORCH_INTERNAL_ASSERT(data || (advance_data_ptr == 0));
+data += advance_data_ptr;
+}
+return list.release();
+"
+"TORCH_CHECK(tensor.numel() == 0 || data.data_ptr(), ""tolist() shouldn't be called on a tensor with unallocated storage"");
+return recursive_to_list(
+(char*)data.data_ptr(), data.sizes(), data.strides(), 0,
+      data.scalar_type(), data.dtype().itemsize());
+}
+}}  // namespace torch::utils
+","TORCH_CHECK(tensor.numel() == 0 || data.data_ptr(), ""tolist() shouldn't be called on a tensor with unallocated storage"");
+return recursive_to_list(
+(char*)data.data_ptr(), data.sizes(), data.strides(), 0,
+      data.scalar_type(), tensor.numel() == 0 ? 0 : data.dtype().itemsize());
+}
+}}  // namespace torch::utils
+"
+"Tensor max_indices =
+std::get</* values */ 0>(indices.max(/* dim */ 1, /* keepdim */ false));
+Tensor cpu_min_indices, cpu_max_indices;
+    if (indices.is_cuda()) {
+cpu_min_indices = min_indices.to(at::DeviceType::CPU);
+cpu_max_indices = max_indices.to(at::DeviceType::CPU);
+} else {
+","Tensor max_indices =
+std::get</* values */ 0>(indices.max(/* dim */ 1, /* keepdim */ false));
+Tensor cpu_min_indices, cpu_max_indices;
+    if (!indices.is_cpu()) {
+cpu_min_indices = min_indices.to(at::DeviceType::CPU);
+cpu_max_indices = max_indices.to(at::DeviceType::CPU);
+} else {
+"
+"return false;
+}
+const auto& ty = static_cast<detail::ListImpl*>(payload.u.as_intrusive_ptr)->elementType;
+  return ty == c10::getTypePtr<c10::optional<at::Tensor>>();
+}
+bool IValue::isIntList() const {
+","return false;
+}
+const auto& ty = static_cast<detail::ListImpl*>(payload.u.as_intrusive_ptr)->elementType;
+  const auto expected_ty = c10::getTypePtr<c10::optional<at::Tensor>>();
+  return expected_ty == ty;
+}
+bool IValue::isIntList() const {
+"
+"SharedParserData& shared;
+};
+Parser::Parser(const std::shared_ptr<SourceView>& src)
+: pImpl(new ParserImpl(src)) {}
+Parser::~Parser() = default;
+","SharedParserData& shared;
+};
+Parser::Parser(const std::shared_ptr<Source>& src)
+: pImpl(new ParserImpl(src)) {}
+Parser::~Parser() = default;
+"
+"// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text(), expr.range())) {
+return typePtr;
+}
+}
+","// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text().str(), expr.range())) {
+return typePtr;
+}
+}
+"
+"// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text(), expr.range())) {
+return typePtr;
+}
+}
+","// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text().str(), expr.range())) {
+return typePtr;
+}
+}
+"
+"return;
+}
+  c10::string_view str = source_view_->text();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+","return;
+}
+  auto str = source_view_->text_str().str();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+"
+"line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (str[line_end] != '\n' && line_end < str.size()) {
+}
+// print line of code
+","line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (line_end < str.size() && str[line_end] != '\n') {
++line_end;
+}
+// print line of code
+"
+"const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text() == source_m->text()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+","const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text_str() == source_m->text_str()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+"
+"return SourceRange(self.source_, start, end);
+})
+.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
+        auto text_view = self.source_->text();
+        std::string text(text_view.begin(), text_view.end());
+        return text;
+});
+py::class_<TreeView>(m, ""TreeView"")
+","return SourceRange(self.source_, start, end);
+})
+.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
+        auto text_view = self.source_->text_str().str();
+        return text_view;
+});
+py::class_<TreeView>(m, ""TreeView"")
+"
+"return static_cast<int64_t>((*self)->starting_line_no());
+})
+.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
+        return (*self)->text();
+});
+torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
+","return static_cast<int64_t>((*self)->starting_line_no());
+})
+.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
+        return (*self)->text_str().str();
+});
+torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
+"
+"return export_prefix + path + ""."" + kExportSuffix;
+}
+std::shared_ptr<SourceView> findSourceInArchiveFromQualifier(
+caffe2::serialize::PyTorchStreamReader& reader,
+const std::string& export_prefix,
+const std::string& qualifier) {
+","return export_prefix + path + ""."" + kExportSuffix;
+}
+std::shared_ptr<Source> findSourceInArchiveFromQualifier(
+caffe2::serialize::PyTorchStreamReader& reader,
+const std::string& export_prefix,
+const std::string& qualifier) {
+"
+"return;
+}
+loaded_sources_.insert(qualifier);
+  std::shared_ptr<SourceView> src = source_loader_(qualifier);
+// The importer, when looking for classes/functions doesn't know if 'foo'
+// contains definitions or if it is a prefix of 'foo.bar', we only figure it
+","return;
+}
+loaded_sources_.insert(qualifier);
+  std::shared_ptr<Source> src = source_loader_(qualifier);
+// The importer, when looking for classes/functions doesn't know if 'foo'
+// contains definitions or if it is a prefix of 'foo.bar', we only figure it
+"
+"size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(new SourceRangeDeserializer()),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+","size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(nullptr),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+"
+"auto input = qx;
+if (ndim == 4) {
+    input = qx.contiguous(MemoryFormat::ChannelsLast);
+} else { // 3D
+std::vector<int64_t> new_sizes{1, qx.size(0), qx.size(1), qx.size(2)};
+input = qx.view(new_sizes);
+","auto input = qx;
+if (ndim == 4) {
+    input = qx.to(MemoryFormat::ChannelsLast);
+} else { // 3D
+std::vector<int64_t> new_sizes{1, qx.size(0), qx.size(1), qx.size(2)};
+input = qx.view(new_sizes);
+"
+"}
+auto ret_ptr = c10::make_intrusive<PackedConvWeightCudnn<kSpatialDim>>(
+          weight.contiguous(c10::MemoryFormat::ChannelsLast), // TODO: this assumes 2D I think. make it more general?
+bias,
+stride,
+padding,
+","}
+auto ret_ptr = c10::make_intrusive<PackedConvWeightCudnn<kSpatialDim>>(
+          weight.to(c10::MemoryFormat::ChannelsLast), // TODO: this assumes 2D I think. make it more general?
+bias,
+stride,
+padding,
+"
+"uint8_t output_alignment;
+// default to -1 when no bias
+int8_t bias_alignment;
+};
+std::unordered_map<CacheKey, cudnn_frontend::ManagedOpaqueDescriptor, at::native::ParamsHash<CacheKey>, at::native::ParamsEqual<CacheKey>> execution_plan_cache;
+}
+","uint8_t output_alignment;
+// default to -1 when no bias
+int8_t bias_alignment;
+  bool kReluFused;
+};
+std::unordered_map<CacheKey, cudnn_frontend::ManagedOpaqueDescriptor, at::native::ParamsHash<CacheKey>, at::native::ParamsEqual<CacheKey>> execution_plan_cache;
+}
+"
+"} else {
+key.bias_alignment = -1;
+}
+auto run = [&](cudnn_frontend::ManagedOpaqueDescriptor plan_desc) {
+auto workspace_size = 0;
+","} else {
+key.bias_alignment = -1;
+}
+  key.kReluFused = kReluFused;
+auto run = [&](cudnn_frontend::ManagedOpaqueDescriptor plan_desc) {
+auto workspace_size = 0;
+"
+"ParsedArgs<5> parsed_args;
+auto r = parser.parse(args, kwargs, parsed_args);
+if (r.has_torch_function()) {
+    return handle_torch_function(r, args, kwargs, THPNNVariableFunctionsModule, ""torch.nn"");
+}
+auto parsed = parse_to_conversion(r, /*allow_copy*/ false); // we don't want copy for nn.Module.to
+auto& device = std::get<0>(parsed);
+","ParsedArgs<5> parsed_args;
+auto r = parser.parse(args, kwargs, parsed_args);
+if (r.has_torch_function()) {
+    return handle_torch_function(r, args, kwargs, THPNNVariableFunctionsModule, ""torch.nn"", ""_parse_to"");
+}
+auto parsed = parse_to_conversion(r, /*allow_copy*/ false); // we don't want copy for nn.Module.to
+auto& device = std::get<0>(parsed);
+"
+"}
+void addOutputForIValue(const IValue& value) {
+if (value.isTensorList()) {
+for (const at::Tensor tensor : value.toTensorList()) {
+addOutputForTensor(tensor);
+}
+} else if (value.isTensor()) {
+addOutputForTensor(value.toTensor());
+} else {
+// We could have None passed here via `Optional[Tensor]`
+add_next_edge(autograd::Edge{});
+}
+}
+","}
+void addOutputForIValue(const IValue& value) {
+if (value.isTensorList()) {
+      input_tensor_lists_.insert({index_, value.toTensorList().size()});
+for (const at::Tensor tensor : value.toTensorList()) {
+addOutputForTensor(tensor);
+        index_++;
+}
+} else if (value.isTensor()) {
+addOutputForTensor(value.toTensor());
+      index_++;
+} else {
+// We could have None passed here via `Optional[Tensor]`
+add_next_edge(autograd::Edge{});
+      index_++;
+}
+}
+"
+"}
+bool DeduplicateInitializersByValue(at::Tensor& t1, at::Tensor& t2) {
+  return t1.dtype() == t2.dtype() && t1.equal(t2);
+}
+void DeduplicateInitializers(
+","}
+bool DeduplicateInitializersByValue(at::Tensor& t1, at::Tensor& t2) {
+  if (t1.dtype() != t2.dtype() || !t1.sizes().equals(t2.sizes()) ||
+      !t1.strides().equals(t2.strides())) {
+    return false;
+  }
+
+  if (t1.device() != t2.device()) {
+    return t1.to(""cpu"").equal(t2.to(""cpu""));
+  }
+
+  return t1.equal(t2);
+}
+void DeduplicateInitializers(
+"
+"try {
+if (event_sync_required_) {
+at::cuda::CUDAGuard device_guard(device_.index());
+      C10_CUDA_CHECK(cudaEventDestroy(event_));
+if(!CudaIPCGlobalEntities::alive) {
+return;
+}
+","try {
+if (event_sync_required_) {
+at::cuda::CUDAGuard device_guard(device_.index());
+      cudaEventDestroy(event_);
+if(!CudaIPCGlobalEntities::alive) {
+return;
+}
+"
+"c10::cuda::CUDAGuard guard(device);
+size_t device_free = 0;
+size_t device_total = 0;
+    C10_CUDA_CHECK(cudaMemGetInfo(&device_free, &device_total));
+return {device_free, device_total};
+});
+}
+","c10::cuda::CUDAGuard guard(device);
+size_t device_free = 0;
+size_t device_total = 0;
+    cudaMemGetInfo(&device_free, &device_total);
+return {device_free, device_total};
+});
+}
+"
+"s_ipc_event_handle.c_str());
+// NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+cudaEvent_t event;
+    AT_CUDA_CHECK(cudaIpcOpenEventHandle(&event, *ipc_event_handle));
+AT_CUDA_CHECK(
+cudaStreamWaitEvent(c10::cuda::getCurrentCUDAStream(device), event, 0));
+}
+","s_ipc_event_handle.c_str());
+// NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+cudaEvent_t event;
+    cudaIpcOpenEventHandle(&event, *ipc_event_handle);
+AT_CUDA_CHECK(
+cudaStreamWaitEvent(c10::cuda::getCurrentCUDAStream(device), event, 0));
+}
+"
+"if (measure_kernel_time_ ||
+isDebugDumpEnabled(DebugDumpOption::EffectiveBandwidth)) {
+    C10_CUDA_CHECK(cudaEventCreate(&start_event));
+    C10_CUDA_CHECK(cudaEventCreate(&finish_event));
+    C10_CUDA_CHECK(cudaEventRecord(start_event));
+}
+if (execute_kernel_) {
+","if (measure_kernel_time_ ||
+isDebugDumpEnabled(DebugDumpOption::EffectiveBandwidth)) {
+    cudaEventCreate(&start_event);
+    cudaEventCreate(&finish_event);
+    cudaEventRecord(start_event);
+}
+if (execute_kernel_) {
+"
+"if (!pctx) {
+std::unique_lock<std::mutex> cudaFreeMutexLock(
+*(c10::cuda::CUDACachingAllocator::getFreeMutex()));
+    C10_CUDA_CHECK(cudaFree(nullptr));
+}
+}
+","if (!pctx) {
+std::unique_lock<std::mutex> cudaFreeMutexLock(
+*(c10::cuda::CUDACachingAllocator::getFreeMutex()));
+    cudaFree(nullptr);
+}
+}
+"
+"namespace impl {
+namespace {
+static inline void torch_cuda_check_impl(cudaError_t result, const char * file, int line) {
+if(result != cudaSuccess) {
+std::stringstream ss;
+ss << file << "":"" << line << "": "";
+","namespace impl {
+namespace {
+static inline void cudaCheck(cudaError_t result, const char * file, int line) {
+if(result != cudaSuccess) {
+std::stringstream ss;
+ss << file << "":"" << line << "": "";
+"
+"throw std::runtime_error(ss.str());
+}
+}
+#define TORCH_CUDA_CHECK(result) torch_cuda_check_impl(result,__FILE__,__LINE__);
+struct CUDAMethods : public CUDAStubs {
+void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
+","throw std::runtime_error(ss.str());
+}
+}
+#define TORCH_CUDA_CHECK(result) cudaCheck(result,__FILE__,__LINE__);
+struct CUDAMethods : public CUDAStubs {
+void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
+"
+"try {
+if (event_sync_required_) {
+at::cuda::CUDAGuard device_guard(device_.index());
+      cudaEventDestroy(event_);
+if(!CudaIPCGlobalEntities::alive) {
+return;
+}
+","try {
+if (event_sync_required_) {
+at::cuda::CUDAGuard device_guard(device_.index());
+      C10_CUDA_CHECK(cudaEventDestroy(event_));
+if(!CudaIPCGlobalEntities::alive) {
+return;
+}
+"
+"if (comms) {
+for(const auto i : c10::irange(ndevices)) {
+int dummy_var;
+        if (cudaGetDevice(&dummy_var) != cudaSuccess) {
+/* there are cases when this destructor is called after the
+CUDA driver is already unloaded from the process.
+In these cases, skip ncclCommDestroy */
+","if (comms) {
+for(const auto i : c10::irange(ndevices)) {
+int dummy_var;
+        if (C10_CUDA_ERROR_HANDLED(cudaGetDevice(&dummy_var)) != cudaSuccess) {
+/* there are cases when this destructor is called after the
+CUDA driver is already unloaded from the process.
+In these cases, skip ncclCommDestroy */
+"
+"c10::cuda::CUDAGuard guard(device);
+size_t device_free = 0;
+size_t device_total = 0;
+    cudaMemGetInfo(&device_free, &device_total);
+return {device_free, device_total};
+});
+}
+","c10::cuda::CUDAGuard guard(device);
+size_t device_free = 0;
+size_t device_total = 0;
+    C10_CUDA_CHECK(cudaMemGetInfo(&device_free, &device_total));
+return {device_free, device_total};
+});
+}
+"
+"s_ipc_event_handle.c_str());
+// NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+cudaEvent_t event;
+    cudaIpcOpenEventHandle(&event, *ipc_event_handle);
+AT_CUDA_CHECK(
+cudaStreamWaitEvent(c10::cuda::getCurrentCUDAStream(device), event, 0));
+}
+","s_ipc_event_handle.c_str());
+// NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+cudaEvent_t event;
+    AT_CUDA_CHECK(cudaIpcOpenEventHandle(&event, *ipc_event_handle));
+AT_CUDA_CHECK(
+cudaStreamWaitEvent(c10::cuda::getCurrentCUDAStream(device), event, 0));
+}
+"
+"if (!pctx) {
+std::unique_lock<std::mutex> cudaFreeMutexLock(
+*(c10::cuda::CUDACachingAllocator::getFreeMutex()));
+    cudaFree(nullptr);
+}
+}
+","if (!pctx) {
+std::unique_lock<std::mutex> cudaFreeMutexLock(
+*(c10::cuda::CUDACachingAllocator::getFreeMutex()));
+    C10_CUDA_CHECK(cudaFree(nullptr));
+}
+}
+"
+"namespace impl {
+namespace {
+static inline void cudaCheck(cudaError_t result, const char * file, int line) {
+if(result != cudaSuccess) {
+std::stringstream ss;
+ss << file << "":"" << line << "": "";
+","namespace impl {
+namespace {
+static inline void torch_cuda_check_impl(cudaError_t result, const char * file, int line) {
+if(result != cudaSuccess) {
+std::stringstream ss;
+ss << file << "":"" << line << "": "";
+"
+"throw std::runtime_error(ss.str());
+}
+}
+#define TORCH_CUDA_CHECK(result) cudaCheck(result,__FILE__,__LINE__);
+struct CUDAMethods : public CUDAStubs {
+void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
+","throw std::runtime_error(ss.str());
+}
+}
+#define TORCH_CUDA_CHECK(result) torch_cuda_check_impl(result,__FILE__,__LINE__);
+struct CUDAMethods : public CUDAStubs {
+void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
+"
+"if (at::cuda::currentStreamCaptureStatusMayInitCtx() ==
+at::cuda::CaptureStatus::None) {
+#endif
+    return cudaMalloc(p, size);
+#if defined(CUDA_VERSION) && CUDA_VERSION >= 11000
+} else {
+// It's ok to capture cudaMallocs, as long as we never cudaFree those
+","if (at::cuda::currentStreamCaptureStatusMayInitCtx() ==
+at::cuda::CaptureStatus::None) {
+#endif
+    return C10_CUDA_ERROR_HANDLED(cudaMalloc(p, size));
+#if defined(CUDA_VERSION) && CUDA_VERSION >= 11000
+} else {
+// It's ok to capture cudaMallocs, as long as we never cudaFree those
+"
+"// Capturing cudaMalloc behaves nicely: it gives the graph new VA,
+// but is ignored (won't leakily allocate new memory) in replays.
+at::cuda::CUDAStreamCaptureModeGuard g{cudaStreamCaptureModeRelaxed};
+    return cudaMalloc(p, size);
+}
+#endif
+}
+","// Capturing cudaMalloc behaves nicely: it gives the graph new VA,
+// but is ignored (won't leakily allocate new memory) in replays.
+at::cuda::CUDAStreamCaptureModeGuard g{cudaStreamCaptureModeRelaxed};
+    return C10_CUDA_ERROR_HANDLED(cudaMalloc(p, size));
+}
+#endif
+}
+"
+"if (*largest ==
+0) { // make an initial guess if a zero *largest is passed in
+size_t tmp_bytes;
+      cudaMemGetInfo(
+largest, // Use free memory as an optimistic initial guess of *largest
+          &tmp_bytes);
+}
+cache_info_aux(large_blocks, total, largest);
+cache_info_aux(small_blocks, total, largest);
+","if (*largest ==
+0) { // make an initial guess if a zero *largest is passed in
+size_t tmp_bytes;
+      C10_CUDA_CHECK(cudaMemGetInfo(
+largest, // Use free memory as an optimistic initial guess of *largest
+          &tmp_bytes));
+}
+cache_info_aux(large_blocks, total, largest);
+cache_info_aux(small_blocks, total, largest);
+"
+"cudaEvent_t event = e.first;
+Block* block = e.second;
+        cudaError_t err = cudaEventQuery(event);
+if (err == cudaErrorNotReady) {
+// ignore and clear the error if not ready
+cudaGetLastError();
+","cudaEvent_t event = e.first;
+Block* block = e.second;
+        cudaError_t err = C10_CUDA_ERROR_HANDLED(cudaEventQuery(event));
+if (err == cudaErrorNotReady) {
+// ignore and clear the error if not ready
+cudaGetLastError();
+"
+"fraction,
+"". Please set within (0, 1)."");
+int activated_device;
+    cudaGetDevice(&activated_device);
+if (activated_device != device) {
+      cudaSetDevice(device);
+}
+device_allocator[device]->setMemoryFraction(fraction);
+}
+","fraction,
+"". Please set within (0, 1)."");
+int activated_device;
+    C10_CUDA_CHECK(cudaGetDevice(&activated_device));
+if (activated_device != device) {
+      C10_CUDA_CHECK(cudaSetDevice(device));
+}
+device_allocator[device]->setMemoryFraction(fraction);
+}
+"
+"X_->data_ptr<scalar_t>(),
+CUSPARSE_SOLVE_POLICY_NO_LEVEL,
+work_data.get());
+});
+if (!X.is_same(*X_)) {
+X.copy_(*X_);
+","X_->data_ptr<scalar_t>(),
+CUSPARSE_SOLVE_POLICY_NO_LEVEL,
+work_data.get());
+
+        bsrsv2_bsrsm2_may_need_to_sync();
+});
+if (!X.is_same(*X_)) {
+X.copy_(*X_);
+"
+"}
+Tensor ravel(const Tensor& self) {
+  return self.reshape(-1);
+}
+static inline void handle_unflatten_exception(const std::runtime_error &e,
+","}
+Tensor ravel(const Tensor& self) {
+  return self.contiguous().view(-1);
+}
+static inline void handle_unflatten_exception(const std::runtime_error &e,
+"
+"} else {
+facebook::jni::throwNewJavaException(
+facebook::jni::gJavaLangIllegalArgumentException,
+          ""at::Tensor scalar type is not supported on java side"");
+}
+const auto& tensorShape = tensor.sizes();
+","} else {
+facebook::jni::throwNewJavaException(
+facebook::jni::gJavaLangIllegalArgumentException,
+          ""at::Tensor scalar type %s is not supported on java side"",
+          c10::toString(scalarType));
+}
+const auto& tensorShape = tensor.sizes();
+"
+"mobile::serialization::Module* module,
+ExtraFilesMap& extra_files) {
+auto extra_files_offsets = module->extra_files();
+  parseExtraFilesFromVector(module->extra_files(), &extra_files);
+}
+mobile::Module FlatbufferLoader::parseModule(
+","mobile::serialization::Module* module,
+ExtraFilesMap& extra_files) {
+auto extra_files_offsets = module->extra_files();
+  parseExtraFilesFromVector(extra_files_offsets, &extra_files);
+}
+mobile::Module FlatbufferLoader::parseModule(
+"
+"// included in AFTER, so it is included in the negation (and that's
+// correct: we want to exclude Python key and everything BEFORE it.)
+);
+  return PyObject_Call(func, py_args.ptr(), kwargs);
+END_HANDLE_TH_ERRORS
+}
+","// included in AFTER, so it is included in the negation (and that's
+// correct: we want to exclude Python key and everything BEFORE it.)
+);
+  auto r = PyObject_Call(func, py_args.ptr(), kwargs);
+  if (r == nullptr) throw python_error();
+  return r;
+END_HANDLE_TH_ERRORS
+}
+"
+"TORCH_CHECK(maxnorm.toDouble() >= 0.0,
+""renorm: expected maxnorm to be >= 0 but got "", maxnorm.toDouble());
+const auto ndim = self.dim();
+  TORCH_CHECK(ndim > 1, ""renorm: input needs at least 2 dimensions, got "", ndim, ""dimensions"");
+set_output(self.sizes(), self.options());
+}
+","TORCH_CHECK(maxnorm.toDouble() >= 0.0,
+""renorm: expected maxnorm to be >= 0 but got "", maxnorm.toDouble());
+const auto ndim = self.dim();
+  TORCH_CHECK(ndim > 1, ""renorm: input needs at least 2 dimensions, got "", ndim, "" dimensions"");
+set_output(self.sizes(), self.options());
+}
+"
+"payloadStart = payloadSection->start;
+customLoader = s.customLoader;
+size = payloadSection->len;
+      TORCH_CHECK(payloadSection.has_value(), ""Missing the payload section"");
+break;
+}
+}
+","payloadStart = payloadSection->start;
+customLoader = s.customLoader;
+size = payloadSection->len;
+      MULTIPY_CHECK(payloadSection.has_value(), ""Missing the payload section"");
+break;
+}
+}
+"
+"shdrList_ = (Elf64_Shdr*)(fileData + ehdr_->e_shoff);
+auto strtabSecNo = ehdr_->e_shstrndx;
+  TORCH_CHECK(
+strtabSecNo >= 0 && strtabSecNo < numSections_,
+""e_shstrndx out of range"");
+","shdrList_ = (Elf64_Shdr*)(fileData + ehdr_->e_shoff);
+auto strtabSecNo = ehdr_->e_shstrndx;
+  MULTIPY_CHECK(
+strtabSecNo >= 0 && strtabSecNo < numSections_,
+""e_shstrndx out of range"");
+"
+"}
+at::optional<Section> ElfFile::findSection(const char* name) const {
+  TORCH_CHECK(name != nullptr, ""Null name"");
+at::optional<Section> found = at::nullopt;
+for (const auto& section : sections_) {
+if (strcmp(name, section.name) == 0) {
+","}
+at::optional<Section> ElfFile::findSection(const char* name) const {
+  MULTIPY_CHECK(name != nullptr, ""Null name"");
+at::optional<Section> found = at::nullopt;
+for (const auto& section : sections_) {
+if (strcmp(name, section.name) == 0) {
+"
+"}
+void XarEnvironment::setupPythonApp() {
+  TORCH_CHECK(
+!alreadySetupPythonApp_,
+""Already setup the python application. It should only been done once!"");
+","}
+void XarEnvironment::setupPythonApp() {
+  MULTIPY_CHECK(
+!alreadySetupPythonApp_,
+""Already setup the python application. It should only been done once!"");
+"
+"xnn_operator_t xnnp_op = nullptr;
+// Update the input scale so we may cache the op
+    this->input_scale = input_scale;
+// create an empty tensor for packing the weights
+const at::Tensor weight_contig =
+","xnn_operator_t xnnp_op = nullptr;
+// Update the input scale so we may cache the op
+    input_scale = act_input_scale;
+// create an empty tensor for packing the weights
+const at::Tensor weight_contig =
+"
+"vec_conv.emplace_back(FusionBehavior::DYNAMIC, pair.second);
+} else {
+TORCH_INTERNAL_ASSERT(
+""FusionBehavior only supported 'STATIC' or 'DYNAMIC', got: "",
+pair.first);
+}
+","vec_conv.emplace_back(FusionBehavior::DYNAMIC, pair.second);
+} else {
+TORCH_INTERNAL_ASSERT(
+                    false,
+""FusionBehavior only supported 'STATIC' or 'DYNAMIC', got: "",
+pair.first);
+}
+"
+"}
+return [](ProcessedNode* p_node) {
+const auto inputs = p_node->Input(0).toTensorVector();
+const auto dim = p_node->Input(1).toInt();
+if (p_node->Output(0).isNone()) {
+p_node->Output(0) = at::native::_stack_cpu(inputs, dim);
+","}
+return [](ProcessedNode* p_node) {
+const auto inputs = p_node->Input(0).toTensorVector();
+    TORCH_CHECK(inputs.size() > 0, ""stack expects non-empty tensor list"");
+const auto dim = p_node->Input(1).toInt();
+if (p_node->Output(0).isNone()) {
+p_node->Output(0) = at::native::_stack_cpu(inputs, dim);
+"
+"return torch::utils::indexing_tensor_from_data(options, kLong, c10::nullopt, seq);
+}
+static inline Variable valueToTensor(c10::TensorOptions options, PyObject* value, const at::Device& device) {
+if (THPVariable_Check(value)) {
+return THPVariable_Unpack(value);
+}
+","return torch::utils::indexing_tensor_from_data(options, kLong, c10::nullopt, seq);
+}
+inline Variable valueToTensor(c10::TensorOptions options, PyObject* value, const at::Device& device) {
+if (THPVariable_Check(value)) {
+return THPVariable_Unpack(value);
+}
+"
+"if (!is_root_block_ || C10_UNLIKELY(!schema)) {
+TORCH_CHECK(
+kwargs.empty(), ""Schema is not available, but BlockRunner got kwargs."");
+for (size_t i = 0; i < args.size(); ++i) {
+set_arg(i, std::forward<IValueList>(args));
+}
+","if (!is_root_block_ || C10_UNLIKELY(!schema)) {
+TORCH_CHECK(
+kwargs.empty(), ""Schema is not available, but BlockRunner got kwargs."");
+
+    const auto total_num_inputs = args.size() + first_input_is_self_;
+    TORCH_CHECK(total_num_inputs == block_info_.num_inputs());
+
+for (size_t i = 0; i < args.size(); ++i) {
+set_arg(i, std::forward<IValueList>(args));
+}
+"
+"namespace torch {
+static thread_local bool enable_torch_function = true;
+PyObject* disabled_torch_function = nullptr;
+bool torch_function_enabled() {
+return enable_torch_function;
+","namespace torch {
+static thread_local bool enable_torch_function = true;
+PyObject* disabled_torch_function = nullptr;
+  PyObject* disabled_torch_dispatch = nullptr;
+bool torch_function_enabled() {
+return enable_torch_function;
+"
+"// Create output tensor data structure to pass into allgather.
+std::vector<std::vector<at::Tensor>> output_tensors;
+output_tensors.reserve(tensors_to_verify.size());
+    for (auto& tensor_shape : tensors_to_verify) {
+std::vector<at::Tensor> outputs;
+outputs.reserve(pg->getSize());
+for (const auto i : c10::irange(pg->getSize())) {
+        (void)i; //Suppress unused variable warning
+outputs.emplace_back(at::zeros_like(tensor_shape));
+}
+output_tensors.emplace_back(outputs);
+","// Create output tensor data structure to pass into allgather.
+std::vector<std::vector<at::Tensor>> output_tensors;
+output_tensors.reserve(tensors_to_verify.size());
+    for (const auto& tensor_shape : tensors_to_verify) {
+std::vector<at::Tensor> outputs;
+outputs.reserve(pg->getSize());
+for (const auto i : c10::irange(pg->getSize())) {
+        (void)i;  // Suppress unused variable warning
+outputs.emplace_back(at::zeros_like(tensor_shape));
+}
+output_tensors.emplace_back(outputs);
+"
+"std::vector<std::string> dtype_strs;
+std::vector<std::string> device_type_strs;
+for (const auto& tensor_dtype : collective_fingerprint.tensor_dtypes_) {
+      dtype_strs.push_back(
+c10::toString(static_cast<at::ScalarType>(tensor_dtype)));
+}
+for (const auto& tensor_device_type :
+collective_fingerprint.tensor_device_types_) {
+      device_type_strs.push_back(
+c10::toString(static_cast<at::DeviceType>(tensor_device_type)));
+}
+","std::vector<std::string> dtype_strs;
+std::vector<std::string> device_type_strs;
+for (const auto& tensor_dtype : collective_fingerprint.tensor_dtypes_) {
+      dtype_strs.emplace_back(
+c10::toString(static_cast<at::ScalarType>(tensor_dtype)));
+}
+for (const auto& tensor_device_type :
+collective_fingerprint.tensor_device_types_) {
+      device_type_strs.emplace_back(
+c10::toString(static_cast<at::DeviceType>(tensor_device_type)));
+}
+"
+"return per_bucket_variable_indices;
+}
+std::vector<int> Logger::get_bucket_sizes() {
+  std::vector<int> bucket_sizes;
+for (const auto& bucket : reducer_->buckets_) {
+const auto& variables = bucket.variables;
+    int bucket_size = 0;
+for (const auto& v : variables) {
+bucket_size += v.numel() * v.element_size();
+}
+","return per_bucket_variable_indices;
+}
+std::vector<int64_t> Logger::get_bucket_sizes() {
+  std::vector<int64_t> bucket_sizes;
+for (const auto& bucket : reducer_->buckets_) {
+const auto& variables = bucket.variables;
+    int64_t bucket_size = 0;
+for (const auto& v : variables) {
+bucket_size += v.numel() * v.element_size();
+}
+"
+"// composite key of a tensor's type identifier and its device.
+struct BucketKey {
+BucketKey(c10::ScalarType type, c10::Device device)
+      : type(std::move(type)), device(std::move(device)) {}
+const c10::ScalarType type;
+const c10::Device device;
+","// composite key of a tensor's type identifier and its device.
+struct BucketKey {
+BucketKey(c10::ScalarType type, c10::Device device)
+      : type(type), device(device) {}
+const c10::ScalarType type;
+const c10::Device device;
+"
+"}
+struct ParserImpl {
+  explicit ParserImpl(const std::shared_ptr<SourceView>& source)
+: L(source), shared(sharedParserData()) {}
+Ident parseIdent() {
+","}
+struct ParserImpl {
+  explicit ParserImpl(const std::shared_ptr<Source>& source)
+: L(source), shared(sharedParserData()) {}
+Ident parseIdent() {
+"
+"// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text(), expr.range())) {
+return typePtr;
+}
+}
+","// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text().str(), expr.range())) {
+return typePtr;
+}
+}
+"
+"return;
+}
+  c10::string_view str = source_view_->text();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+","return;
+}
+  auto str = source_view_->text_str().str();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+"
+"line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (str[line_end] != '\n' && line_end < str.size()) {
+}
+// print line of code
+","line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (line_end < str.size() && str[line_end] != '\n') {
++line_end;
+}
+// print line of code
+"
+"const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text() == source_m->text()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+","const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text_str() == source_m->text_str()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+"
+"size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(new SourceRangeDeserializer()),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+","size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(nullptr),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+"
+"}
+Tensor& normal_meta_(Tensor& self, double mean, double std, c10::optional<Generator> gen) {
+  TORCH_CHECK(std > 0.0, ""normal_ expects std > 0.0, but found std="", std);  // TODO: dedupe
+return self;
+}
+","}
+Tensor& normal_meta_(Tensor& self, double mean, double std, c10::optional<Generator> gen) {
+  TORCH_CHECK(std >= 0.0, ""normal_ expects std >= 0.0, but found std="", std);  // TODO: dedupe
+return self;
+}
+"
+"// Create output tensor data structure to pass into allgather.
+std::vector<std::vector<at::Tensor>> output_tensors;
+output_tensors.reserve(tensors_to_verify.size());
+    for (const auto& tensor_shape : tensors_to_verify) {
+std::vector<at::Tensor> outputs;
+outputs.reserve(pg->getSize());
+for (const auto i : c10::irange(pg->getSize())) {
+        (void)i;  // Suppress unused variable warning
+outputs.emplace_back(at::zeros_like(tensor_shape));
+}
+output_tensors.emplace_back(outputs);
+","// Create output tensor data structure to pass into allgather.
+std::vector<std::vector<at::Tensor>> output_tensors;
+output_tensors.reserve(tensors_to_verify.size());
+    for (auto& tensor_shape : tensors_to_verify) {
+std::vector<at::Tensor> outputs;
+outputs.reserve(pg->getSize());
+for (const auto i : c10::irange(pg->getSize())) {
+        (void)i; //Suppress unused variable warning
+outputs.emplace_back(at::zeros_like(tensor_shape));
+}
+output_tensors.emplace_back(outputs);
+"
+"std::vector<std::string> dtype_strs;
+std::vector<std::string> device_type_strs;
+for (const auto& tensor_dtype : collective_fingerprint.tensor_dtypes_) {
+      dtype_strs.emplace_back(
+c10::toString(static_cast<at::ScalarType>(tensor_dtype)));
+}
+for (const auto& tensor_device_type :
+collective_fingerprint.tensor_device_types_) {
+      device_type_strs.emplace_back(
+c10::toString(static_cast<at::DeviceType>(tensor_device_type)));
+}
+","std::vector<std::string> dtype_strs;
+std::vector<std::string> device_type_strs;
+for (const auto& tensor_dtype : collective_fingerprint.tensor_dtypes_) {
+      dtype_strs.push_back(
+c10::toString(static_cast<at::ScalarType>(tensor_dtype)));
+}
+for (const auto& tensor_device_type :
+collective_fingerprint.tensor_device_types_) {
+      device_type_strs.push_back(
+c10::toString(static_cast<at::DeviceType>(tensor_device_type)));
+}
+"
+"}
+// Use median of three for pivot choice
+    P = (L + R) >> 1;
+swap_fn(P, L + 1);
+if (gt_or_nan(arr[L + 1], arr[R])) {
+swap_fn(L + 1, R);
+","}
+// Use median of three for pivot choice
+    P = L + (R - L) / 2;
+swap_fn(P, L + 1);
+if (gt_or_nan(arr[L + 1], arr[R])) {
+swap_fn(L + 1, R);
+"
+"// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text().str(), expr.range())) {
+return typePtr;
+}
+}
+","// expression and base type names.
+if (resolver_) {
+if (auto typePtr =
+            resolver_->resolveType(expr.range().text(), expr.range())) {
+return typePtr;
+}
+}
+"
+"return;
+}
+  auto str = source_view_->text_str().str();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+","return;
+}
+  c10::string_view str = source_view_->text();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+"
+"line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (line_end < str.size() && str[line_end] != '\n') {
+}
+// print line of code
+","line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (str[line_end] != '\n' && line_end < str.size()) {
++line_end;
+}
+// print line of code
+"
+"if (tup_elems.size() == 3) {
+int64_t debug_handle = tup_elems[kSourceRangeTagIndex].toInt();
+auto source_range =
+              deserializer->deserialize(tup_elems[kSourceRangeIndex]);
+source_range_map.emplace(debug_handle, std::move(source_range));
+}
+}
+","if (tup_elems.size() == 3) {
+int64_t debug_handle = tup_elems[kSourceRangeTagIndex].toInt();
+auto source_range =
+              deserializer.deserialize(tup_elems[kSourceRangeIndex]);
+source_range_map.emplace(debug_handle, std::move(source_range));
+}
+}
+"
+"const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text_str() == source_m->text_str()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+","const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text() == source_m->text()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+"
+"return SourceRange(self.source_, start, end);
+})
+.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
+        auto text_view = self.source_->text_str().str();
+        return text_view;
+});
+py::class_<TreeView>(m, ""TreeView"")
+","return SourceRange(self.source_, start, end);
+})
+.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
+        auto text_view = self.source_->text();
+        std::string text(text_view.begin(), text_view.end());
+        return text;
+});
+py::class_<TreeView>(m, ""TreeView"")
+"
+"return static_cast<int64_t>((*self)->starting_line_no());
+})
+.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
+        return (*self)->text_str().str();
+});
+torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
+","return static_cast<int64_t>((*self)->starting_line_no());
+})
+.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
+        return (*self)->text();
+});
+torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
+"
+"size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(nullptr),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+","size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(new SourceRangeDeserializer()),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+"
+"}
+struct ParserImpl {
+  explicit ParserImpl(const std::shared_ptr<SourceView>& source)
+: L(source), shared(sharedParserData()) {}
+Ident parseIdent() {
+","}
+struct ParserImpl {
+  explicit ParserImpl(const std::shared_ptr<Source>& source)
+: L(source), shared(sharedParserData()) {}
+Ident parseIdent() {
+"
+"SharedParserData& shared;
+};
+Parser::Parser(const std::shared_ptr<SourceView>& src)
+: pImpl(new ParserImpl(src)) {}
+Parser::~Parser() = default;
+","SharedParserData& shared;
+};
+Parser::Parser(const std::shared_ptr<Source>& src)
+: pImpl(new ParserImpl(src)) {}
+Parser::~Parser() = default;
+"
+"return;
+}
+  c10::string_view str = source_view_->text();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+","return;
+}
+  auto str = source_view_->text_str().str();
+if (size() == str.size()) {
+// this is just the entire file, not a subset, so print it out.
+// primarily used to print out python stack traces
+"
+"line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (str[line_end] != '\n' && line_end < str.size()) {
+}
+// print line of code
+","line_end = start();
+while (line_start < range_end) {
+// move line_end to end of line
+      while (line_end < str.size() && str[line_end] != '\n') {
++line_end;
+}
+// print line of code
+"
+"const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text() == source_m->text()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+","const auto source_n = n->sourceRange().source();
+const auto source_m = m->sourceRange().source();
+return (
+      (source_n->text_str() == source_m->text_str()) &&
+(source_n->starting_line_no() == source_m->starting_line_no()));
+}
+"
+"return SourceRange(self.source_, start, end);
+})
+.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
+        auto text_view = self.source_->text();
+        std::string text(text_view.begin(), text_view.end());
+        return text;
+});
+py::class_<TreeView>(m, ""TreeView"")
+","return SourceRange(self.source_, start, end);
+})
+.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
+        auto text_view = self.source_->text_str().str();
+        return text_view;
+});
+py::class_<TreeView>(m, ""TreeView"")
+"
+"return static_cast<int64_t>((*self)->starting_line_no());
+})
+.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
+        return (*self)->text();
+});
+torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
+","return static_cast<int64_t>((*self)->starting_line_no());
+})
+.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
+        return (*self)->text_str().str();
+});
+torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
+"
+"return export_prefix + path + ""."" + kExportSuffix;
+}
+std::shared_ptr<SourceView> findSourceInArchiveFromQualifier(
+caffe2::serialize::PyTorchStreamReader& reader,
+const std::string& export_prefix,
+const std::string& qualifier) {
+","return export_prefix + path + ""."" + kExportSuffix;
+}
+std::shared_ptr<Source> findSourceInArchiveFromQualifier(
+caffe2::serialize::PyTorchStreamReader& reader,
+const std::string& export_prefix,
+const std::string& qualifier) {
+"
+"return;
+}
+loaded_sources_.insert(qualifier);
+  std::shared_ptr<SourceView> src = source_loader_(qualifier);
+// The importer, when looking for classes/functions doesn't know if 'foo'
+// contains definitions or if it is a prefix of 'foo.bar', we only figure it
+","return;
+}
+loaded_sources_.insert(qualifier);
+  std::shared_ptr<Source> src = source_loader_(qualifier);
+// The importer, when looking for classes/functions doesn't know if 'foo'
+// contains definitions or if it is a prefix of 'foo.bar', we only figure it
+"
+"size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(new SourceRangeDeserializer()),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+","size_t size)
+: data(std::move(data)),
+size(size),
+      deserializer(nullptr),
+unpickled_records(nullptr) {}
+void ConcreteSourceRangeUnpickler::unpickle() {
+"
+"// Retry if the server is not yet listening or if its backlog is exhausted.
+if (err == std::errc::connection_refused || err == std::errc::connection_reset) {
+      C10D_WARNING(""The server socket on {} is not yet listening {}, will retry."", addr, err);
+if (Clock::now() < deadline_ - delay_duration_) {
+// Wait a little to avoid choking the server.
+","// Retry if the server is not yet listening or if its backlog is exhausted.
+if (err == std::errc::connection_refused || err == std::errc::connection_reset) {
+      C10D_TRACE(""The server socket on {} is not yet listening {}, will retry."", addr, err);
+if (Clock::now() < deadline_ - delay_duration_) {
+// Wait a little to avoid choking the server.
+"
+"{
+auto qengines = at::globalContext().supportedQEngines();
+auto list = THPObjectPtr(PyList_New(qengines.size()));
+for (const auto i : c10::irange(qengines.size())) {
+PyObject *i64 = THPUtils_packInt64(static_cast<int>(qengines[i]));
+    if (!i64) {
+      throw python_error();
+    }
+PyList_SET_ITEM(list.get(), i, i64);
+}
+return list.release();
+","{
+auto qengines = at::globalContext().supportedQEngines();
+auto list = THPObjectPtr(PyList_New(qengines.size()));
+  if (!list) return nullptr;
+for (const auto i : c10::irange(qengines.size())) {
+PyObject *i64 = THPUtils_packInt64(static_cast<int>(qengines[i]));
+    if (!i64) return nullptr;
+PyList_SET_ITEM(list.get(), i, i64);
+}
+return list.release();
+"
+"});
+auto q_k_v_s =
+at::native::split(q_k_v.view({3 * B, num_head, T, dim_per_head}), B, 0);
+return std::make_tuple(q_k_v_s[0], q_k_v_s[1], q_k_v_s[2]);
+}
+","});
+auto q_k_v_s =
+at::native::split(q_k_v.view({3 * B, num_head, T, dim_per_head}), B, 0);
+  TORCH_INTERNAL_ASSERT_DEBUG_ONLY(q_k_v_s.size() == 3);
+return std::make_tuple(q_k_v_s[0], q_k_v_s[1], q_k_v_s[2]);
+}
+"
+"if (bag_size.defined()) {
+bag_size_data = bag_size.data_ptr<index_t>();
+}
+auto src_stride0 = src.strides()[0];
+auto src_stride1 = src.strides()[1];
+auto output_stride0 = output.strides()[0];
+","if (bag_size.defined()) {
+bag_size_data = bag_size.data_ptr<index_t>();
+}
+    auto vocab_size = src.size(0);
+auto src_stride0 = src.strides()[0];
+auto src_stride1 = src.strides()[1];
+auto output_stride0 = output.strides()[0];
+"
+"bag_size_data = bag_size.data_ptr<index_t>();
+}
+auto numel = add_indices.numel();
+  int64_t ddim = src.sizes()[1];
+auto src_stride0 = src.strides()[0];
+auto src_stride1 = src.strides()[1];
+auto output_stride0 = output.strides()[0];
+","bag_size_data = bag_size.data_ptr<index_t>();
+}
+auto numel = add_indices.numel();
+  int64_t ddim = src.size(1);
+  auto vocab_size = src.size(0);
+auto src_stride0 = src.strides()[0];
+auto src_stride1 = src.strides()[1];
+auto output_stride0 = output.strides()[0];
+"
+"if (bag_size.defined()) {
+bag_size_data = bag_size.data_ptr<index_t>();
+}
+auto src_stride0 = src.strides()[0];
+auto src_stride1 = src.strides()[1];
+auto output_stride0 = output.strides()[0];
+","if (bag_size.defined()) {
+bag_size_data = bag_size.data_ptr<index_t>();
+}
+    auto vocab_size = src.size(0);
+auto src_stride0 = src.strides()[0];
+auto src_stride1 = src.strides()[1];
+auto output_stride0 = output.strides()[0];
+"

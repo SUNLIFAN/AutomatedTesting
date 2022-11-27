@@ -1,0 +1,1962 @@
+buggy_code,fixed_code
+"func = func_overload.overloadpacket
+if func_overload in CURRENT_DECOMPOSITION_TABLE:
+        return CURRENT_DECOMPOSITION_TABLE[func_overload](*args, **kwargs)
+
+","func = func_overload.overloadpacket
+if func_overload in CURRENT_DECOMPOSITION_TABLE:
+        with proxy_mode.restore():
+            return CURRENT_DECOMPOSITION_TABLE[func_overload](*args, **kwargs)
+"
+"def _onnx_opset_unsupported_detailed(op_name, current_opset, supported_opset, reason):
+raise RuntimeError(
+f""Unsupported: ONNX export of {op_name} in ""
+f""opset {current_opset}. {reason}. Please try opset version {supported_opset}.""
+)","def _onnx_opset_unsupported_detailed(
+    op_name: str, current_opset: int, supported_opset: int, reason: str
+):
+raise RuntimeError(
+f""Unsupported: ONNX export of {op_name} in ""
+f""opset {current_opset}. {reason}. Please try opset version {supported_opset}.""
+)"
+"if GLOBALS.export_onnx_opset_version < 13:
+        raise ValueError(
+            f""Opset version must be >= 13 for Squeeze with dynamic axes. {input.node().sourceRange()}""
+)
+axes_t = axes_i[0]
+axes_rank = _get_tensor_rank(axes_t)
+if axes_rank > 1:
+        raise ValueError(
+            ""For Squeeze axses as input, the axes rank must be one in ONNX spec.""
+)","if GLOBALS.export_onnx_opset_version < 13:
+        raise errors.SymbolicValueError(
+            ""Opset version must be >= 13 for Squeeze with dynamic axes."", input
+)
+axes_t = axes_i[0]
+axes_rank = _get_tensor_rank(axes_t)
+    assert axes_rank is not None
+if axes_rank > 1:
+        raise errors.SymbolicValueError(
+            ""For Squeeze axses as input, the axes rank must be one in ONNX spec."", input
+)"
+"if weight is None or _is_none(weight):
+if channel_size is None:
+            raise RuntimeError(
+                ""Unsupported: ONNX export of batch_norm for unknown "" ""channel size.""
+)
+weight_value = torch.tensor(
+[1.0] * channel_size,
+","if weight is None or _is_none(weight):
+if channel_size is None:
+            raise errors.SymbolicValueError(
+                ""Unsupported: ONNX export of batch_norm for unknown channel size."",
+                input,
+)
+weight_value = torch.tensor(
+[1.0] * channel_size,
+"
+"weight = g.op(""Constant"", value_t=weight_value)
+if bias is None or _is_none(bias):
+if channel_size is None:
+            raise RuntimeError(
+                ""Unsupported: ONNX export of batch_norm for unknown "" ""channel size.""
+)
+bias_value = torch.tensor(
+[0.0] * channel_size,
+","weight = g.op(""Constant"", value_t=weight_value)
+if bias is None or _is_none(bias):
+if channel_size is None:
+            raise errors.SymbolicValueError(
+                ""Unsupported: ONNX export of batch_norm for unknown channel size."",
+                input,
+)
+bias_value = torch.tensor(
+[0.0] * channel_size,
+"
+"tensor, scale, zero_point = unpacked_qtensors[:3]
+axis = unpacked_qtensors[3] if len(unpacked_qtensors) >= 4 else None
+axis_i = _get_const(axis, ""i"", ""axis"")
+input_qdtype = _type_utils.JitScalarType.from_name(tensor.type().scalarType())
+if qdtype is None:
+if input_qdtype is not None:
+","tensor, scale, zero_point = unpacked_qtensors[:3]
+axis = unpacked_qtensors[3] if len(unpacked_qtensors) >= 4 else None
+axis_i = _get_const(axis, ""i"", ""axis"")
+    input_scalar_type = tensor.type().scalarType()
+    assert input_scalar_type is not None
+input_qdtype = _type_utils.JitScalarType.from_name(tensor.type().scalarType())
+if qdtype is None:
+if input_qdtype is not None:
+"
+")
+ndim = symbolic_helper._get_tensor_rank(input)
+perm = list(range(0, ndim))
+perm.append(perm.pop(dimension))
+",")
+ndim = symbolic_helper._get_tensor_rank(input)
+        assert ndim is not None
+perm = list(range(0, ndim))
+perm.append(perm.pop(dimension))
+"
+"def numpy_T(g, input):
+ndim = symbolic_helper._get_tensor_rank(input)
+perm = list(reversed(range(0, ndim)))
+return g.op(""Transpose"", input, perm_i=perm)
+","def numpy_T(g, input):
+ndim = symbolic_helper._get_tensor_rank(input)
+    assert ndim is not None
+perm = list(reversed(range(0, ndim)))
+return g.op(""Transpose"", input, perm_i=perm)
+"
+"    unsqueeze_axes = list(range(1, symbolic_helper._get_tensor_rank(self) + 1))
+expanded_boundaries = expand(
+g,
+symbolic_helper._unsqueeze_helper(g, boundaries, unsqueeze_axes),","    tensor_rank = symbolic_helper._get_tensor_rank(self)
+    assert tensor_rank is not None
+    unsqueeze_axes = list(range(1, tensor_rank + 1))
+expanded_boundaries = expand(
+g,
+symbolic_helper._unsqueeze_helper(g, boundaries, unsqueeze_axes),"
+"
+rank = symbolic_helper._get_tensor_rank(x1)
+broadcasted_x1 = symbolic_helper._unsqueeze_helper(g, x1, [rank - 1])
+broadcasted_x2 = symbolic_helper._unsqueeze_helper(g, x2, [rank - 2])
+return pairwise_distance(
+","
+rank = symbolic_helper._get_tensor_rank(x1)
+    assert rank is not None
+broadcasted_x1 = symbolic_helper._unsqueeze_helper(g, x1, [rank - 1])
+broadcasted_x2 = symbolic_helper._unsqueeze_helper(g, x2, [rank - 2])
+return pairwise_distance(
+"
+"composite_ops = get_ops_for_key('CompositeImplicitAutograd')
+noncomposite_ops = all_ops - composite_ops
+    ops = yaml.load(open('../../pytorch/aten/src/ATen/native/native_functions.yaml', 'r').read(), Loader=yaml.CLoader)
+annotated_ops = {a.strip(): b.strip() for a, b in list(csv.reader(open('annotated_ops')))}
+from collections import defaultdict
+","composite_ops = get_ops_for_key('CompositeImplicitAutograd')
+noncomposite_ops = all_ops - composite_ops
+    ops = yaml.load(open('../../aten/src/ATen/native/native_functions.yaml', 'r').read(), Loader=yaml.CLoader)
+annotated_ops = {a.strip(): b.strip() for a, b in list(csv.reader(open('annotated_ops')))}
+from collections import defaultdict
+"
+"symbolic_helper._set_opset_version(opset_version)
+symbolic_helper._set_operator_export_type(operator_export_type)
+    symbolic_helper._set_onnx_shape_inference(True)
+with exporter_context(model, training, verbose):
+val_keep_init_as_ip = _decide_keep_init_as_input(
+keep_initializers_as_inputs, operator_export_type, opset_version
+","symbolic_helper._set_opset_version(opset_version)
+symbolic_helper._set_operator_export_type(operator_export_type)
+with exporter_context(model, training, verbose):
+val_keep_init_as_ip = _decide_keep_init_as_input(
+keep_initializers_as_inputs, operator_export_type, opset_version
+"
+"def op_name_from_native_function(f: NativeFunction) -> str:
+
+    return f""aten::{f.func.name}""
+","def op_name_from_native_function(f: NativeFunction) -> str:
+
+    return f""{f.namespace}::{f.func.name}""
+"
+"flat_args: List) -> int:
+batch_sizes = [arg.size(in_dim) for in_dim, arg in zip(flat_in_dims, flat_args)
+if in_dim is not None]
+if batch_sizes and any(size != batch_sizes[0] for size in batch_sizes):
+raise ValueError(
+f'vmap: Expected all tensors to have the same size in the mapped '
+","flat_args: List) -> int:
+batch_sizes = [arg.size(in_dim) for in_dim, arg in zip(flat_in_dims, flat_args)
+if in_dim is not None]
+    if len(batch_sizes) == 0:
+        raise ValueError('vmap: Expected at least one Tensor to vmap over')
+if batch_sizes and any(size != batch_sizes[0] for size in batch_sizes):
+raise ValueError(
+f'vmap: Expected all tensors to have the same size in the mapped '
+"
+"
+def _div_aten(a, b):
+    if isinstance(a, (bool, int)):
+return torch.div(a, b, rounding_mode=""trunc"")
+    return torch.true_divide(a, b)
+div = _make_elementwise_binary_prim(
+","
+def _div_aten(a, b):
+    is_integral = isinstance(a, (bool, int)) or (
+        isinstance(a, torch.Tensor) and utils.is_integer_dtype(a.dtype)
+    )
+
+    if is_integral:
+return torch.div(a, b, rounding_mode=""trunc"")
+    else:
+        return torch.true_divide(a, b)
+div = _make_elementwise_binary_prim(
+"
+"""to be of type ``torch.distributed.P2POp``.""
+)
+    backend = get_backend(p2p_op_list[0].group)
+    if not all(backend == get_backend(p2p_op.group) for p2p_op in p2p_op_list):
+        raise RuntimeError(""All groups need to use the same backend."")
+def is_mpi_available():
+","""to be of type ``torch.distributed.P2POp``.""
+)
+    group = p2p_op_list[0].group
+    if not all(group == p2p_op.group for p2p_op in p2p_op_list):
+        raise RuntimeError(""All ops need to use the same group."")
+def is_mpi_available():
+"
+"
+def _batch_p2p_manager(backend):
+    if backend == Backend.NCCL:
+        ProcessGroupNCCL._group_start()
+try:
+yield
+finally:
+        if backend == Backend.NCCL:
+            ProcessGroupNCCL._group_end()
+def batch_isend_irecv(p2p_op_list):
+","
+def _coalescing_manager(group, reqs):
+    if group is None:
+        group = _get_default_group()
+    group._start_coalescing()
+try:
+yield
+finally:
+        group._end_coalescing(reqs)
+def batch_isend_irecv(p2p_op_list):
+"
+"
+_check_p2p_op_list(p2p_op_list)
+    backend = get_backend(p2p_op_list[0].group)
+reqs = []
+    with _batch_p2p_manager(backend):
+for p2p_op in p2p_op_list:
+op = p2p_op.op
+tensor = p2p_op.tensor
+","
+_check_p2p_op_list(p2p_op_list)
+    group = p2p_op_list[0].group
+reqs = []
+    with _coalescing_manager(group, reqs):
+for p2p_op in p2p_op_list:
+op = p2p_op.op
+tensor = p2p_op.tensor
+"
+"
+raise AttributeError(
+                f""'_OpNamespace' object has no attribute '{op_name}'""
+) from e
+
+","
+raise AttributeError(
+                f""'_OpNamespace' '{self.name}' object has no attribute '{op_name}'""
+) from e
+
+"
+"
+continue
+            storage_key = storage_md.storage_key
+target_tensor = shard.tensor.detach()
+offsets = []
+lengths = []
+","
+continue
+            storage_key = storage_metadata[MetadataIndex(fqn, storage_md.offsets)]
+target_tensor = shard.tensor.detach()
+offsets = []
+lengths = []
+"
+"storage_key=storage_key,
+)
+]
+    return (write_reqs, _compute_bytes_md(storage_key, bytes))
+","storage_key=storage_key,
+)
+]
+    return (write_reqs, _compute_bytes_md(bytes), storage_md)
+"
+"
+tensor_read_requests = []
+bytes_read_requests = []
+for fqn, obj in state_dict.items():
+md = metadata_from_storage.state_dict_metadata[fqn]
+if isinstance(obj, ShardedTensor):
+","
+tensor_read_requests = []
+bytes_read_requests = []
+    storage_md = cast(Dict[MetadataIndex, str], metadata_from_storage.storage_data)
+for fqn, obj in state_dict.items():
+md = metadata_from_storage.state_dict_metadata[fqn]
+if isinstance(obj, ShardedTensor):
+"
+"bytes_io = io.BytesIO()
+brr = BytesReadRequest(
+bytes=bytes_io,
+                    storage_key=md.storage_key,
+fqn=fqn
+)
+bytes_read_requests.append(brr)
+","bytes_io = io.BytesIO()
+brr = BytesReadRequest(
+bytes=bytes_io,
+                    storage_key=storage_md[MetadataIndex(fqn)],
+fqn=fqn
+)
+bytes_read_requests.append(brr)
+"
+"try:
+result = map_fun()
+except BaseException as e:
+                result = CheckpointException(step, {self.rank: e})
+final_result = self.broadcast_object(result)
+if isinstance(final_result, CheckpointException):
+raise final_result
+","try:
+result = map_fun()
+except BaseException as e:
+                result = CheckpointException(step, {self.rank: _wrap_exception(e)})
+final_result = self.broadcast_object(result)
+if isinstance(final_result, CheckpointException):
+raise final_result
+"
+"AGGRESSIVE_RECOMPUTATION = False
+def ban_recomputation(node):
+if AGGRESSIVE_RECOMPUTATION:
+return (node.op == 'call_function' and get_aten_target(node) in unrecomputable_ops)
+","AGGRESSIVE_RECOMPUTATION = False
+    def _maybe_size_of(node):
+        if 'tensor_meta' in node.meta:
+            return _size_of(node.meta['tensor_meta'])
+        return 0
+
+def ban_recomputation(node):
+if AGGRESSIVE_RECOMPUTATION:
+return (node.op == 'call_function' and get_aten_target(node) in unrecomputable_ops)
+"
+"# then we don't allow recomputation.
+if 'tensor_meta' not in node.meta:
+return False
+            input_tensors_size = sum(_size_of(i.meta['tensor_meta']) for i in node.args if isinstance(i, fx.Node))
+output_size = _size_of(node.meta['tensor_meta'])
+return (output_size * 4 < input_tensors_size)
+","# then we don't allow recomputation.
+if 'tensor_meta' not in node.meta:
+return False
+            input_tensors_size = sum(_maybe_size_of(i) for i in node.args if isinstance(i, fx.Node))
+output_size = _size_of(node.meta['tensor_meta'])
+return (output_size * 4 < input_tensors_size)
+"
+"isinstance(x, torch.Tensor)
+and not isinstance(x, FakeTensor)
+and type(x) is not torch.Tensor
+)
+tree_map(check_non_fake_tensor, args)
+","isinstance(x, torch.Tensor)
+and not isinstance(x, FakeTensor)
+and type(x) is not torch.Tensor
+                    and type(x) is not torch.nn.Parameter
+)
+tree_map(check_non_fake_tensor, args)
+"
+"def gen_unwraps(
+    flat_arguments: List[Argument], cur_level_var: str
+) -> Tuple[List[str], List[str]]:
+arg_names = [a.name for a in flat_arguments]
+arg_types = [a.type for a in flat_arguments]
+","def gen_unwraps(
+    flat_arguments: Sequence[Argument], cur_level_var: str
+) -> Tuple[str, List[str]]:
+arg_names = [a.name for a in flat_arguments]
+arg_types = [a.type for a in flat_arguments]
+"
+"for opt_tensor in optional_tensors:
+unwraps += unwrap_optional_tensor(opt_tensor, cur_level_var)
+    unwraps = ""\n"".join(unwraps)
+unwrapped_arg_list = []
+for arg in arg_names:
+","for opt_tensor in optional_tensors:
+unwraps += unwrap_optional_tensor(opt_tensor, cur_level_var)
+    unwrap_code = ""\n"".join(unwraps)
+unwrapped_arg_list = []
+for arg in arg_names:
+"
+"}}""""""
+def gen_returns(returns: List[Return], cur_level_var: str, results_var: str) -> str:
+idx = 0
+wrapped_returns = []
+for ret in returns:
+","}}""""""
+def gen_returns(
+    returns: Tuple[Return, ...], cur_level_var: str, results_var: str
+) -> str:
+idx = 0
+wrapped_returns = []
+for ret in returns:
+"
+"}}""""""
+def gen_vmap_plumbing(native_function: NativeFunction) -> str:
+schema = native_function.func
+sig = DispatcherSignature.from_schema(schema)
+returns = schema.returns
+","}}""""""
+def gen_vmap_plumbing(native_function: NativeFunction) -> Optional[str]:
+schema = native_function.func
+sig = DispatcherSignature.from_schema(schema)
+returns = schema.returns
+"
+"return result
+def gen_all_vmap_plumbing(native_functions):
+body = ""\n"".join(list(mapMaybe(ComputeBatchRulePlumbing(), native_functions)))
+return f""""""
+#pragma once
+","return result
+def gen_all_vmap_plumbing(native_functions: Sequence[NativeFunction]) -> str:
+body = ""\n"".join(list(mapMaybe(ComputeBatchRulePlumbing(), native_functions)))
+return f""""""
+#pragma once
+"
+"eps = group['eps']
+lr = group['lr']
+beta1, beta2 = group['betas']
+            maximize = group['maximize']
+for p in group['params']:
+if p.grad is not None:
+","eps = group['eps']
+lr = group['lr']
+beta1, beta2 = group['betas']
+            maximize = group.get('maximize', False)
+for p in group['params']:
+if p.grad is not None:
+"
+"has_sparse_grad: bool):
+for i, param in enumerate(params):
+        d_p = d_p_list[i]
+if weight_decay != 0:
+d_p = d_p.add(param, alpha=weight_decay)
+","has_sparse_grad: bool):
+for i, param in enumerate(params):
+        d_p = d_p_list[i] if not maximize else -d_p_list[i]
+if weight_decay != 0:
+d_p = d_p.add(param, alpha=weight_decay)
+"
+"else:
+d_p = buf
+        alpha = lr if maximize else -lr
+        param.add_(d_p, alpha=alpha)
+def _multi_tensor_sgd(params: List[Tensor],
+","else:
+d_p = buf
+        param.add_(d_p, alpha=-lr)
+def _multi_tensor_sgd(params: List[Tensor],
+"
+"if has_sparse_grad is None:
+has_sparse_grad = any(grad.is_sparse for grad in grads)
+if weight_decay != 0:
+grads = torch._foreach_add(grads, params, alpha=weight_decay)
+","if has_sparse_grad is None:
+has_sparse_grad = any(grad.is_sparse for grad in grads)
+    if maximize:
+        grads = torch._foreach_neg(tuple(grads))  # type: ignore[assignment]
+
+if weight_decay != 0:
+grads = torch._foreach_add(grads, params, alpha=weight_decay)
+"
+"def is_symbolic_op(func):
+    return func in [aten.sym_size.default, aten.dim.default, aten.is_contiguous.default, aten.stride]
+def handle_symbolic_op(func, args, kwargs):
+","def is_symbolic_op(func):
+    return func in [aten.sym_size.default, aten.dim.default, aten.is_contiguous.default, aten.stride.default]
+def handle_symbolic_op(func, args, kwargs):
+"
+"if func == torch.ops.aten.is_contiguous.default:
+return True
+# TODO: hack, we don't currently support symbolic strides properly
+    if func == torch.ops.aten.stride:
+return create_contiguous(args[0].shape)
+# TODO: An incomplete list
+","if func == torch.ops.aten.is_contiguous.default:
+return True
+# TODO: hack, we don't currently support symbolic strides properly
+    if func == torch.ops.aten.stride.default:
+return create_contiguous(args[0].shape)
+# TODO: An incomplete list
+"
+"logging.debug(""partitioner_cache hit!"")
+fused_graph_module = self.partitioner_cache[graph_module]
+else:
+            partitioner = CapabilityBasedPartitioner(graph_module, self.supported_ops)
+fused_graph_module = partitioner.partition_and_fuse()
+self.partitioner_cache[graph_module] = fused_graph_module
+","logging.debug(""partitioner_cache hit!"")
+fused_graph_module = self.partitioner_cache[graph_module]
+else:
+            partitioner = CapabilityBasedPartitioner(
+                graph_module, self.supported_ops, allows_single_node_partition=False)
+fused_graph_module = partitioner.partition_and_fuse()
+self.partitioner_cache[graph_module] = fused_graph_module
+"
+"# Overriding fused_module's __call__() function with lower_to_prims_and_execute()
+for node in fused_graph_module.graph.nodes:
+# TODO: use a better way to identify fused submodule
+            if ""fused_"" in node.name:
+fused_module = getattr(fused_graph_module, node.name)
+fused_module._wrapped_call = self.lower_to_prims_and_execute
+","# Overriding fused_module's __call__() function with lower_to_prims_and_execute()
+for node in fused_graph_module.graph.nodes:
+# TODO: use a better way to identify fused submodule
+            if node.op == ""call_module"" and ""fused_"" in node.name:
+fused_module = getattr(fused_graph_module, node.name)
+fused_module._wrapped_call = self.lower_to_prims_and_execute
+"
+"except ImportError:
+raise RuntimeError(""Need networkx installed to perform smart recomputation heuristics"")
+    strip_overloads(joint_module)
+joint_module.graph.eliminate_dead_code()
+joint_module.recompile()
+fx_g = joint_module.graph
+","except ImportError:
+raise RuntimeError(""Need networkx installed to perform smart recomputation heuristics"")
+joint_module.graph.eliminate_dead_code()
+joint_module.recompile()
+fx_g = joint_module.graph
+"
+"def ban_recomputation(node):
+if AGGRESSIVE_RECOMPUTATION:
+            return (node.op == 'call_function' and node.target in unrecomputable_ops)
+else:
+if node.op != 'call_function':","def ban_recomputation(node):
+if AGGRESSIVE_RECOMPUTATION:
+            return (node.op == 'call_function' and get_aten_target(node) in unrecomputable_ops)
+else:
+if node.op != 'call_function':"
+"with preserve_rng_state():
+# Set input tensors that require grad to leaves
+flat_tensor_args = pytree.tree_map(
+                        lambda x: x.detach().requires_grad_(x.requires_grad), flat_tensor_args
+)
+with torch.set_grad_enabled(grad_state):
+out = flat_fn(*flat_tensor_args)
+","with preserve_rng_state():
+# Set input tensors that require grad to leaves
+flat_tensor_args = pytree.tree_map(
+                        lambda x: x.detach().requires_grad_(x.requires_grad)
+                        if isinstance(x, Tensor) else x, flat_tensor_args
+)
+with torch.set_grad_enabled(grad_state):
+out = flat_fn(*flat_tensor_args)
+"
+"# step 4: assign the new grads, delete the sample grads
+for param, param_grad in zip(model.parameters(), grads):
+        param.grad = param_grad
+del param.grad_sample
+","# step 4: assign the new grads, delete the sample grads
+for param, param_grad in zip(model.parameters(), grads):
+        param.grad = param_grad/batch_size
+del param.grad_sample
+"
+"else:
+args.append(tensor_args[tensor_index])
+tensor_index += 1
+while tensor_index < len(tensor_args):
+args.append(tensor_args[tensor_index])
+","else:
+args.append(tensor_args[tensor_index])
+tensor_index += 1
+        index += 1
+while tensor_index < len(tensor_args):
+args.append(tensor_args[tensor_index])
+"
+"mem_sz = _size_of(node.meta['tensor_meta'])
+# Heuristic to bias towards nodes closer to the backwards pass
+        mem_sz = int(mem_sz + node.dist_from_fw)
+if is_materialized(node):
+return mem_sz
+","mem_sz = _size_of(node.meta['tensor_meta'])
+# Heuristic to bias towards nodes closer to the backwards pass
+        mem_sz = int(mem_sz + node.dist_from_bw)
+if is_materialized(node):
+return mem_sz
+"
+"return _old_backward(*args, **kwargs)
+torch.Tensor.backwrd = _backward
+","return _old_backward(*args, **kwargs)
+torch.Tensor.backward = _backward
+"
+"def _dict_flatten(d: Dict[Any, Any]) -> Tuple[List[Any], Context]:
+    keys = list(sorted(d.keys()))
+values = [d[key] for key in keys]
+return values, keys
+","def _dict_flatten(d: Dict[Any, Any]) -> Tuple[List[Any], Context]:
+    keys = sorted(d.keys())
+values = [d[key] for key in keys]
+return values, keys
+"
+"
+joint_forward_backward = create_joint_forward_backward(flat_fn)
+compiled_fw = None
+","
+    if decompositions is None:
+        decompositions = {}
+joint_forward_backward = create_joint_forward_backward(flat_fn)
+compiled_fw = None
+"
+"assert self.spec is None or self.spec == spec
+self.spec = spec
+if type(self.spec) in [tuple, list] and all(
+            [isinstance(i, pytree.LeafSpec) for i in spec.children_specs]
+):
+self.is_simple = True
+if isinstance(self.spec, pytree.LeafSpec):
+","assert self.spec is None or self.spec == spec
+self.spec = spec
+if type(self.spec) in [tuple, list] and all(
+            isinstance(i, pytree.LeafSpec) for i in spec.children_specs
+):
+self.is_simple = True
+if isinstance(self.spec, pytree.LeafSpec):
+"
+"fw_compiler: Callable,
+bw_compiler: Optional[Callable] = None,
+partition_fn: Callable = default_partition,
+    decompositions: Dict = {},
+hasher_type: str = ""StaticShapeHasher"",
+static_argnums: Optional[Tuple[int]] = None,
+) -> Callable:
+","fw_compiler: Callable,
+bw_compiler: Optional[Callable] = None,
+partition_fn: Callable = default_partition,
+    decompositions: Optional[Dict] = None,
+hasher_type: str = ""StaticShapeHasher"",
+static_argnums: Optional[Tuple[int]] = None,
+) -> Callable:
+"
+"fw_compiler: Callable,
+bw_compiler: Optional[Callable] = None,
+partition_fn: Callable = default_partition,
+        decompositions: Dict = {},
+hasher_type: str = ""StaticShapeHasher"",
+static_argnums: Optional[Tuple[int]] = None,
+) -> Callable:
+","fw_compiler: Callable,
+bw_compiler: Optional[Callable] = None,
+partition_fn: Callable = default_partition,
+        decompositions: Optional[Dict] = None,
+hasher_type: str = ""StaticShapeHasher"",
+static_argnums: Optional[Tuple[int]] = None,
+) -> Callable:
+"
+"return _old_backward(*args, **kwargs)
+setattr(torch.Tensor, 'backward', _backward)
+","return _old_backward(*args, **kwargs)
+torch.Tensor.backwrd = _backward
+"
+"for node in graph.nodes:
+if node.op == 'call_function':
+cnt[node.target.__name__] += 1
+    print(sorted(list(cnt.items()), key=lambda x: x[1], reverse=True))
+def min_cut_rematerialization_partition(
+","for node in graph.nodes:
+if node.op == 'call_function':
+cnt[node.target.__name__] += 1
+    print(sorted(cnt.items(), key=lambda x: x[1], reverse=True))
+def min_cut_rematerialization_partition(
+"
+"if node.op == 'placeholder':
+return True
+        return not all([is_fusible(node, user) for user in node.users])
+def get_node_weight(node):
+mem_sz = _size_of(node.meta['tensor_meta'])
+","if node.op == 'placeholder':
+return True
+        return not all(is_fusible(node, user) for user in node.users)
+def get_node_weight(node):
+mem_sz = _size_of(node.meta['tensor_meta'])
+"
+"return wrapped
+def make_fx(f, decomposition_table={}):
+
+def wrapped(*args):
+phs = pytree.tree_map(lambda x: fx.PH, args)
+","return wrapped
+def make_fx(f, decomposition_table=None):
+    if decomposition_table is None:
+        decomposition_table = {}
+
+
+def wrapped(*args):
+phs = pytree.tree_map(lambda x: fx.PH, args)
+"
+"flat_args: List) -> int:
+batch_sizes = [arg.size(in_dim) for in_dim, arg in zip(flat_in_dims, flat_args)
+if in_dim is not None]
+    if batch_sizes and any([size != batch_sizes[0] for size in batch_sizes]):
+raise ValueError(
+f'vmap: Expected all tensors to have the same size in the mapped '
+f'dimension, got sizes {batch_sizes} for the mapped dimension')
+","flat_args: List) -> int:
+batch_sizes = [arg.size(in_dim) for in_dim, arg in zip(flat_in_dims, flat_args)
+if in_dim is not None]
+    if batch_sizes and any(size != batch_sizes[0] for size in batch_sizes):
+raise ValueError(
+f'vmap: Expected all tensors to have the same size in the mapped '
+f'dimension, got sizes {batch_sizes} for the mapped dimension')
+"
+"@register_decomposition(aten.rsub.Tensor)
+def rsub(self: Tensor, other: Tensor, alpha: float = 1) -> Tensor:
+return torch.sub(other, self, alpha=alpha)
+@register_decomposition(aten.rsub.Scalar)
+def rsub(self: Tensor, other: float, alpha: float = 1) -> Tensor:
+return torch.sub(other, self, alpha=alpha)
+","@register_decomposition(aten.rsub.Tensor)
+def rsub_Tensor(self: Tensor, other: Tensor, alpha: float = 1) -> Tensor:
+return torch.sub(other, self, alpha=alpha)
+@register_decomposition(aten.rsub.Scalar)
+def rsub_Scalar(self: Tensor, other: float, alpha: float = 1) -> Tensor:
+return torch.sub(other, self, alpha=alpha)
+"
+"# Only support cases where all returns are Tensors or vector<Tensor>
+if len(returns) == 0:
+        return None
+if not all(ret.type.is_tensor_like() for ret in returns):
+return None
+if not accepts_at_least_one_tensor_input(schema):
+","# Only support cases where all returns are Tensors or vector<Tensor>
+if len(returns) == 0:
+        return gen_vmap_plumbing_no_returns(native_function)
+if not all(ret.type.is_tensor_like() for ret in returns):
+return None
+if not accepts_at_least_one_tensor_input(schema):
+"
+"    cur_weight = weight
+    for _ in range(2, grad_output.dim()):
+        cur_weight = cur_weight.unsqueeze(-1)
+input_grad = torch.where(self > 0, grad_output, cur_weight * grad_output)
+weight_grad_collector = torch.where(self > 0, grad_output.new_zeros(()), self * grad_output)
+out = weight_grad_collector.sum_to_size(cur_weight.shape)","    cur_weight = _unsqueeze_to_dim(weight, self.dim() - 1)
+input_grad = torch.where(self > 0, grad_output, cur_weight * grad_output)
+weight_grad_collector = torch.where(self > 0, grad_output.new_zeros(()), self * grad_output)
+out = weight_grad_collector.sum_to_size(cur_weight.shape)"
+"return sum / n
+@register_decomposition(aten.std)
+def std_decomposition(x: Tensor, dims: List[int], correction: int = 0, keepdim: bool = False):
+return torch.sqrt(torch.var(x, dims, correction=correction, keepdim=keepdim))
+","return sum / n
+@register_decomposition(aten.std.correction)
+def std_decomposition(x: Tensor, dims: List[int], correction: int = 0, keepdim: bool = False):
+return torch.sqrt(torch.var(x, dims, correction=correction, keepdim=keepdim))
+"
+"@functools.wraps(_old_str)
+def _functorch_str(tensor):
+level = _C.maybe_get_level(tensor)
+if level == -1:
+return _old_str(tensor)
+","@functools.wraps(_old_str)
+def _functorch_str(tensor, *, tensor_contents=None):
+level = _C.maybe_get_level(tensor)
+if level == -1:
+return _old_str(tensor)
+"
+"
+def var_decomposition(x: Tensor, dims: List[int], correction: int = 0, keepdim: bool = False):
+if dims is None:
+dims = []
+
+    if isinstance(dims, (tuple, list)) and len(dims) == 0:
+n = x.numel()
+else:
+n = 1
+","
+def var_decomposition(x: Tensor, dims: Optional[List[int]], correction: int = 0, keepdim: bool = False):
+if dims is None:
+dims = []
+    if len(dims) == 0:
+n = x.numel()
+else:
+n = 1
+"
+"if node.name not in forward_node_names:
+continue
+# Since we can't save tuple of tensor values, we need to flatten out what we're saving
+        if 'tensor_meta' not in node.meta:
+users = node.users
+assert all([user.target == operator.getitem for user in users])
+for user in users:
+","if node.name not in forward_node_names:
+continue
+# Since we can't save tuple of tensor values, we need to flatten out what we're saving
+        if 'tensor_meta' not in node.meta and node.op == 'call_function':
+users = node.users
+assert all([user.target == operator.getitem for user in users])
+for user in users:
+"
+"r = torch.Tensor._make_subclass(cls, elem, elem.requires_grad)
+r.proxy = proxy
+        if not elem.is_sparse:
+proxy.node.meta['tensor_meta'] = _extract_tensor_metadata(r)
+return r
+","r = torch.Tensor._make_subclass(cls, elem, elem.requires_grad)
+r.proxy = proxy
+        if elem.is_sparse:
+            proxy.node.meta['tensor_meta'] = {}
+        else:
+proxy.node.meta['tensor_meta'] = _extract_tensor_metadata(r)
+return r
+"
+"args = list(node.args)
+args[1] = [1]
+node.args = tuple(args)
+        elif node.target == torch.ops.aten.avg_pool2d_backward:
+            # Handle empty strides
+            if node.args[3] == []:
+                args = list(node.args)
+                args[3] = [1, 1]
+                node.args = tuple(args)
+for node in fx_g.graph.nodes:
+new_kwargs = {}
+","args = list(node.args)
+args[1] = [1]
+node.args = tuple(args)
+for node in fx_g.graph.nodes:
+new_kwargs = {}
+"
+"func_args = _wrap_all_tensors_to_functional(args, func_level)
+func_kwargs = _wrap_all_tensors_to_functional(kwargs, func_level)
+            flattened_unwrapped_args = tree_flatten(args)
+            flattened_wrapped_args = tree_flatten(func_args)
+            flattened_unwrapped_kwargs = tree_flatten(kwargs)
+            flattened_wrapped_kwargs = tree_flatten(func_kwargs)
+func_outputs = func(*func_args, **func_kwargs)
+outputs = _unwrap_all_tensors_from_functional(func_outputs)
+","func_args = _wrap_all_tensors_to_functional(args, func_level)
+func_kwargs = _wrap_all_tensors_to_functional(kwargs, func_level)
+            flattened_unwrapped_args, _ = tree_flatten(args)
+            flattened_wrapped_args, _ = tree_flatten(func_args)
+            flattened_unwrapped_kwargs, _ = tree_flatten(kwargs)
+            flattened_wrapped_kwargs, _ = tree_flatten(func_kwargs)
+func_outputs = func(*func_args, **func_kwargs)
+outputs = _unwrap_all_tensors_from_functional(func_outputs)
+"
+"if output_mask[0]:
+d_input = aten.mul(aten.div(rstd, N), inner)
+else:
+        d_input = aten.new_empty(input, (0,))
+if output_mask[1] and weight is not None:
+if len(outer_dim_indices) > 0:
+","if output_mask[0]:
+d_input = aten.mul(aten.div(rstd, N), inner)
+else:
+        d_input = None
+if output_mask[1] and weight is not None:
+if len(outer_dim_indices) > 0:
+"
+"else:
+d_weight = aten.mul(grad_out, x_hat)
+else:
+        d_weight = aten.new_empty(input, (0,))
+if output_mask[2] and bias is not None:
+if len(outer_dim_indices) > 0:
+","else:
+d_weight = aten.mul(grad_out, x_hat)
+else:
+        d_weight = None
+if output_mask[2] and bias is not None:
+if len(outer_dim_indices) > 0:
+"
+"else:
+d_bias = grad_out
+else:
+        d_bias = aten.new_empty(input, (0,))
+return (d_input, d_weight, d_bias)
+# @register_decomposition(aten.addmm)
+","else:
+d_bias = grad_out
+else:
+        d_bias = None
+return (d_input, d_weight, d_bias)
+# @register_decomposition(aten.addmm)
+"
+"if output_mask[0]:
+d_input = aten.mul(aten.div(rstd, N), inner)
+else:
+        d_input = None
+if output_mask[1] and weight is not None:
+if len(outer_dim_indices) > 0:
+","if output_mask[0]:
+d_input = aten.mul(aten.div(rstd, N), inner)
+else:
+        d_input = aten.new_empty(input, (0,))
+if output_mask[1] and weight is not None:
+if len(outer_dim_indices) > 0:
+"
+"else:
+d_weight = aten.mul(grad_out, x_hat)
+else:
+        d_weight = None
+if output_mask[2] and bias is not None:
+if len(outer_dim_indices) > 0:
+","else:
+d_weight = aten.mul(grad_out, x_hat)
+else:
+        d_weight = aten.new_empty(input, (0,))
+if output_mask[2] and bias is not None:
+if len(outer_dim_indices) > 0:
+"
+"else:
+d_bias = grad_out
+else:
+        d_bias = None
+return (d_input, d_weight, d_bias)
+# @register_decomposition(aten.addmm)
+","else:
+d_bias = grad_out
+else:
+        d_bias = aten.new_empty(input, (0,))
+return (d_input, d_weight, d_bias)
+# @register_decomposition(aten.addmm)
+"
+"if len(buffers) > 0:
+raise RuntimeError('make_functional_deprecated_v1(model): `model` has buffers. Please use '
+'make_functional_with_buffers_deprecated_v1(model) instead.')
+    weights, descriptors = extract_weights(model)
+def fun(weights, data):
+mutable_model = copy.deepcopy(model)
+","if len(buffers) > 0:
+raise RuntimeError('make_functional_deprecated_v1(model): `model` has buffers. Please use '
+'make_functional_with_buffers_deprecated_v1(model) instead.')
+    weights, descriptors, _ = extract_weights(model)
+def fun(weights, data):
+mutable_model = copy.deepcopy(model)
+"
+"To put the state back into a model, use `load_state`.
+""""""
+    weights, weight_descriptors = extract_weights(model)
+    buffers, buf_descriptors = extract_buffers(model)
+def fun(weights, buffers, data):
+mutable_model = copy.deepcopy(model)
+","To put the state back into a model, use `load_state`.
+""""""
+    weights, weight_descriptors, _ = extract_weights(model)
+    buffers, buf_descriptors, _ = extract_buffers(model)
+def fun(weights, buffers, data):
+mutable_model = copy.deepcopy(model)
+"
+"aten.silu_backward,
+]
+)
+default_decompositions = {
+    k: v for k, v in decomposition_table.items() if k in default_decompositions
+}
+def print_compile(fx_g, _):
+","aten.silu_backward,
+]
+)
+default_decompositions = get_decompositions(default_decompositions)
+def print_compile(fx_g, _):
+"
+"proxy_out.node.meta['tensor_meta'] = _extract_tensor_metadata(args[0])
+with no_dispatch():
+            real_out = func(*args, **kwargs)
+def wrap_with_proxy(e, proxy):
+# Some ops (like native_batch_norm_backward) return undefined tensors that get
+","proxy_out.node.meta['tensor_meta'] = _extract_tensor_metadata(args[0])
+with no_dispatch():
+            real_out = func_overload(*args, **kwargs)
+def wrap_with_proxy(e, proxy):
+# Some ops (like native_batch_norm_backward) return undefined tensors that get
+"
+"auto maybe_layer = maybeCurrentDynamicLayer();
+TORCH_INTERNAL_ASSERT(maybe_layer.has_value());
+int64_t cur_level = maybe_layer->layerId();
+{textwrap.indent(unwraps, ""  "")}
+auto results = batch_rule({', '.join(unwrapped_arg_list)});
+{wrapped_returns}
+","auto maybe_layer = maybeCurrentDynamicLayer();
+TORCH_INTERNAL_ASSERT(maybe_layer.has_value());
+int64_t cur_level = maybe_layer->layerId();
+{textwrap.indent(bdims_all_none_case, ""  "")}
+{textwrap.indent(unwraps, ""  "")}
+auto results = batch_rule({', '.join(unwrapped_arg_list)});
+{wrapped_returns}
+"
+"training_size = 1000
+r = torch.linspace(0.5, 2 * sigma, requires_grad=True)
+# Create a bunch of vectors that point along positive-x
+drs = torch.outer(r, torch.tensor([1.0, 0, 0]))
+","training_size = 1000
+r = torch.linspace(0.5, 2 * sigma, steps=training_size, requires_grad=True)
+# Create a bunch of vectors that point along positive-x
+drs = torch.outer(r, torch.tensor([1.0, 0, 0]))
+"
+"if it % 100 == 0:
+print('Iteration %d -- Outer Loss: %.4f' % (it, loss2))
+    losses.append(loss2)
+t_A = torch.tensor(0.0).uniform_(0.1, 0.5)
+t_b = torch.tensor(0.0).uniform_(0.0, math.pi)
+","if it % 100 == 0:
+print('Iteration %d -- Outer Loss: %.4f' % (it, loss2))
+    losses.append(loss2.detach())
+t_A = torch.tensor(0.0).uniform_(0.1, 0.5)
+t_b = torch.tensor(0.0).uniform_(0.0, math.pi)
+"
+"if it % 100 == 0:
+print('Iteration %d -- Outer Loss: %.4f' % (it, loss2))
+    losses.append(loss2)
+t_A = torch.tensor(0.0).uniform_(0.1, 0.5)
+t_b = torch.tensor(0.0).uniform_(0.0, math.pi)
+","if it % 100 == 0:
+print('Iteration %d -- Outer Loss: %.4f' % (it, loss2))
+    losses.append(loss2.detach())
+t_A = torch.tensor(0.0).uniform_(0.1, 0.5)
+t_b = torch.tensor(0.0).uniform_(0.0, math.pi)
+"
+"t_params = params
+for k in range(5):
+    t_f = net(t_x, t_params)
+t_loss = F.l1_loss(t_f, t_y)
+grads = torch.autograd.grad(t_loss, t_params, create_graph=True)
+","t_params = params
+for k in range(5):
+    t_f = net(t_params, t_x)
+t_loss = F.l1_loss(t_f, t_y)
+grads = torch.autograd.grad(t_loss, t_params, create_graph=True)
+"
+"test_x = torch.arange(-2 * math.pi, 2 * math.pi, step=0.01).unsqueeze(1)
+test_y = t_A * torch.sin(test_x + t_b)
+test_f = net(test_x, t_params)
+plt.plot(test_x.data.numpy(), test_y.data.numpy(), label='sin(x)')
+plt.plot(test_x.data.numpy(), test_f.data.numpy(), label='net(x)')
+","test_x = torch.arange(-2 * math.pi, 2 * math.pi, step=0.01).unsqueeze(1)
+test_y = t_A * torch.sin(test_x + t_b)
+test_f = net(t_params, test_x)
+plt.plot(test_x.data.numpy(), test_y.data.numpy(), label='sin(x)')
+plt.plot(test_x.data.numpy(), test_f.data.numpy(), label='net(x)')
+"
+"if it % 100 == 0:
+print('Iteration %d -- Outer Loss: %.4f' % (it, loss2))
+    losses.append(loss2)
+t_A = torch.tensor(0.0).uniform_(0.1, 0.5)
+t_b = torch.tensor(0.0).uniform_(0.0, math.pi)
+","if it % 100 == 0:
+print('Iteration %d -- Outer Loss: %.4f' % (it, loss2))
+    losses.append(loss2.detach())
+t_A = torch.tensor(0.0).uniform_(0.1, 0.5)
+t_b = torch.tensor(0.0).uniform_(0.0, math.pi)
+"
+"return mem_sz * 2
+for node in full_bw_graph.nodes:
+        if node in tangent_closure:
+nx_graph.add_edge(node.name+""_in"", ""sink"", capacity=math.inf)
+continue
+","return mem_sz * 2
+for node in full_bw_graph.nodes:
+        if node in tangent_closure and node.op != 'output':
+nx_graph.add_edge(node.name+""_in"", ""sink"", capacity=math.inf)
+continue
+"
+"# contiguous_args = [t.contiguous() for t in flat_args]
+contiguous_args = [t for t in flat_args]
+out = normalize_as_list(compiled_bw(*ctx.saved_tensors, *contiguous_args))
+            out_iter = iter(out)
+            grad_out = [next(out_iter) if p else None for p in ctx.needs_input_grad]
+            return tuple(grad_out)
+return CompiledFunction
+","# contiguous_args = [t.contiguous() for t in flat_args]
+contiguous_args = [t for t in flat_args]
+out = normalize_as_list(compiled_bw(*ctx.saved_tensors, *contiguous_args))
+            return tuple(out)
+return CompiledFunction
+"
+"def functional_call(named_params, named_buffers, *args, **kwargs):
+params_and_buffers = {**named_params, **named_buffers}
+# import pdb; pdb.set_trace()
+        return _stateless.functional_call(mod, params_and_buffers, *args, **kwargs)
+compiled_f = compiled_function(functional_call, *args, **kwargs)
+","def functional_call(named_params, named_buffers, *args, **kwargs):
+params_and_buffers = {**named_params, **named_buffers}
+# import pdb; pdb.set_trace()
+        return _stateless.functional_call(mod, params_and_buffers, args, kwargs)
+compiled_f = compiled_function(functional_call, *args, **kwargs)
+"
+"def compiled_module(mod, *args, **kwargs):
+    func_mod, params, buffers = make_functional_with_buffers(mod)
+    compiled_f = compiled_function(func_mod, *args, **kwargs)
+class CompiledModule(nn.Module):
+def __init__(self):
+","def compiled_module(mod, *args, **kwargs):
+
+    def functional_call(named_params, named_buffers, *args, **kwargs):
+        params_and_buffers = {**named_params, **named_buffers}
+        # import pdb; pdb.set_trace()
+        return _stateless.functional_call(mod, params_and_buffers, *args, **kwargs)
+
+    compiled_f = compiled_function(functional_call, *args, **kwargs)
+class CompiledModule(nn.Module):
+def __init__(self):
+"
+"def forward(self, *args, **kwargs):
+return compiled_f(
+                tuple(self.parameters()),
+                tuple(self.buffers()),
+*args,
+**kwargs
+)
+","def forward(self, *args, **kwargs):
+return compiled_f(
+                dict(self.orig_module.named_parameters()),
+                dict(self.orig_module.named_buffers()),
+*args,
+**kwargs
+)
+"
+"# + norm_ops
+# + view_ops
+)
+
+for node in full_bw_graph.nodes:
+if node in tangent_closure:
+nx_graph.add_edge(node.name+""_in"", ""sink"", capacity=math.inf)
+","# + norm_ops
+# + view_ops
+)
+    ops = set([i.target for i in joint_module.graph.nodes if i.op == 'call_function'])
+    print(ops - recomputable_ops)
+    AGGRESSIVE_RECOMPUTATION = False
+for node in full_bw_graph.nodes:
+if node in tangent_closure:
+nx_graph.add_edge(node.name+""_in"", ""sink"", capacity=math.inf)
+"
+"def get_output_device(devices, op):
+if len(devices) == 1:
+return devices[0]
+else:
+","def get_output_device(devices, op):
+    # The device propagation is a bit sketchy.
+    # aten::index(CPU, CUDA) => CPU tensor
+    # aten::index(CUDA, CPU) => CUDA tensor
+    if op == aten.index:
+        return devices[0]
+    devices = list(set(devices))
+if len(devices) == 1:
+return devices[0]
+else:
+"
+"elif isinstance(real_out, list):
+return list([wrap_with_proxy(e, proxy_out[idx]) for idx, e in enumerate(real_out)])
+elif isinstance(real_out, torch.Tensor):
+            return PythonTensor(real_out, proxy_out, output_device)
+else:
+return real_out
+","elif isinstance(real_out, list):
+return list([wrap_with_proxy(e, proxy_out[idx]) for idx, e in enumerate(real_out)])
+elif isinstance(real_out, torch.Tensor):
+            return wrap_with_proxy(real_out, proxy_out)
+else:
+return real_out
+"
+"@register_decomposition(aten.tanh_backward)
+def tanh_backward_decomposition(out_grad: Tensor, y: Tensor):
+    return out_grad * ( -y * y + 1)
+@register_decomposition(aten.sigmoid_backward)
+def sigmoid_backward_decomposition(out_grad: Tensor, y: Tensor):
+","@register_decomposition(aten.tanh_backward)
+def tanh_backward_decomposition(out_grad: Tensor, y: Tensor):
+    return out_grad * (1 - y * y)
+@register_decomposition(aten.sigmoid_backward)
+def sigmoid_backward_decomposition(out_grad: Tensor, y: Tensor):
+"
+"def safe_unflatten(tensor, dim, shape):
+if len(shape) == 0:
+        assert tensor.numel() == 1
+        return tensor.squeeze()
+return tensor.unflatten(dim, shape)
+def jacfwd(f, argnums=0):
+","def safe_unflatten(tensor, dim, shape):
+if len(shape) == 0:
+        assert tensor.shape[dim] == 1
+        return tensor.squeeze(dim)
+return tensor.unflatten(dim, shape)
+def jacfwd(f, argnums=0):
+"
+"results = _undo_create_differentiable(primals_out, level)
+flat_diff_primals, primals_spec = tree_flatten(diff_primals)
+        flat_primals_out, primals_out_spec = tree_flatten(_as_tuple(primals_out))
+        def wrapper(*cotangents, retain_graph=True, create_graph=True):
+flat_cotangents, cotangents_spec = tree_flatten(cotangents)
+if primals_out_spec != cotangents_spec:
+raise RuntimeError(
+","results = _undo_create_differentiable(primals_out, level)
+flat_diff_primals, primals_spec = tree_flatten(diff_primals)
+        flat_primals_out, primals_out_spec = tree_flatten(primals_out)
+        def wrapper(cotangents, retain_graph=True, create_graph=True):
+flat_cotangents, cotangents_spec = tree_flatten(cotangents)
+if primals_out_spec != cotangents_spec:
+raise RuntimeError(
+"
+"with torch.enable_grad():
+fx_g = make_fx(vjpfull)(fn, args, (torch.ones_like(out),))
+fw_module, bw_module = partition_backwards(fx_g)
+garbage_hack = torch.randn(())
+fw_args = (garbage_hack,) + args
+","with torch.enable_grad():
+fx_g = make_fx(vjpfull)(fn, args, (torch.ones_like(out),))
+fw_module, bw_module = partition_backwards(fx_g)
+                print(fw_module.code, bw_module.code)
+garbage_hack = torch.randn(())
+fw_args = (garbage_hack,) + args
+"
+"tune_option = auto_scheduler.TuningOptions(
+num_measure_trials=100,  # change this to 20000 to achieve the best performance
+measure_callbacks=[auto_scheduler.RecordToFile(log_file)],
+                early_stopping=1000,
+# verbose=2,
+)
+tuner.tune(tune_option)
+","tune_option = auto_scheduler.TuningOptions(
+num_measure_trials=100,  # change this to 20000 to achieve the best performance
+measure_callbacks=[auto_scheduler.RecordToFile(log_file)],
+                # early_stopping=1000,
+# verbose=2,
+)
+tuner.tune(tune_option)
+"
+"def bench(func):
+begin = time.time()
+for _ in range(iters):
+        out = func(a)
+out.sum().backward()
+        mod.zero_grad()
+print(time.time()-begin)
+def bench_jax():
+","def bench(func):
+begin = time.time()
+for _ in range(iters):
+        out = func(a).sin()
+out.sum().backward()
+        a.grad = None
+print(time.time()-begin)
+def bench_jax():
+"
+"return CompiledFunction
+def compiled_function(fn, fw_compiler, bw_compiler, partition_fn=partition_backwards):
+saved_fn = None
+def returned_function(*args, **kwargs):
+","return CompiledFunction
+def compiled_function(fn, fw_compiler, bw_compiler, partition_fn=default_partition):
+saved_fn = None
+def returned_function(*args, **kwargs):
+"
+"def draw_joint_graph(graph, joint_inputs, file_name=""full_graph.png""):
+draw_graph(graph, file_name)
+    return partition_backwards(graph, joint_inputs)
+def create_compiled_function(flat_fn, fw_compiler, bw_compiler, partition_fn):
+joint_forward_backward = create_joint_forward_backward(flat_fn)
+","def draw_joint_graph(graph, joint_inputs, file_name=""full_graph.png""):
+draw_graph(graph, file_name)
+    return default_partition(graph, joint_inputs)
+def create_compiled_function(flat_fn, fw_compiler, bw_compiler, partition_fn):
+joint_forward_backward = create_joint_forward_backward(flat_fn)
+"
+"getattr(x, ""write_"" + ext.lstrip("".""))(fname)
+# todo(chilli): clean this up/make it more understandable
+def partition_backwards(fx_module: fx.GraphModule, _joint_inputs):
+bw_nodes = set()
+saved_nodes = set()
+output_node = None
+","getattr(x, ""write_"" + ext.lstrip("".""))(fname)
+# todo(chilli): clean this up/make it more understandable
+def default_partition(fx_module: fx.GraphModule, _joint_inputs):
+bw_nodes = set()
+saved_nodes = set()
+output_node = None
+"
+"else:
+num_outs = 1
+                joint_inputs = (flat_args, (out,))
+with torch.enable_grad():
+fx_g = make_fx(joint_forward_backward)(*joint_inputs)
+fw_module, bw_module = partition_fn(fx_g, joint_inputs)
+","else:
+num_outs = 1
+                joint_inputs = (flat_args, out)
+with torch.enable_grad():
+fx_g = make_fx(joint_forward_backward)(*joint_inputs)
+fw_module, bw_module = partition_fn(fx_g, joint_inputs)
+"
+"def unwrap_tensors(x):
+if isinstance(x, torch.Tensor):
+return _unwrap_for_grad(x, level)
+        assert False
+return tree_map(unwrap_tensors, inps)
+","def unwrap_tensors(x):
+if isinstance(x, torch.Tensor):
+return _unwrap_for_grad(x, level)
+        raise AssertionError()
+return tree_map(unwrap_tensors, inps)
+"
+"def f(*inps, out_tensors=None):
+inps = fx_model.graph.flatten_inps(*inps)
+if out_tensors is None:
+            results = alloc_results
+else:
+results = out_tensors
+full_inps = module_stuff + list(inps) + results
+","def f(*inps, out_tensors=None):
+inps = fx_model.graph.flatten_inps(*inps)
+if out_tensors is None:
+            results = [torch.empty(shape, dtype=dtype) for shape,dtype in outs[1]]
+            # results = alloc_results
+else:
+results = out_tensors
+full_inps = module_stuff + list(inps) + results
+"
+"class PythonTensor(object):
+def __init__(self, out, proxy):
+if isinstance(out, torch.Tensor):
+            self.value = torch.empty_like(out)
+else:
+self.value = torch.empty(out)
+self.proxy = proxy
+","class PythonTensor(object):
+def __init__(self, out, proxy):
+if isinstance(out, torch.Tensor):
+            self.value = torch.clone(out)
+else:
+self.value = torch.empty(out)
+self.proxy = proxy
+"
+"assert(len(flat_args) == len(flat_inps))
+for idx, arg in enumerate(flat_args):
+if isinstance(flat_inps[idx], torch.Tensor):
+                flat_args[idx] = addPythonKey(PythonTensor(flat_inps[idx].shape, arg))
+else:
+flat_args[idx] = flat_inps[idx]
+tree_args = pytree.tree_unflatten(flat_args, args_spec)
+","assert(len(flat_args) == len(flat_inps))
+for idx, arg in enumerate(flat_args):
+if isinstance(flat_inps[idx], torch.Tensor):
+                flat_args[idx] = addPythonKey(PythonTensor(flat_inps[idx], arg))
+else:
+flat_args[idx] = flat_inps[idx]
+tree_args = pytree.tree_unflatten(flat_args, args_spec)
+"
+"return ret
+def _rebuild_from_type_v2(func, new_type, args, state):
+ret = func(*args)
+if type(ret) is not new_type:
+ret = ret.as_subclass(new_type)
+","return ret
+def _rebuild_from_type_v2(func, new_type, args, state):
+    if new_type is Tensor:
+        return func(*args)
+
+ret = func(*args)
+if type(ret) is not new_type:
+ret = ret.as_subclass(new_type)
+"
+"return ret
+def _rebuild_from_type_v2(func, new_type, args, state):
+    if new_type is Tensor:
+        return func(*args)
+
+ret = func(*args)
+if type(ret) is not new_type:
+ret = ret.as_subclass(new_type)
+","return ret
+def _rebuild_from_type_v2(func, new_type, args, state):
+ret = func(*args)
+if type(ret) is not new_type:
+ret = ret.as_subclass(new_type)
+"
+"e1 = symbols[n.args[0]]
+# we will propagate the runtime value here since this is regular addition
+            c = Conj([BinConstraintD(my_output, BinConstraintD(e1, n.args[1], op_add), op_eq),
+BinConstraintD(0, my_output, op_leq)])
+return [c], counter
+","e1 = symbols[n.args[0]]
+# we will propagate the runtime value here since this is regular addition
+            c = Conj([BinConstraintD(my_output, BinConstraintD(e1, n.args[1], op_code), op_eq),
+BinConstraintD(0, my_output, op_leq)])
+return [c], counter
+"
+"e2 = symbols[n.args[1]]
+# we will propagate the runtime value here since this is regular addition
+            c = Conj([BinConstraintD(my_output, BinConstraintD(e2, n.args[0], op_add), op_eq),
+BinConstraintD(0, my_output, op_leq)])
+return [c], counter
+","e2 = symbols[n.args[1]]
+# we will propagate the runtime value here since this is regular addition
+            c = Conj([BinConstraintD(my_output, BinConstraintD(e2, n.args[0], op_code), op_eq),
+BinConstraintD(0, my_output, op_leq)])
+return [c], counter
+"
+"padding=(0, padding[0]),
+stride=(1, stride[0])),
+lambda: F.unfold(input, kernel_size, dilation=dilation, padding=padding, stride=stride),
+        lambda: unfold3d(input, kernel_size, dilation, padding, stride)
+)
+input = unfold_func()
+","padding=(0, padding[0]),
+stride=(1, stride[0])),
+lambda: F.unfold(input, kernel_size, dilation=dilation, padding=padding, stride=stride),
+        lambda: unfold3d(input, kernel_size, padding, stride, dilation)
+)
+input = unfold_func()
+"
+"env_callable=lambda fn: {
+""definitions"": [ComputeUnboxingFunctions(Target.DEFINITION, selector)(fn)]
+},
+        num_shards=5,
+sharded_keys={""definitions""},
+)
+cpu_fm.write(
+","env_callable=lambda fn: {
+""definitions"": [ComputeUnboxingFunctions(Target.DEFINITION, selector)(fn)]
+},
+        num_shards=1 if selected_op_num < sharding_threshold else 5,
+sharded_keys={""definitions""},
+)
+cpu_fm.write(
+"
+"env_callable=lambda fn: {
+""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
+},
+        num_shards=10,
+sharded_keys={""unboxed_ops""},
+)
+","env_callable=lambda fn: {
+""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
+},
+        num_shards=1 if selected_op_num < sharding_threshold else 10,
+sharded_keys={""unboxed_ops""},
+)
+"
+"for i in range(len(current_commits.commits)):
+c = current_commits.commits[i]
+if 'Uncategorized' in str(c):
+            current_commits.commits[i] = CommitList.categorize(c.commit_hash, c.title)
+current_commits.write_result()
+def get_hash_or_pr_url(commit: Commit):
+","for i in range(len(current_commits.commits)):
+c = current_commits.commits[i]
+if 'Uncategorized' in str(c):
+            feature_item = get_commit_data_cache().get(c.commit_hash)
+            features = features_to_dict(feature_item)
+            category, topic = CommitList.categorize(features)
+            current_commits[i] = dataclasses.replace(c, category=category, topic=topic)
+current_commits.write_result()
+def get_hash_or_pr_url(commit: Commit):
+"
+"_apply_func_submodules(
+_create_swap_params(parameters_and_buffers),
+module, name.split("".""), name, (tensor,))
+    yield
+    for name in parameters_and_buffers:
+        _apply_func_submodules(
+            _remove_swap,
+            module, name.split("".""), name, ())
+def _apply_func_submodules(
+","_apply_func_submodules(
+_create_swap_params(parameters_and_buffers),
+module, name.split("".""), name, (tensor,))
+    try:
+        yield
+    finally:
+        for name in parameters_and_buffers:
+            _apply_func_submodules(
+                _remove_swap,
+                module, name.split("".""), name, ())
+def _apply_func_submodules(
+"
+"# hardshrink(x) = x if x > lambd
+#               = x if x < -lambd
+#               = 0 otherwise
+    return refs.where(abs(a) > abs(lambd), a, 0)
+@register_decomposition(torch.ops.aten.softshrink)
+","# hardshrink(x) = x if x > lambd
+#               = x if x < -lambd
+#               = 0 otherwise
+    return refs.where(refs.logical_and(a >= -lambd, a <= lambd), 0, a)
+@register_decomposition(torch.ops.aten.softshrink)
+"
+"aten.to.device,
+aten.to.prim_Device,
+aten._pin_memory.default,
+    aten._resize_output.functional,
+aten._resize_output.out,
+)
+","aten.to.device,
+aten.to.prim_Device,
+aten._pin_memory.default,
+    aten._resize_output.default,
+aten._resize_output.out,
+)
+"
+"def name(func: FunctionSchema, *, faithful_name_for_out_overloads: bool = False) -> str:
+name = str(func.name.name)
+    if func.is_functional_fn():
+        name += ""_functional""
+if func.is_symint_fn():
+name += ""_symint""
+if func.is_out_fn():
+","def name(func: FunctionSchema, *, faithful_name_for_out_overloads: bool = False) -> str:
+name = str(func.name.name)
+if func.is_symint_fn():
+name += ""_symint""
+if func.is_out_fn():
+"
+"def name(func: FunctionSchema, *, faithful_name_for_out_overloads: bool = False) -> str:
+name = str(func.name.name)
+    if func.is_functional_fn():
+        name += ""_functional""
+if func.is_symint_fn():
+name += ""_symint""
+if func.is_out_fn():
+","def name(func: FunctionSchema, *, faithful_name_for_out_overloads: bool = False) -> str:
+name = str(func.name.name)
+if func.is_symint_fn():
+name += ""_symint""
+if func.is_out_fn():
+"
+"raise RuntimeError(
+f""The codegen expects to be able to generate '{generated_fns_str}'.""
+f"" To do so, it expects a line: 'autogen: {generated_fns_str}'.""
+                f"" Instead, it found 'autogen: {generated_fns_str}'""
+)
+def signature(self) -> ""FunctionSchema"":
+","raise RuntimeError(
+f""The codegen expects to be able to generate '{generated_fns_str}'.""
+f"" To do so, it expects a line: 'autogen: {generated_fns_str}'.""
+                f"" Instead, it found 'autogen: {expected_generated_fns_str}'""
+)
+def signature(self) -> ""FunctionSchema"":
+"
+"T = TypeVar('T', bound='Union[_StorageBase, _TypedStorage]')
+class _StorageBase(object):
+_cdata: Any
+    is_cuda: bool = False
+is_sparse: bool = False
+is_sparse_csr: bool = False
+device: torch.device
+","T = TypeVar('T', bound='Union[_StorageBase, _TypedStorage]')
+class _StorageBase(object):
+_cdata: Any
+is_sparse: bool = False
+is_sparse_csr: bool = False
+device: torch.device
+"
+"
+torch._C._log_api_usage_once(""quantization_api.quantize.prepare"")
+if prepare_custom_config_dict is None:
+        prepare_custom_config_dict = {}
+custom_module_class_mapping = prepare_custom_config_dict.get(""float_to_observed_custom_module_class"", {})
+if not inplace:
+","
+torch._C._log_api_usage_once(""quantization_api.quantize.prepare"")
+if prepare_custom_config_dict is None:
+        prepare_custom_config_dict = get_default_custom_config_dict()
+custom_module_class_mapping = prepare_custom_config_dict.get(""float_to_observed_custom_module_class"", {})
+if not inplace:
+"
+"instance to the hook as the first parameter.
+
+handle = hooks.RemovableHandle(self._load_state_dict_pre_hooks)
+        if with_module:
+            hook = functools.partial(hook, self)
+        self._load_state_dict_pre_hooks[handle.id] = hook
+return handle
+def register_load_state_dict_post_hook(self, hook):
+","instance to the hook as the first parameter.
+
+handle = hooks.RemovableHandle(self._load_state_dict_pre_hooks)
+        self._load_state_dict_pre_hooks[handle.id] = _WrappedHook(hook, self if with_module else None)
+return handle
+def register_load_state_dict_post_hook(self, hook):
+"
+"# then we need to make sure get_attr is copied to the new graph.
+for x in flatten(output_node.args[0]):
+if x.op == ""get_attr"":
+            setattr(main_root, x.name, getattr(gm, x.target))  # type: ignore[arg-type]
+return torch.fx.GraphModule(main_root, main_g)
+","# then we need to make sure get_attr is copied to the new graph.
+for x in flatten(output_node.args[0]):
+if x.op == ""get_attr"":
+            setattr(main_root, x.name, getattr_recursive(gm, x.target))  # type: ignore[arg-type]
+return torch.fx.GraphModule(main_root, main_g)
+"
+"
+super().__init__()
+        self.mod = mod
+self.checkpoint_impl = checkpoint_impl
+self.offload_to_cpu = offload_to_cpu
+# state_dict post hook to remove prefix to allow loading into a
+","
+super().__init__()
+        self._checkpoint_wrapped_module = mod
+self.checkpoint_impl = checkpoint_impl
+self.offload_to_cpu = offload_to_cpu
+# state_dict post hook to remove prefix to allow loading into a
+"
+"def _logical_and(a: TensorLikeType, b: TensorLikeType):
+if not utils.is_boolean_dtype(a.dtype):
+        a = ne(a, 0)
+if not utils.is_boolean_dtype(b.dtype):
+        b = ne(b, 0)
+    return bitwise_and(a, b)
+logical_and = _make_elementwise_binary_reference(
+","def _logical_and(a: TensorLikeType, b: TensorLikeType):
+if not utils.is_boolean_dtype(a.dtype):
+        a = a != 0
+if not utils.is_boolean_dtype(b.dtype):
+        b = b != 0
+    return a & b
+logical_and = _make_elementwise_binary_reference(
+"
+"# All-gather full parameters, moving them to compute device if
+# necessary.
+self._rebuild_full_params()
+# Wait for all_gather to finish before computation
+torch.cuda.current_stream().wait_stream(self._streams[""all_gather""])
+","# All-gather full parameters, moving them to compute device if
+# necessary.
+self._rebuild_full_params()
+                self._pre_backward_hook_full_params_prefetched = False
+# Wait for all_gather to finish before computation
+torch.cuda.current_stream().wait_stream(self._streams[""all_gather""])
+"
+"
+def scalar(name, scalar, collections=None, new_style=False, double_precision=False):
+","
+def scalar(name, tensor, collections=None, new_style=False, double_precision=False):
+
+"
+"value=[
+Summary.Value(
+tag=name,
+                    tensor=tensor,
+metadata=smd,
+)
+]
+","value=[
+Summary.Value(
+tag=name,
+                    tensor=tensor_proto,
+metadata=smd,
+)
+]
+"
+"paths.append(p)
+if not found_one:
+        raise RuntimeError(
+            ""Didn't find any test reports in s3, there is probably a bug!""
+)
+return paths
+","paths.append(p)
+if not found_one:
+        print(
+            ""::warning title=s3 artifacts not found::""
+            ""Didn't find any test reports in s3, there might be a bug!""
+)
+return paths
+"
+"paths.append(p)
+if not found_one:
+        print(
+            ""::warning title=s3 artifacts not found::""
+            ""Didn't find any test reports in s3, there might be a bug!""
+)
+return paths
+","paths.append(p)
+if not found_one:
+        raise RuntimeError(
+            ""Didn't find any test reports in s3, there is probably a bug!""
+)
+return paths
+"
+"paths.append(p)
+if not found_one:
+        raise RuntimeError(
+            ""Didn't find any test reports in s3, there is probably a bug!""
+)
+return paths
+","paths.append(p)
+if not found_one:
+        print(
+            ""::warning title=s3 artifacts not found::""
+            ""Didn't find any test reports in s3, there might be a bug!""
+)
+return paths
+"
+")
+def main() -> None:
+parser = argparse.ArgumentParser(description=""Generate unboxing source files"")
+parser.add_argument(
+""-s"",
+",")
+def main(args: List[str]) -> None:
+parser = argparse.ArgumentParser(description=""Generate unboxing source files"")
+parser.add_argument(
+""-s"",
+"
+"env_callable=lambda fn: {
+""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
+},
+        num_shards=1 if selected_op_num < sharding_threshold else 10,
+sharded_keys={""unboxed_ops""},
+)
+","env_callable=lambda fn: {
+""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
+},
+        num_shards=10,
+sharded_keys={""unboxed_ops""},
+)
+"
+"
+    torch._C._log_api_usage_once(""torch.package.PackageImporter"")
+modules: Dict[str, types.ModuleType]
+","
+modules: Dict[str, types.ModuleType]
+"
+"elif node.target in FUNS_IO_TYPE_INT8:
+return (NodeInputOrOutputType.INT8, NodeInputOrOutputType.INT8)
+elif node.target in FUNS_IO_TYPE_FP32_OR_INT8:
+            first_arg = node.args[0]
+assert isinstance(first_arg, Node)
+(
+_prev_node_input_type,
+","elif node.target in FUNS_IO_TYPE_INT8:
+return (NodeInputOrOutputType.INT8, NodeInputOrOutputType.INT8)
+elif node.target in FUNS_IO_TYPE_FP32_OR_INT8:
+            first_arg = get_normalized_nth_input(node, gm, 0)
+assert isinstance(first_arg, Node)
+(
+_prev_node_input_type,
+"
+"
+            prev_node = node.args[0]
+assert isinstance(prev_node, Node)
+(
+_prev_node_input_type,
+","
+            prev_node = get_normalized_nth_input(node, gm, 0)
+assert isinstance(prev_node, Node)
+(
+_prev_node_input_type,
+"
+"
+            prev_node = node.args[0]
+assert isinstance(prev_node, Node)
+(
+_prev_node_input_type,
+","
+            prev_node = get_normalized_nth_input(node, gm, 0)
+assert isinstance(prev_node, Node)
+(
+_prev_node_input_type,
+"
+"prev_node, gm, logger_cls, node_type_to_io_type_map
+)
+            cur_node_dtype_target = node.args[1]
+assert (
+cur_node_dtype_target is torch.float16
+), f""{cur_node_dtype_target} handling needs to be added""
+","prev_node, gm, logger_cls, node_type_to_io_type_map
+)
+            cur_node_dtype_target = get_normalized_nth_input(node, gm, 1)
+assert (
+cur_node_dtype_target is torch.float16
+), f""{cur_node_dtype_target} handling needs to be added""
+"
+"return (prev_node_output_type, NodeInputOrOutputType.FP16)
+elif node.target in METHS_IO_TYPE_FP32_OR_INT8:
+            first_arg = node.args[0]
+assert isinstance(first_arg, Node)
+(
+_prev_node_input_type,
+","return (prev_node_output_type, NodeInputOrOutputType.FP16)
+elif node.target in METHS_IO_TYPE_FP32_OR_INT8:
+            first_arg = get_normalized_nth_input(node, gm, 0)
+assert isinstance(first_arg, Node)
+(
+_prev_node_input_type,
+"
+"def key_func(fn: Union[NativeFunction, NativeFunctionsGroup]) -> str:
+return fn.root_name
+cpu_fm.write_sharded(
+""UnboxingFunctions.cpp"",
+native_functions,
+","def key_func(fn: Union[NativeFunction, NativeFunctionsGroup]) -> str:
+return fn.root_name
+    selected_op_num: int = len(selector.operators)
+    # a best practice threshold of operators to enable sharding
+    sharding_threshold: int = 100
+cpu_fm.write_sharded(
+""UnboxingFunctions.cpp"",
+native_functions,
+"
+"env_callable=lambda fn: {
+""definitions"": [ComputeUnboxingFunctions(Target.DEFINITION, selector)(fn)]
+},
+        num_shards=5,
+sharded_keys={""definitions""},
+)
+cpu_fm.write(
+","env_callable=lambda fn: {
+""definitions"": [ComputeUnboxingFunctions(Target.DEFINITION, selector)(fn)]
+},
+        num_shards=1 if selected_op_num < sharding_threshold else 5,
+sharded_keys={""definitions""},
+)
+cpu_fm.write(
+"
+"env_callable=lambda fn: {
+""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
+},
+        num_shards=10,
+sharded_keys={""unboxed_ops""},
+)
+","env_callable=lambda fn: {
+""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
+},
+        num_shards=1 if selected_op_num < sharding_threshold else 10,
+sharded_keys={""unboxed_ops""},
+)
+"
+"@functools.wraps(next_func)
+def wrap_next(*args, **kwargs):
+                with context():
+return next_func(*args, **kwargs)
+namespace['__next__'] = wrap_next
+","@functools.wraps(next_func)
+def wrap_next(*args, **kwargs):
+                if torch.autograd._profiler_enabled():
+                    return next_func(*args, **kwargs)
+                else:
+return next_func(*args, **kwargs)
+namespace['__next__'] = wrap_next
+"
+"check(
+(self.ndim == 3 and valid_dims)
+or (self.ndim == 4 and valid_dims and self.size(3) != 0),
+        f""3D or 4D (batch mode) tensor expected for input, but got: {self}""
+)
+if self.ndim == 4:
+nbatch, nplane, input_h, input_w = self.shape
+","check(
+(self.ndim == 3 and valid_dims)
+or (self.ndim == 4 and valid_dims and self.size(3) != 0),
+        lambda: f""3D or 4D (batch mode) tensor expected for input, but got: {self}""
+)
+if self.ndim == 4:
+nbatch, nplane, input_h, input_w = self.shape
+"
+"def meta_dot(self, tensor):
+check(
+self.dim() == 1 and tensor.dim() == 1,
+        f""1D tensors expected, but got {self.dim()}D and {tensor.dim()}D tensors""
+)
+return self.new_empty(())
+","def meta_dot(self, tensor):
+check(
+self.dim() == 1 and tensor.dim() == 1,
+        lambda: f""1D tensors expected, but got {self.dim()}D and {tensor.dim()}D tensors""
+)
+return self.new_empty(())
+"
+"def write_bytes(self, requests: List[BytesWriteRequest]) -> Future[None]:
+for req in requests:
+            (self.path / req.storage_key).write_bytes(
+                req.bytes.getbuffer()
+            )
+fut: Future[None] = Future()
+fut.set_result(None)
+return fut
+","def write_bytes(self, requests: List[BytesWriteRequest]) -> Future[None]:
+for req in requests:
+            with (self.path / req.storage_key).open(""wb"") as w:
+                w.write(req.bytes.getbuffer())
+                os.fsync(w.fileno())
+
+fut: Future[None] = Future()
+fut.set_result(None)
+return fut
+"
+"with torch.autograd.graph.saved_tensors_hooks(pack, unpack):
+output = function(*args)
+        if torch.cuda._initialized and not had_cuda_in_fwd:
+# Cuda was not initialized before running the forward, so we didn't
+# stash the CUDA state.
+raise RuntimeError(
+","with torch.autograd.graph.saved_tensors_hooks(pack, unpack):
+output = function(*args)
+        if torch.cuda._initialized and preserve_rng_state and not had_cuda_in_fwd:
+# Cuda was not initialized before running the forward, so we didn't
+# stash the CUDA state.
+raise RuntimeError(
+"
+"self._op_impls = set()
+self.kind = kind
+self.dispatch_key = dispatch_key
+        if kind != ""IMPL"" and kind != ""DEF"":
+            raise ValueError(""Unsupported kind: "", kind)
+def __repr__(self):
+return ""Library(kind={}, ns={}, dispatch_key={})>"".format(self.kind, self.ns, self.dispatch_key)
+","self._op_impls = set()
+self.kind = kind
+self.dispatch_key = dispatch_key
+def __repr__(self):
+return ""Library(kind={}, ns={}, dispatch_key={})>"".format(self.kind, self.ns, self.dispatch_key)
+"
+"'default_per_channel_weight_observer',
+# FakeQuantize (for qat)
+'default_fake_quant', 'default_weight_fake_quant',
+    'default_symmetric_fixed_qparams_fake_quant',
+    'default_affine_fixed_qparams_fake_quant',
+'default_per_channel_weight_fake_quant',
+'default_histogram_fake_quant',
+# QConfig
+","'default_per_channel_weight_observer',
+# FakeQuantize (for qat)
+'default_fake_quant', 'default_weight_fake_quant',
+    'default_fixed_qparams_range_neg1to1_fake_quant',
+    'default_fixed_qparams_range_0to1_fake_quant',
+'default_per_channel_weight_fake_quant',
+'default_histogram_fake_quant',
+# QConfig
+"
+"grad_output: Tensor, output: Tensor, dim: int, input_dtype: int
+):
+new_grad = grad_output * output
+    return new_grad - output * torch.sum(new_grad, dim=dim, keepdim=True)
+@register_decomposition(aten._log_softmax_backward_data)
+","grad_output: Tensor, output: Tensor, dim: int, input_dtype: int
+):
+new_grad = grad_output * output
+    grad_input = new_grad - output * torch.sum(new_grad, dim=dim, keepdim=True)
+    return aten.to(grad_input, dtype=input_dtype)
+@register_decomposition(aten._log_softmax_backward_data)
+"
+"grad_input = grad_output - torch.exp(output) * torch.sum(
+grad_output, dim=dim, keepdim=True
+)
+    return grad_input
+# TODO: the type annotations on arguments are not quite right
+","grad_input = grad_output - torch.exp(output) * torch.sum(
+grad_output, dim=dim, keepdim=True
+)
+    return aten.to(grad_input, dtype=input_dtype)
+# TODO: the type annotations on arguments are not quite right
+"
+"idx, data = r
+if not done_event.is_set() and not isinstance(data, ExceptionWrapper):
+try:
+                data = pin_memory(data)
+except Exception:
+data = ExceptionWrapper(
+where=""in pin memory thread for device {}"".format(device_id))
+","index = self._next_index()  # may raise StopIteration
+data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+if self._pin_memory:
+            data = _utils.pin_memory.pin_memory(data, self._pin_memory_device)
+return data
+"

@@ -1,0 +1,239 @@
+buggy_code,fixed_code
+"optimized_scripted_module = optimize_for_mobile(traced_script_module)
+exported_optimized_scripted_module = (
+    optimized_scripted_module._save_for_lite_interpreter(""model.ptl"")
+)","optimized_scripted_module = optimize_for_mobile(traced_script_module)
+exported_optimized_scripted_module = optimized_scripted_module._save_for_lite_interpreter(""model.ptl"")"
+"report(""\nCopying extension {}"".format(ext.name))
+            relative_site_packages = (
+                sysconfig.get_path(""purelib"")
+                .replace(sysconfig.get_path(""data""), """")
+                .lstrip(os.path.sep)
+            )
+src = os.path.join(""torch"", relative_site_packages, filename)","report(""\nCopying extension {}"".format(ext.name))
+            relative_site_packages = sysconfig.get_path('purelib').replace(sysconfig.get_path('data'), '').lstrip(os.path.sep)
+src = os.path.join(""torch"", relative_site_packages, filename)"
+"if RUN_BUILD_DEPS:
+build_deps()
+    (
+        extensions,
+        cmdclass,
+        packages,
+        entry_points,
+        extra_install_requires,
+    ) = configure_extension_build()
+install_requires += extra_install_requires","if RUN_BUILD_DEPS:
+build_deps()
+    extensions, cmdclass, packages, entry_points, extra_install_requires = configure_extension_build()
+install_requires += extra_install_requires"
+"X = torch.triangular_solve(phi, L.transpose(-1, -2).conj(), upper=True).solution
+        A_grad = (
+            torch.triangular_solve(
+                X.transpose(-1, -2).conj() @ P.transpose(-1, -2), U, upper=True
+            )
+            .solution.transpose(-1, -2)
+            .conj()
+        )
+return A_grad, None, None","X = torch.triangular_solve(phi, L.transpose(-1, -2).conj(), upper=True).solution
+        A_grad = torch.triangular_solve(X.transpose(-1, -2).conj() @ P.transpose(-1, -2), U, upper=True) 
+            .solution.transpose(-1, -2).conj()
+return A_grad, None, None"
+"data_value = data_buf.getvalue()
+    return (
+        data_value,
+        serialized_storages,
+        serialized_dtypes,
+        importer.zip_reader if importer else None,
+    )
+
+def _load_storages(id, zip_reader, obj_bytes, serialized_storages):","data_value = data_buf.getvalue()
+    return data_value, serialized_storages, serialized_dtypes, importer.zip_reader if importer else None
+def _load_storages(id, zip_reader, obj_bytes, serialized_storages):"
+"LockType = _dummy_thread.LockType
+boolean_dispatched: ""weakref.WeakKeyDictionary[Callable, Dict[str, Callable]]"" = (
+    weakref.WeakKeyDictionary()
+) 
+def createResolutionCallbackFromEnv(lookup_base):","LockType = _dummy_thread.LockType
+boolean_dispatched: 'weakref.WeakKeyDictionary[Callable, Dict[str, Callable]]' = weakref.WeakKeyDictionary() 
+def createResolutionCallbackFromEnv(lookup_base):"
+"for arg in f.args.args:
+        arg_annotation_str = (
+            get_annotation_str(arg.annotation) if arg.annotation else None
+        )","for arg in f.args.args:
+        arg_annotation_str = get_annotation_str(arg.annotation) if arg.annotation else None"
+"return_annotation = signature.return_annotation
+    valid_return_annotation_type = (
+        return_annotation is not inspect.Parameter.empty
+        and not isinstance(return_annotation, str)
+    )
+if valid_literal_annotation and valid_return_annotation_type:","return_annotation = signature.return_annotation
+    valid_return_annotation_type = return_annotation is not inspect.Parameter.empty and not isinstance(return_annotation, str)
+if valid_literal_annotation and valid_return_annotation_type:"
+"     fns = [
+        getattr(cls, name)
+        for name in cls.__dict__
+        if inspect.isroutine(getattr(cls, name))
+    ]
+captures = {}
+for fn in fns:","    fns = [getattr(cls, name) for name in cls.__dict__ if inspect.isroutine(getattr(cls, name))]
+captures = {}
+for fn in fns:"
+"""default"": default,
+        ""arg_name"": arg_name,
+}
+return fn","""default"": default,
+        ""arg_name"": arg_name
+}
+return fn"
+"DEFAULT = ""default (compile if called from a exported function / forward)""
+    COPY_TO_SCRIPT_WRAPPER = (
+""if this method is not scripted, copy the python method onto the scripted model""
+    )
+def export(fn):","DEFAULT = ""default (compile if called from a exported function / forward)""
+    COPY_TO_SCRIPT_WRAPPER = 
+""if this method is not scripted, copy the python method onto the scripted model""
+def export(fn):"
+"if prop.fset:
+            setattr(
+                prop.fset, ""_torchscript_modifier"", FunctionModifiers.UNUSED
+            )  # noqa: B010
+return prop","if prop.fset:
+            setattr(prop.fset, ""_torchscript_modifier"", FunctionModifiers.UNUSED)  # noqa: B010
+return prop"
+"if len(body) != 1 or not (is_pass(body[0]) or is_ellipsis(body[0])):
+        msg = (
+            ""Only `pass` statement or `...` can be the body of overload declaration:\n""
+        )
+        msg += ""\n"".join(parsed_def.source.split(""\n"")[:3])","if len(body) != 1 or not (is_pass(body[0]) or is_ellipsis(body[0])):
+        msg = ""Only `pass` statement or `...` can be the body of overload declaration:\n""
+        msg += '\n'.join(parsed_def.source.split(""\n"")[:3])"
+"for i in range(2):
+        assert (
+            current_frame is not None
+        )  
+current_frame = current_frame.f_back","for i in range(2):
+        assert current_frame is not None   Optional[FrameType]
+current_frame = current_frame.f_back"
+"(*A.shape[:-1], A.size(-1) - D.size(-1)),
+dtype=A.dtype,
+device=A.device,
+            generator=gen,
+)
+)
+U_ortho_t = U_ortho.transpose(-2, -1).contiguous()
+","(*A.shape[:-1], A.size(-1) - D.size(-1)),
+dtype=A.dtype,
+device=A.device,
+            generator=gen
+)
+)
+U_ortho_t = U_ortho.transpose(-2, -1).contiguous()
+"
+"if not torch.jit.is_scripting():
+tensor_ops = (A, B, X, iK)
+        if not set(map(type, tensor_ops)).issubset(
+            (torch.Tensor, type(None))
+        ) and has_torch_function(tensor_ops):
+return handle_torch_function(","if not torch.jit.is_scripting():
+tensor_ops = (A, B, X, iK)
+        if (not set(map(type, tensor_ops)).issubset((torch.Tensor, type(None))) and has_torch_function(tensor_ops)):
+return handle_torch_function("
+"n = (k if n is None else n) if X is None else X.shape[-1]
+    if m < 3 * n:
+raise ValueError(
+            ""LPBPCG algorithm is not applicable when the number of A rows (={})""
+            "" is smaller than 3 x the number of requested eigenpairs (={})"".format(m, n)
+        )
+    method = ""ortho"" if method is None else method","n = (k if n is None else n) if X is None else X.shape[-1]
+    if (m < 3 * n):
+raise ValueError(
+            'LPBPCG algorithm is not applicable when the number of A rows (={})'
+            ' is smaller than 3 x the number of requested eigenpairs (={})'
+            .format(m, n))
+    method = 'ortho' if method is None else method"
+"B_ = bB[i] if bB is not None else None
+            X_ = (
+                torch.randn((m, n), dtype=dtype, device=device) if bX is None else bX[i]
+            )
+assert len(X_.shape) == 2 and X_.shape == (m, n), (X_.shape, (m, n))","B_ = bB[i] if bB is not None else None
+            X_ = torch.randn((m, n), dtype=dtype, device=device) if bX is None else bX[i]
+assert len(X_.shape) == 2 and X_.shape == (m, n), (X_.shape, (m, n))"
+"self.tracker = tracker
+        m = iparams[""m""]
+        n = iparams[""n""]
+# variable parameters
+self.X = X","self.tracker = tracker
+        m = iparams['m']
+        n = iparams['n']
+# variable parameters
+self.X = X"
+"E, X, R = self.E, self.X, self.R
+        rerr = (
+            torch.norm(R, 2, (0,))
+            * (torch.norm(X, 2, (0,)) * (A_norm + E[: X.shape[-1]] * B_norm)) ** -1
+        )
+converged = rerr < tol","E, X, R = self.E, self.X, self.R
+        rerr = torch.norm(R, 2, (0, )) * (torch.norm(X, 2, (0, )) * (A_norm + E[:X.shape[-1]] * B_norm)) ** -1
+converged = rerr < tol"
+"count += 1
+        assert count >= prev_count, (
+            ""the number of converged eigenpairs ""
+            ""(was {}, got {}) cannot decrease"".format(prev_count, count)
+        )","count += 1
+        assert count >= prev_count, 'the number of converged eigenpairs ' \
+            '(was {}, got {}) cannot decrease'.format(prev_count, count)"
+"d_col = d_row.reshape(d_row.shape[0], 1)
+# TODO: Consider reordering the operations to work with lower-triangular matrices
+        R = (
+            torch.linalg.cholesky(((SBS * d_row) * d_col).transpose(-2, -1).conj())
+            .transpose(-2, -1)
+            .conj()
+        )","d_col = d_row.reshape(d_row.shape[0], 1)
+# TODO: Consider reordering the operations to work with lower-triangular matrices
+        R = torch.linalg.cholesky(((SBS * d_row) * d_col).transpose(-2, -1).conj()).transpose(-2, -1).conj()"
+"if not torch.jit.is_scripting():
+tensor_ops = (A, M)
+        if not set(map(type, tensor_ops)).issubset(
+            (torch.Tensor, type(None))
+        ) and has_torch_function(tensor_ops):
+            return handle_torch_function(
+                svd_lowrank, tensor_ops, A, q=q, niter=niter, M=M
+            )
+return _svd_lowrank(A, q=q, niter=niter, M=M)","if not torch.jit.is_scripting():
+tensor_ops = (A, M)
+        if (not set(map(type, tensor_ops)).issubset((torch.Tensor, type(None))) and has_torch_function(tensor_ops)):
+            return handle_torch_function(svd_lowrank, tensor_ops, A, q=q, niter=niter, M=M)
+return _svd_lowrank(A, q=q, niter=niter, M=M)"
+"# for overloads and raise an exception if there are more than one.
+        qualified_op_name = ""{}::{}"".format(self.name, op_name)
+op = torch._C._jit_get_operation(qualified_op_name)","# for overloads and raise an exception if there are more than one.
+        qualified_op_name = '{}::{}'.format(self.name, op_name)
+op = torch._C._jit_get_operation(qualified_op_name)"
+"        if (
+            ""CompositeImplicitAutograd"" in dispatchKeys
+            and ""CompositeExplicitAutograd"" in dispatchKeys
+        ):
+            raise RuntimeError(
+                ""Registration to both CompositeImplicitAutograd and CompositeExplicitAutograd is not allowed.""
+            )","        if 'CompositeImplicitAutograd' in dispatchKeys and 'CompositeExplicitAutograd' in dispatchKeys:
+            raise RuntimeError(""Registration to both CompositeImplicitAutograd and CompositeExplicitAutograd is not allowed."")"
+"filename (str): file name to map
+shared (bool): whether to share memory
+size (int): number of elements in the storage
+"""""",
+)
+","filename (str): file name to map
+shared (bool): whether to share memory
+size (int): number of elements in the storage
+"""""")
+"
+"    if (
+        getattr(ret.__class__, ""__setstate__"", Tensor.__setstate__)
+        is not Tensor.__setstate__
+    ):
+ret.__setstate__(state)
+else:
+if isinstance(state, tuple):","    if getattr(ret.__class__, ""__setstate__"", Tensor.__setstate__) is not Tensor.__setstate__:
+ret.__setstate__(state)
+else:
+if isinstance(state, tuple):"

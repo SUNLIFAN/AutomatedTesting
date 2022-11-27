@@ -1,0 +1,741 @@
+buggy_code,fixed_code
+"def __sizeof__(self):
+        return super(_StorageBase, self).__sizeof__() + self.element_size() * self.size()","def __sizeof__(self):
+        return (
+            super(_StorageBase, self).__sizeof__() + self.element_size() * self.size()
+        )"
+"self.quant_min: int = quant_min
+self.quant_max: int = quant_max
+        self.register_buffer(""fake_quant_enabled"", torch.tensor([0], dtype=torch.long))
+        self.register_buffer(""observer_enabled"", torch.tensor([0], dtype=torch.long))
+self.is_symmetric_quant = _is_symmetric_quant(self.activation_post_process.qscheme)","self.quant_min: int = quant_min
+self.quant_max: int = quant_max
+        self.register_buffer(""fake_quant_enabled"", torch.tensor([1], dtype=torch.long))
+        self.register_buffer(""observer_enabled"", torch.tensor([1], dtype=torch.long))
+self.is_symmetric_quant = _is_symmetric_quant(self.activation_post_process.qscheme)"
+"def get_default_qat_qconfig(backend='fbgemm', version=None):
+# Histogram observer is too slow for quantization aware training
+if version is None:
+if backend == 'fbgemm':","def get_default_qat_qconfig(backend='fbgemm', version=1):
+# Histogram observer is too slow for quantization aware training
+if version is None:
+if backend == 'fbgemm':"
+"exp_avg.mul_(beta1).add_(grad, alpha=1 - beta1)
+        exp_avg_sq.mul_(beta2).addcmul_(grad, grad, value=1 - beta2)
+if amsgrad:","exp_avg.mul_(beta1).add_(grad, alpha=1 - beta1)
+        exp_avg_sq.mul_(beta2).addcmul_(grad, grad.conj(), value=1 - beta2)
+if amsgrad:"
+"def get_post_build_suffix(self) -> str:
+if self.gpu_arch_type == ""cuda"":
+return f""+cu{self.gpu_arch_version.replace('.', '')}""
+return f""+{self.gpu_arch_type}{self.gpu_arch_version}""","def get_post_build_suffix(self) -> str:
+        if self.no_build_suffix:
+            return """"
+if self.gpu_arch_type == ""cuda"":
+return f""+cu{self.gpu_arch_version.replace('.', '')}""
+return f""+{self.gpu_arch_type}{self.gpu_arch_version}"""
+"torch._C._log_api_usage_once(""quantization_api._numeric_suite_fx.extract_weights"")
+    base_name_to_sets_of_related_ops = get_base_name_to_sets_of_related_ops()
+type_a_related_to_b = get_type_a_related_to_b(base_name_to_sets_of_related_ops)","torch._C._log_api_usage_once(""quantization_api._numeric_suite_fx.extract_weights"")
+    if base_name_to_sets_of_related_ops is None:
+        base_name_to_sets_of_related_ops = get_base_name_to_sets_of_related_ops()
+type_a_related_to_b = get_type_a_related_to_b(base_name_to_sets_of_related_ops)"
+"def inner(*args, **kwargs):
+a0, a1, *a_other = args
+        if isinstance(a0, tuple) and isinstance(a1, tuple):
+results = []
+for el0, el1 in zip(a0, a1):
+new_args = (el0, el1, *a_other)","def inner(*args, **kwargs):
+a0, a1, *a_other = args
+        if (isinstance(a0, tuple) and isinstance(a1, tuple)) or (isinstance(a0, list) and isinstance(a1, list)):
+results = []
+for el0, el1 in zip(a0, a1):
+new_args = (el0, el1, *a_other)"
+"if node.op == 'output':
+rv = map_arg(node.args[0], lambda n: val_map[n])
+                return rv
+val_map[node] = self.node_copy(node, lambda n : val_map[n])
+return None","if node.op == 'output':
+rv = map_arg(node.args[0], lambda n: val_map[n])
+                return rv if not return_output_node else (rv, node)
+val_map[node] = self.node_copy(node, lambda n : val_map[n])
+return None"
+"g = Graph()
+        output_val = g.graph_copy(self, val_map=memo)
+        g.output(output_val)
+return g","g = Graph()
+        output_vals = g.graph_copy(self, val_map=memo, return_output_node=True)
+        assert isinstance(output_vals, tuple)
+        output_val, old_output_val = output_vals
+        g.output(output_val, type_expr=getattr(old_output_val, 'type', None))
+return g"
+"def _handle_reduce_dim_none(g, self, op_name):
+    dim_size = _get_tensor_dim_size(self, 0)
+rank = _get_tensor_rank(self)
+if rank is not None and any([_get_tensor_dim_size(self, i) == 0 for i in range(rank)]):","def _handle_reduce_dim_none(g, self, op_name):
+rank = _get_tensor_rank(self)
+if rank is not None and any([_get_tensor_dim_size(self, i) == 0 for i in range(rank)]):"
+"self.module_groups = []
+self.enable_mask_update = False
+        self.activation_handle = None
+        self.bias_handle = None
+self.model = model","self.module_groups = []
+self.enable_mask_update = False
+        self.activation_handles = []
+        self.bias_handles = []
+self.model = model"
+"def __getitem__(self, idx):
+return self.dataset[self.indices[idx]]","def __getitem__(self, idx):
+        if isinstance(idx, list):
+            return self.dataset[[self.indices[i] for i in idx]]
+return self.dataset[self.indices[idx]]"
+"self.register_parameter('in_proj_bias', None)
+        self.out_proj = Linear(embed_dim, embed_dim, bias=bias, **factory_kwargs)
+if add_bias_kv:
+self.bias_k = Parameter(torch.empty((1, 1, embed_dim), **factory_kwargs))","self.register_parameter('in_proj_bias', None)
+        self.out_proj = NonDynamicallyQuantizableLinear(embed_dim, embed_dim, bias=bias, **factory_kwargs)
+if add_bias_kv:
+self.bias_k = Parameter(torch.empty((1, 1, embed_dim), **factory_kwargs))"
+"if right is Any or left == right:
+return True
+if right == type(None):
+return False","if right is Any or left == right:
+return True
+    if isinstance(right, _GenericAlias):
+        if getattr(right, '__origin__', None) is Generic:
+            return True
+
+if right == type(None):
+return False"
+"def __eq__(self, other):
+if isinstance(other, _DataPipeType):
+            return self.issubtype(other) and other.issubtype(self)
+return NotImplemented","def __eq__(self, other):
+if isinstance(other, _DataPipeType):
+            return self.param == other.param
+return NotImplemented"
+"def issubtype(self, other):
+if isinstance(other, _DataPipeType):
+return issubtype(self.param, other.param)","def issubtype(self, other):
+        if isinstance(other.param, _GenericAlias):
+            if getattr(other.param, '__origin__', None) is Generic:
+                return True
+if isinstance(other, _DataPipeType):
+return issubtype(self.param, other.param)"
+"if torch.cuda.is_available():
+torch.cuda.synchronize()","if self.use_cuda:
+torch.cuda.synchronize()"
+"def get_type(arg):
+            if isinstance(arg, fx.Proxy):
+                old_meta = self.node_map[arg].meta
+                return old_meta['type'] if 'type' in old_meta else None
+            return create_type_hint(arg)
+        arg_types = tuple([get_type(arg) for arg in args])","def get_type(arg):
+            if isinstance(arg, fx.Node):
+                return n.meta['type'] if 'type' in n.meta else None
+            return type(arg)
+        arg_types = map_aggregate(n.args, get_type)
+        assert(isinstance(arg_types, tuple))
+        arg_types = tuple([create_type_hint(i) for i in arg_types])"
+"if found_tensor:
+n.meta['tensor_meta'] = meta
+        n.meta['type'] = create_type_hint(result)
+return result","if found_tensor:
+n.meta['tensor_meta'] = meta
+        n.meta['type'] = type(result)
+return result"
+"fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / math.sqrt(fan_in)
+init.uniform_(self.bias, -bound, bound)","fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / math.sqrt(fan_in) if fan_in > 0 else 0
+init.uniform_(self.bias, -bound, bound)"
+"if str(t.elem) == 'Tensor':
+            if mutable:
+return NamedCType(binds, MutRefCType(BaseCType(tensorT)))","if str(t.elem) == 'Tensor':
+            if mutable and not local.use_const_ref_for_mutable_tensors():
+return NamedCType(binds, MutRefCType(BaseCType(tensorT)))"
+"tensor_type: OptionalCType = OptionalCType(BaseCType(tensorT))
+        if mutable:
+return NamedCType(binds, MutRefCType(tensor_type))","tensor_type: OptionalCType = OptionalCType(BaseCType(tensorT))
+        if mutable and not local.use_const_ref_for_mutable_tensors():
+return NamedCType(binds, MutRefCType(tensor_type))"
+"if len(quant_uses) == 1:
+quantized.graph.erase_node(node)
+                            for arg in quant_args[1 :]:
+                                quantized.graph.erase_node(arg)
+return quantized","if len(quant_uses) == 1:
+quantized.graph.erase_node(node)
+                            for arg in quant_args[1:]:
+                                if isinstance(arg, Node):
+                                    quantized.graph.erase_node(arg)
+return quantized"
+"if norm_type == inf:
+        total_norm = max(p.grad.detach().abs().max().to(device) for p in parameters)","if norm_type == inf:
+        norms = [p.grad.detach().abs().max().to(device) for p in parameters]
+        total_norm = norms[0] if len(norms) == 1 else torch.max(torch.stack(norms))"
+"guard_field = 'c10::cuda::OptionalCUDAGuard guard_;'
+        elif self.dispatch_key == DispatchKey.DefaultBackend:","guard_field = 'c10::cuda::OptionalCUDAGuard guard_;'
+        elif self.dispatch_key == DispatchKey.CompositeExplicitAutograd:"
+"else:
+            observed.linear_Q = other.q_proj_weight
+            observed.linear_K = other.k_proj_weight
+            observed.linear_V = other.v_proj_weight
+if other.in_proj_bias is None:","else:
+            observed.linear_Q.weight = nn.Parameter(other.q_proj_weight)
+            observed.linear_K.weight = nn.Parameter(other.k_proj_weight)
+            observed.linear_V.weight = nn.Parameter(other.v_proj_weight)
+if other.in_proj_bias is None:"
+"target_device = _get_device_index(target_device, True)
+        ctx.target_device = target_device","if (target_device == 'cpu'):
+            ctx.target_device = 'cpu'
+        else:
+            target_device = _get_device_index(target_device, True)
+            ctx.target_device = target_device"
+"assert key.size(0) == value.size(0) and key.size(1) == value.size(1)
+    head_dim = embed_dim // num_heads
+assert head_dim * num_heads == embed_dim, ""embed_dim must be divisible by num_heads""
+scaling = float(head_dim) ** -0.5","assert key.size(0) == value.size(0) and key.size(1) == value.size(1)
+    if isinstance(embed_dim, torch.Tensor):
+        head_dim = embed_dim.div(num_heads, rounding_mode='trunc')
+    else:
+        head_dim = embed_dim // num_heads
+assert head_dim * num_heads == embed_dim, ""embed_dim must be divisible by num_heads""
+scaling = float(head_dim) ** -0.5"
+"elif str(t) == 'Tensor?[]':
+        return BaseCType('const c10::List<c10::optional<Tensor>> &', binds)
+return cpp.argumenttype_type(t, mutable=mutable, binds=binds)","elif str(t) == 'Tensor?[]':
+        return ConstRefCType(BaseCType(""c10::List<c10::optional<Tensor>>"", binds))
+return cpp.argumenttype_type(t, mutable=mutable, binds=binds)"
+"Y = torch.rand(N, 1, device=device)
+# Predefined nu_alpha and nu_beta, nu_alpha.shape: (1, 1), nu_beta.shape: (1, 1)
+    nu_alpha = torch.randn(1, 1, device=device)
+nu_beta = torch.rand(1, 1, device=device)
+nu = dist.Gamma(nu_alpha, nu_beta)","Y = torch.rand(N, 1, device=device)
+# Predefined nu_alpha and nu_beta, nu_alpha.shape: (1, 1), nu_beta.shape: (1, 1)
+    nu_alpha = torch.rand(1, 1, device=device)
+nu_beta = torch.rand(1, 1, device=device)
+nu = dist.Gamma(nu_alpha, nu_beta)"
+"def icdf(self, value):
+        if self._validate_args:
+            self._validate_sample(value)
+return torch.tan(math.pi * (value - 0.5)) * self.scale + self.loc","def icdf(self, value):
+return torch.tan(math.pi * (value - 0.5)) * self.scale + self.loc"
+"elif node.op == 'output':
+if node.type is not None:
+                    maybe_return_annotation = f"" -> {type_repr(node.type)}""
+body.append(f'return {repr(node.args[0])}')
+return","elif node.op == 'output':
+if node.type is not None:
+                    maybe_return_annotation[0] = f"" -> {type_repr(node.type)}""
+body.append(f'return {repr(node.args[0])}')
+return"
+"else:
+args.extend(func.arguments.out)
+args.extend(func.arguments.non_out)
+    return [r for arg in args for r in argument(arg)]","else:
+args.extend(func.arguments.out)
+args.extend(func.arguments.non_out)
+    return [r for arg in args for r in argument(arg, is_out=func.is_out_fn())]"
+"if self.dispatch_key not in f.dispatch:
+return None
+op_name = f""aten::{f.func.name}""
+if self.target is Target.REGISTRATION and not self.selector.is_operator_selected(op_name):","if self.dispatch_key not in f.dispatch:
+return None
+        if f.manual_kernel_registration:
+            return None
+op_name = f""aten::{f.func.name}""
+if self.target is Target.REGISTRATION and not self.selector.is_operator_selected(op_name):"
+"@method_with_native_function
+def __call__(self, f: NativeFunction) -> Optional[str]:
+        if f.manual_kernel_registration:
+            return None
+if Variant.function not in f.variants:
+return None","@method_with_native_function
+def __call__(self, f: NativeFunction) -> Optional[str]:
+if Variant.function not in f.variants:
+return None"
+"torch.matmul(p, q.t(), out=tensor)
+assert not torch.any(torch.isnan(tensor))
+return [input_tensor]","torch.matmul(p, q.t(), out=tensor)
+assert not torch.any(torch.isnan(tensor))
+
+        if state.use_error_feedback:
+            state.error_dict[bucket_index] = input_tensor_cp - input_tensor
+return [input_tensor]"
+"out_args: List[Dict[str, Any]] = []
+    for arg in f.func.arguments.positional:
+if arg.default is not None:
+continue","out_args: List[Dict[str, Any]] = []
+    for arg in f.func.arguments.flat_positional:
+if arg.default is not None:
+continue"
+"def arguments(func: FunctionSchema) -> Sequence[MetaArgument]:
+assert not func.arguments.out
+    return list(map(argument, itertools.chain(func.arguments.positional, func.arguments.kwarg_only)))","def arguments(func: FunctionSchema) -> Sequence[MetaArgument]:
+assert not func.arguments.out
+    return list(map(argument, func.arguments.flat_non_out))"
+"args = tuple(a for a in cpp_args if isinstance(a, Argument))
+    input_arg_set = set(a.name for a in f.func.arguments.positional)
+    kwarg_only_set = set(a.name for a in f.func.arguments.kwarg_only)
+out_arg_set = set(a.name for a in f.func.arguments.out)","args = tuple(a for a in cpp_args if isinstance(a, Argument))
+    input_arg_set = set(a.name for a in f.func.arguments.flat_positional)
+    kwarg_only_set = set(a.name for a in f.func.arguments.flat_kwarg_only)
+out_arg_set = set(a.name for a in f.func.arguments.out)"
+"kwarg_only_set = set(a.name for a in f.func.arguments.kwarg_only)
+out_arg_set = set(a.name for a in f.func.arguments.out)
+sig_group = CppSignatureGroup.from_schema(f.func, method=False)","kwarg_only_set = set(a.name for a in f.func.arguments.flat_kwarg_only)
+out_arg_set = set(a.name for a in f.func.arguments.out)
+sig_group = CppSignatureGroup.from_schema(f.func, method=False)
+"
+" out_and_self = list(self.arguments.out) + [arg for arg in self.arguments.positional if arg.name == ""self""]
+mutable_returns = [ret for ret in self.returns if ret.annotation is not None and ret.annotation.is_write]","out_and_self = list(self.arguments.out) + [arg for arg in self.arguments.flat_positional if arg.name == ""self""]
+mutable_returns = [ret for ret in self.returns if ret.annotation is not None and ret.annotation.is_write]"
+"def __str__(self) -> str:
+all_arguments: List[str] = []
+        all_arguments.extend(map(str, self.positional))
+        if self.kwarg_only or self.out:
+all_arguments.append('*')
+        all_arguments.extend(map(str, self.kwarg_only))
+all_arguments.extend(map(str, self.out))
+return ', '.join(all_arguments)","def __str__(self) -> str:
+all_arguments: List[str] = []
+        all_arguments.extend(map(str, self.flat_positional))
+        if self.flat_kwarg_only or self.out:
+all_arguments.append('*')
+        all_arguments.extend(map(str, self.flat_kwarg_only))
+all_arguments.extend(map(str, self.out))
+return ', '.join(all_arguments)"
+"if state.use_error_feedback:
+            state.error_dict[input_tensor] = input_tensor_cp - input_tensor
+ret = input_tensor.resize_(total_length)
+return [ret]","if state.use_error_feedback:
+            state.error_dict[bucket_index] = input_tensor_cp - input_tensor
+ret = input_tensor.resize_(total_length)
+return [ret]"
+"model = copy.deepcopy(model)
+model.eval()
+prepare(model, inplace=True)
+    run_fn(model, run_args)
+convert(model, mapping, inplace=True)
+return model","model = copy.deepcopy(model)
+model.eval()
+prepare(model, inplace=True)
+    run_fn(model, *run_args)
+convert(model, mapping, inplace=True)
+return model"
+"powerSGD_state = powerSGD.PowerSGDState(
+process_group=state,
+matrix_approximation_rank=matrix_approximation_rank,
+random_seed=random_seed,
+)
+model.register_comm_hook(powerSGD_state, comm_hook)","powerSGD_state = powerSGD.PowerSGDState(
+process_group=state,
+matrix_approximation_rank=matrix_approximation_rank,
+        use_error_feedback=use_error_feedback,
+random_seed=random_seed,
+)
+model.register_comm_hook(powerSGD_state, comm_hook)"
+"q = fut.value()[0].div_(world_size)
+torch.matmul(p, q.t(), out=matrix)
+ret = input_tensor.resize_(total_length)
+return [ret]
+","q = fut.value()[0].div_(world_size)
+torch.matmul(p, q.t(), out=matrix)
+        if state.use_error_feedback:
+            state.error_dict[input_tensor] = input_tensor_cp - input_tensor
+ret = input_tensor.resize_(total_length)
+return [ret]"
+"self.bn = _BN_CLASS_MAP[dim](out_channels, eps, momentum, True, True)
+self.weight_fake_quant = self.qconfig.weight()
+        self.zero_bias = torch.zeros(out_channels)
+if bias:
+self.bias = Parameter(torch.Tensor(out_channels))","self.bn = _BN_CLASS_MAP[dim](out_channels, eps, momentum, True, True)
+self.weight_fake_quant = self.qconfig.weight()
+if bias:
+self.bias = Parameter(torch.Tensor(out_channels))"
+"scale_factor.reshape(weight_shape))
+        conv = self._conv_forward(input, scaled_weight, self.zero_bias)
+conv_orig = conv / scale_factor.reshape(bias_shape)","scale_factor.reshape(weight_shape))
+        conv = self._conv_forward(input, scaled_weight)
+conv_orig = conv / scale_factor.reshape(bias_shape)"
+"def __setattr__(self, key: Any, value: Any) -> None:
+        if getattr(self, ""_initialized"", False) and not isinstance(value, torch.nn.Parameter):
+            warnings.warn(""Setting attributes on ParameterDict is not supported."")
+super(ParameterDict, self).__setattr__(key, value)","def __setattr__(self, key: Any, value: Any) -> None:
+        if getattr(self, ""_initialized"", False):
+            if not hasattr(self, key) and not isinstance(value, torch.nn.Parameter):
+                warnings.warn(""Setting attributes on ParameterDict is not supported."")
+super(ParameterDict, self).__setattr__(key, value)"
+"scale_factor.reshape(weight_shape))
+        conv = self._conv_forward(input, scaled_weight)
+conv_orig = conv / scale_factor.reshape(bias_shape)","scale_factor.reshape(weight_shape))
+        conv = self._conv_forward(input, scaled_weight, self.zero_bias)
+conv_orig = conv / scale_factor.reshape(bias_shape)"
+"def replace_node_module(node: fx.Node, modules: Dict[str, Any], new_module: torch.nn.Module):
+parent_name, name = _parent_name(node.target)","def replace_node_module(node: fx.Node, modules: Dict[str, Any], new_module: torch.nn.Module):
+    assert(isinstance(node.target, str))
+parent_name, name = _parent_name(node.target)"
+"def __init__(self, scale: float, zero_point: int, negative_slope: float = 1e-2, inplace: bool = False):
+super().__init__(negative_slope, inplace)
+        self.register_buffer('scale', torch.tensor([scale]))
+        self.register_buffer('zero_point', torch.tensor([zero_point]))","def __init__(self, scale: float, zero_point: int, negative_slope: float = 1e-2, inplace: bool = False):
+super().__init__(negative_slope, inplace)
+        self.register_buffer('scale', torch.tensor(scale))
+        self.register_buffer('zero_point', torch.tensor(zero_point))"
+" def __init__(self, dtype=torch.float16, custom_op_name="""", compute_dtype=None):
+super(PlaceholderObserver, self).__init__(dtype=dtype)","def __init__(self, dtype=torch.float32, custom_op_name="""", compute_dtype=None):
+super(PlaceholderObserver, self).__init__(dtype=dtype)"
+"start_daemon = rank == 0
+store = TCPStore(result.hostname, result.port, world_size, start_daemon, timeout)
+yield (store, rank, world_size)","start_daemon = rank == 0
+    assert result.hostname is not None
+store = TCPStore(result.hostname, result.port, world_size, start_daemon, timeout)
+yield (store, rank, world_size)"
+"partition.logical_device_ids.append(device.logical_id)
+                    partition.nodes.add(node)
+partition_to_left_mem_bytes[partition] -= total_size_of_input_nodes","partition.logical_device_ids.append(device.logical_id)
+                    partition.add_node(node)
+partition_to_left_mem_bytes[partition] -= total_size_of_input_nodes"
+"if total_size_of_input_nodes > available_mem_bytes:
+raise RuntimeError(node.target + 'is too large to fit into a device')
+                partition.nodes.add(node)
+partition.used_mem_bytes += total_size_of_input_nodes","if total_size_of_input_nodes > available_mem_bytes:
+raise RuntimeError(node.target + 'is too large to fit into a device')
+                partition.add_node(node)
+partition.used_mem_bytes += total_size_of_input_nodes"
+"if IS_HIP_EXTENSION:
+cuda_post_cflags = cuda_post_cflags + _get_rocm_arch_flags(cuda_post_cflags)
+                    cuda_post_cflags = cuda_post_cflags + COMMON_HIPCC_FLAGS
+else:
+cuda_post_cflags = unix_cuda_flags(cuda_post_cflags)
+append_std14_if_no_std_present(cuda_post_cflags)","if IS_HIP_EXTENSION:
+cuda_post_cflags = cuda_post_cflags + _get_rocm_arch_flags(cuda_post_cflags)
+                    cuda_post_cflags = COMMON_HIP_FLAGS + COMMON_HIPCC_FLAGS + cuda_post_cflags
+else:
+cuda_post_cflags = unix_cuda_flags(cuda_post_cflags)
+append_std14_if_no_std_present(cuda_post_cflags)"
+"if allow_list is None:
+        allow_list = get_qconfig_propagation_list()
+module_qconfig = qconfig_dict.get(type(module), qconfig_parent)","if allow_list is None:
+        allow_list = get_default_qconfig_propagation_list()
+module_qconfig = qconfig_dict.get(type(module), qconfig_parent)"
+"if qconfig_propagation_list is None:
+        qconfig_propagation_list = get_qconfig_propagation_list()
+if custom_module_class_mapping is None:","if qconfig_propagation_list is None:
+        qconfig_propagation_list = get_default_qconfig_propagation_list()
+if custom_module_class_mapping is None:"
+"if qconfig_propagation_list is None:
+        qconfig_propagation_list = get_qconfig_propagation_list()
+propagate_qconfig_(model, qconfig_dict=None)","if qconfig_propagation_list is None:
+        qconfig_propagation_list = get_default_qconfig_propagation_list()
+propagate_qconfig_(model, qconfig_dict=None)"
+"torch._C._log_api_usage_once(""quantization_api.quantize.quantize"")
+if mapping is None:
+        mapping = get_static_quant_module_mappings()
+if not inplace:
+model = copy.deepcopy(model)
+model.eval()","torch._C._log_api_usage_once(""quantization_api.quantize.quantize"")
+if mapping is None:
+        mapping = get_default_static_quant_module_mappings()
+if not inplace:
+model = copy.deepcopy(model)
+model.eval()"
+"if mapping is None:
+        mapping = get_dynamic_quant_module_mappings()
+if not inplace:
+model = copy.deepcopy(model)","if mapping is None:
+        mapping = get_default_dynamic_quant_module_mappings()
+if not inplace:
+model = copy.deepcopy(model)"
+"if mapping is None:
+        mapping = get_qat_module_mappings()
+if not inplace:
+model = copy.deepcopy(model)","if mapping is None:
+        mapping = get_default_qat_module_mappings()
+if not inplace:
+model = copy.deepcopy(model)"
+"if mapping is None:
+        mapping = get_static_quant_module_mappings()
+if convert_custom_config_dict is None:
+convert_custom_config_dict = {}","if mapping is None:
+        mapping = get_default_static_quant_module_mappings()
+if convert_custom_config_dict is None:
+convert_custom_config_dict = {}"
+"buf = io.BytesIO()
+            storage._write_file(buf, _should_read_directly(buf))
+buf_value = buf.getvalue()","buf = io.BytesIO()
+            storage._write_file(buf, _should_read_directly(buf), False)
+buf_value = buf.getvalue()"
+"def with_cache(self, cache_size=1):
+return self.inv.with_cache(cache_size).inv","def with_cache(self, cache_size=1):
+        assert self._inv is not None
+return self.inv.with_cache(cache_size).inv"
+"def sign(self):
+        if isinstance(self.scale, numbers.Number):
+            return 1 if self.scale > 0 else -1 if self.scale < 0 else 0
+return self.scale.sign()","def sign(self):
+        if isinstance(self.scale, numbers.Real):
+            return 1 if float(self.scale) > 0 else -1 if float(self.scale) < 0 else 0
+return self.scale.sign()"
+"def log_abs_det_jacobian(self, x, y):
+shape = x.shape
+scale = self.scale
+        if isinstance(scale, numbers.Number):
+result = torch.full_like(x, math.log(abs(scale)))
+else:
+result = torch.abs(scale).log()","def log_abs_det_jacobian(self, x, y):
+shape = x.shape
+scale = self.scale
+        if isinstance(scale, numbers.Real):
+result = torch.full_like(x, math.log(abs(scale)))
+else:
+result = torch.abs(scale).log()"
+"z_cumprod = (1 - z).cumprod(-1)
+        y = pad(z, (0, 1), value=1) * pad(z_cumprod, (1, 0), value=1)
+return y","z_cumprod = (1 - z).cumprod(-1)
+        y = pad(z, [0, 1], value=1) * pad(z_cumprod, [1, 0], value=1)
+return y"
+"pad = int(n_fft // 2)
+        input = F.pad(input.view(extended_shape), (pad, pad), pad_mode)
+input = input.view(input.shape[-signal_dim:])","pad = int(n_fft // 2)
+        input = F.pad(input.view(extended_shape), [pad, pad], pad_mode)
+input = input.view(input.shape[-signal_dim:])"
+"        return map_arg(a, lambda node: env[node.name])
+for producer_node in producer_nodes:
+        env[producer_node.name] = graph.node_copy(producer_node, load_arg)
+    graph.output(load_arg(producer_nodes[-1].name))
+graph_module = GraphModule(root, graph)
+return graph_module","def load_arg(a):
+        return map_arg(a, lambda node: env[node])
+for producer_node in producer_nodes:
+        env[producer_node] = graph.node_copy(producer_node, load_arg)
+    graph.output(load_arg(producer_nodes[-1]))
+graph_module = GraphModule(root, graph)
+return graph_module"
+"_all_gather_sequence_id += 1
+is_leader = leader_name == self_name
+    timeout = 5
+if is_leader:","_all_gather_sequence_id += 1
+is_leader = leader_name == self_name
+    if timeout == UNSET_RPC_TIMEOUT:
+        timeout = get_rpc_timeout()
+if is_leader:"
+"if node.op == 'call_module':
+                if node.target.split('.')[-1].startswith('activation_post_process_'):
+observer_module = self.modules[node.target]
+prev_node = node.args[0]
+if observer_module.dtype == torch.float16:","if node.op == 'call_module':
+                if is_activation_post_process(self.modules[node.target]):
+observer_module = self.modules[node.target]
+prev_node = node.args[0]
+if observer_module.dtype == torch.float16:"
+"for node in self.quantized_graph.nodes:
+if node.op == 'call_module' and node.target.split('.')[-1].startswith('activation_post_process_'):
+env[node.name] = env[node.args[0].name]","for node in self.quantized_graph.nodes:
+if node.op == 'call_module' and is_activation_post_process(self.modules[node.target]):
+env[node.name] = env[node.args[0].name]"
+"if curr_modules.keys() != prev_modules.keys():
+raise ValueError(""The keys to the given mappings must have the same set of names of modules"")
+    summed_norms = 0
+if None in prev_modules.values():
+return False","if curr_modules.keys() != prev_modules.keys():
+raise ValueError(""The keys to the given mappings must have the same set of names of modules"")
+    summed_norms = torch.tensor(0.)
+if None in prev_modules.values():
+return False"
+"for name in curr_modules.keys():
+difference = curr_modules[name].weight.sub(prev_modules[name].weight)
+summed_norms += torch.norm(difference)
+    return summed_norms < threshold","for name in curr_modules.keys():
+difference = curr_modules[name].weight.sub(prev_modules[name].weight)
+summed_norms += torch.norm(difference)
+    return bool(summed_norms < threshold)"
+"def forward(self, input):
+        return self.activation_post_process(F.relu(
+            F.linear(input, self.weight_fake_quant(self.weight), self.bias)))","def forward(self, input):
+        return F.relu(F.linear(input, self.weight_fake_quant(self.weight), self.bias))"
+"def forward(self, input):
+        return self._forward(input)","def forward(self, input):
+        return self.activation_post_process(self._forward(input))"
+"def forward(self, input):
+        return F.relu(ConvBn2d._forward(self, input))","def forward(self, input):
+        return self.activation_post_process(F.relu(ConvBn2d._forward(self, input)))"
+"self.freeze_bn = freeze_bn if self.training else True
+self.bn = nn.BatchNorm2d(out_channels, eps, momentum, True, True)
+        self.activation_post_process = self.qconfig.activation()
+self.weight_fake_quant = self.qconfig.weight()","self.freeze_bn = freeze_bn if self.training else True
+self.bn = nn.BatchNorm2d(out_channels, eps, momentum, True, True)
+self.weight_fake_quant = self.qconfig.weight()"
+"def forward(self, input):
+        return self.activation_post_process(F.relu(ConvBn2d._forward(self, input)))","def forward(self, input):
+        return F.relu(ConvBn2d._forward(self, input))"
+"if start_record is None and name == '__start_profile':
+start_record = record
+        elif name == '__cuda_start_event':
+assert record.device() != -1","if start_record is None and name == '__start_profile':
+start_record = record
+        elif '__cuda_start_event' in name:
+assert record.device() != -1"
+"if min_val.numel() > 0 and max_val.numel() > 0:
+            prev_zeros = (min_val.item() == 0) and (max_val.item() == 0)
+        if min_val.numel() == 0 or max_val.numel() == 0 or prev_zeros:
+min_val = torch.min(x)
+max_val = torch.max(x)","if min_val.numel() > 0 and max_val.numel() > 0:
+            same_values = min_val.item() == max_val.item()
+        if min_val.numel() == 0 or max_val.numel() == 0 or same_values:
+min_val = torch.min(x)
+max_val = torch.max(x)"
+"min_val = self.min_val
+max_val = self.max_val
+        if min_val.numel() == 0 or max_val.numel() == 0:
+min_val = torch.min(x)
+max_val = torch.max(x)","min_val = self.min_val
+max_val = self.max_val
+        prev_zeros = False
+        if min_val.numel() > 0 and max_val.numel() > 0:
+            prev_zeros = (min_val.item() == 0) and (max_val.item() == 0)
+        if min_val.numel() == 0 or max_val.numel() == 0 or prev_zeros:
+min_val = torch.min(x)
+max_val = torch.max(x)"
+"for dll in dlls:
+is_loaded = False
+if with_load_library_flags:
+            res = kernel32.LoadLibraryExW(dll, 0, 0x00001100)
+last_error = ctypes.get_last_error()
+            if res == 0 and last_error != 126:
+err = ctypes.WinError(last_error)","for dll in dlls:
+is_loaded = False
+if with_load_library_flags:
+            res = kernel32.LoadLibraryExW(dll, None, 0x00001100)
+last_error = ctypes.get_last_error()
+            if res is None and last_error != 126:
+err = ctypes.WinError(last_error)"
+"res = kernel32.LoadLibraryW(dll)
+            if res == 0:
+err = ctypes.WinError(ctypes.get_last_error())","res = kernel32.LoadLibraryW(dll)
+            if res is None:
+err = ctypes.WinError(ctypes.get_last_error())"
+"def __rpow__(self, other):
+        return self.new_tensor(other) ** self","def __rpow__(self, other):
+        dtype = torch.result_type(other, self)
+        return torch.tensor(other, dtype=dtype, device=self.device) ** self"
+"if not torch.jit.is_scripting():
+if any(type(t) is not Tensor for t in operands) and has_torch_function(operands):
+            return handle_torch_function(einsum, operands, *operands)
+if len(operands) == 1 and isinstance(operands[0], (list, tuple)):","if not torch.jit.is_scripting():
+if any(type(t) is not Tensor for t in operands) and has_torch_function(operands):
+            return handle_torch_function(einsum, operands, equation, *operands)
+if len(operands) == 1 and isinstance(operands[0], (list, tuple)):"
+"fin_path = os.path.join(output_directory, filepath)
+    with open(fin_path, 'r') as fin:
+output_source = fin.read()
+fout_path = os.path.join(output_directory, get_hip_file_path(filepath))","fin_path = os.path.join(output_directory, filepath)
+    with open(fin_path, 'r', encoding='utf-8') as fin:
+output_source = fin.read()
+fout_path = os.path.join(output_directory, get_hip_file_path(filepath))"
+"do_write = True
+if os.path.exists(fout_path):
+        with open(fout_path, 'r') as fout_old:
+do_write = fout_old.read() != output_source","do_write = True
+if os.path.exists(fout_path):
+        with open(fout_path, 'r', encoding='utf-8') as fout_old:
+do_write = fout_old.read() != output_source"
+"if do_write:
+        with clean_ctx.open(fout_path, 'w') as fout:
+fout.write(output_source)
+return ""ok""","if do_write:
+        with clean_ctx.open(fout_path, 'w', encoding='utf-8') as fout:
+fout.write(output_source)
+return ""ok"""
+"def __rdiv__(self, other):
+        if self.dtype.is_floating_point:
+return self.reciprocal() * other
+else:
+return (self.double().reciprocal() * other).type_as(self)","def __rdiv__(self, other):
+        if self.dtype.is_floating_point or self.dtype.is_complex:
+return self.reciprocal() * other
+else:
+return (self.double().reciprocal() * other).type_as(self)"
+"self._module_copies[0] = self.module
+for module_copy in self._module_copies[1:]:
+                for param, copy_param in zip(self.module.parameters(), module_copy.parameters()):
+copy_param.requires_grad = param.requires_grad","self._module_copies[0] = self.module
+for module_copy in self._module_copies[1:]:
+                for param, copy_param in zip(self.module.parameters(), parameters(module_copy)):
+copy_param.requires_grad = param.requires_grad"
+"self._module_copies = [self.module]
+        self.modules_params = [list(m.parameters()) for m in self._module_copies]
+self.modules_buffers = [list(m.buffers()) for m in self._module_copies]","
+self._module_copies = [self.module]
+        self.modules_params = [list(parameters(m)) for m in self._module_copies]
+self.modules_buffers = [list(m.buffers()) for m in self._module_copies]"
+"def __rdiv__(self, other):
+        if self.dtype.is_floating_point or self.dtype.is_complex:
+return self.reciprocal() * other
+else:
+return (self.double().reciprocal() * other).type_as(self)","def __rdiv__(self, other):
+        if self.dtype.is_floating_point:
+return self.reciprocal() * other
+else:
+return (self.double().reciprocal() * other).type_as(self)"
+"arranged_img_CHW = make_grid(make_np(label_img), ncols=nrow)
+    arranged_augment_square_HWC = np.ndarray((arranged_img_CHW.shape[2], arranged_img_CHW.shape[2], 3))
+arranged_img_HWC = arranged_img_CHW.transpose(1, 2, 0)","arranged_img_CHW = make_grid(make_np(label_img), ncols=nrow)
+    arranged_augment_square_HWC = np.zeros((arranged_img_CHW.shape[2], arranged_img_CHW.shape[2], 3))
+arranged_img_HWC = arranged_img_CHW.transpose(1, 2, 0) "
+"ssi = SessionStartInfo()
+for k, v in hparam_dict.items():
+if isinstance(v, int) or isinstance(v, float):
+ssi.hparams[k].number_value = v
+continue","ssi = SessionStartInfo()
+for k, v in hparam_dict.items():
+        if v is None:
+            continue
+if isinstance(v, int) or isinstance(v, float):
+ssi.hparams[k].number_value = v
+continue"
+"def size(g, self, dim):
+return sym_help._size_helper(g, self, dim)","def size(g, self, dim=None):
+    if dim is None:
+        return g.op(""Shape"", self)
+return sym_help._size_helper(g, self, dim)"
+"def hardtanh(g, self, min_val, max_val):
+dtype = self.type().scalarType()
+    if dtype is not None:
+dtype = 6 
+else:
+dtype = sym_help.scalar_type_to_onnx.index(sym_help.cast_pytorch_to_onnx[dtype])","def hardtanh(g, self, min_val, max_val):
+dtype = self.type().scalarType()
+    if dtype is None:
+dtype = 6
+else:
+dtype = sym_help.scalar_type_to_onnx.index(sym_help.cast_pytorch_to_onnx[dtype])"
+"pad = int(n_fft // 2)
+input = F.pad(input.view(extended_shape), (pad, pad), pad_mode)
+input = input.view(input.shape[-signal_dim:])
+    return torch._C._VariableFunctions.stft(input, n_fft, hop_length, win_length, window, normalized, onesided)
+del torch.unique_dim","pad = int(n_fft // 2)
+input = F.pad(input.view(extended_shape), (pad, pad), pad_mode)
+input = input.view(input.shape[-signal_dim:])
+    return _VF.stft(input, n_fft, hop_length, win_length, window, normalized, onesided)
+del torch.unique_dim"
+"def register_all(mod):
+for name in dir(mod):
+v = getattr(mod, name)
+            if callable(v):
+_builtin_ops.append((v, ""aten::"" + name))
+for mod in _modules_containing_builtins:
+register_all(mod)","def register_all(mod):
+for name in dir(mod):
+v = getattr(mod, name)
+            if callable(v) and not _is_special_functional_bound_op(v):
+_builtin_ops.append((v, ""aten::"" + name))
+for mod in _modules_containing_builtins:
+register_all(mod)"
+"self.scale = None
+        self.zero_point = None
+self.dtype = self.activation_post_process.dtype
+self.qscheme = self.activation_post_process.qscheme","        self.scale = torch.tensor([1.0])
+        self.zero_point = torch.tensor([0])
+self.dtype = self.activation_post_process.dtype
+self.qscheme = self.activation_post_process.qscheme"

@@ -1,0 +1,639 @@
+buggy_code,fixed_code
+"std::shared_ptr<ProcessGroupNCCL::WorkNCCL> ProcessGroupNCCL::initWork(
+    std::vector<at::Device> devices,
+    int rank,
+    OpType opType) {
+  return std::make_shared<ProcessGroupNCCL::WorkNCCL>(devices, rank, opType);
+}","std::shared_ptr<ProcessGroupNCCL::WorkNCCL> ProcessGroupNCCL::initWork(
+    std::vector<at::Device> devices) {
+  return std::make_shared<ProcessGroupNCCL::WorkNCCL>(devices);
+}"
+"std::chrono::milliseconds(kWaitForAbortCommStoreKey));
+            LOG(INFO) << ""Found key in store: "" << storeKey
+<< "", aborting appropriate communicators"";","std::chrono::milliseconds(kWaitForAbortCommStoreKey));
+            auto val = store_->get(storeKey);
+            std::string rank(reinterpret_cast<char*>(val.data()), val.size());
+            LOG(INFO) << ""[Rank "" << rank_
+                      << ""] Found key in store: "" << storeKey
+                      << "", from rank: "" << rank
+<< "", aborting appropriate communicators"";"
+"// For point-to-point communication, lower rank of the two will get unique id.
+  if (rank_ == 0 || (commType != NCCLCommType::COLL && p2pRank == 0)) {
+C10D_NCCL_CHECK(ncclGetUniqueId(&ncclID));
+}","// For point-to-point communication, lower rank of the two will get unique id.
+  if (rank_ == 0 || (isP2POp(opType) && p2pRank == 0)) {
+C10D_NCCL_CHECK(ncclGetUniqueId(&ncclID));
+}"
+"// GPU world size and GPU rank
+int numRanks, rank;
+    if (commType == NCCLCommType::COLL) {
+numRanks = getSize() * devices.size();
+rank = getRank() * devices.size() + i;
+} else {
+    // For point-to-point operation, there are only 2 processes involved so
+    // the GPU rank is either 0 or 1.
+numRanks = 2;
+rank = p2pRank;
+}","// GPU world size and GPU rank
+int numRanks, rank;
+    if (!isP2POp(opType)) {
+numRanks = getSize() * devices.size();
+rank = getRank() * devices.size() + i;
+} else {
+      // For point-to-point operation, there are only 2 processes involved so
+      // the GPU rank is either 0 or 1.
+numRanks = 2;
+rank = p2pRank;
+}"
+"    if (str != ""None"" && str != """") {
+      throw std::runtime_error(""invalid default string: "" + str);
+}"," if (str != ""None"") {
+      default_string = parse_string_literal(str);
+}"
+"ss <<   ""kernel_size="" << args.weight.sizes().slice(2) << "", "";
+  ss <<   ""padding="" << ArrayRef<int>(args.params.padding, dim-2) << "", "";
+  ss <<   ""stride="" << ArrayRef<int>(args.params.stride, dim-2) << "", "";
+  ss <<   ""dilation="" << ArrayRef<int>(args.params.dilation, dim-2) << "", "";
+ss <<   ""groups="" << args.params.groups << "")\n"";","ss <<   ""kernel_size="" << args.weight.sizes().slice(2) << "", "";
+  ss <<   ""padding="" << ArrayRef<int>(args.params.padding, dim-2) << "", "";
+  ss <<   ""stride="" << ArrayRef<int>(args.params.stride, dim-2) << "", "";
+  ss <<   ""dilation="" << ArrayRef<int>(args.params.dilation, dim-2) << "", "";
+ss <<   ""groups="" << args.params.groups << "")\n"";"
+"  if (check_has_torch_function((PyObject *)self)) {
+    return handle_torch_function_getter(self, ""names"");
+}
+// The long-term plan is to return a list of (python) torch.Dimname.
+// However, for now, return a list of string.
+  size_t size = self->cdata.dim();
+THPObjectPtr tuple(PyTuple_New(size));
+if (!tuple) throw python_error();
+  const auto dimnames = self->cdata.names();","if (check_has_torch_function(self)) {
+    return handle_torch_function_getter((THPVariable*)self, ""names"");
+}
+// The long-term plan is to return a list of (python) torch.Dimname.
+// However, for now, return a list of string.
+  size_t size = ((THPVariable *)self)->cdata.dim();
+THPObjectPtr tuple(PyTuple_New(size));
+if (!tuple) throw python_error();
+  const auto dimnames = ((THPVariable *)self)->cdata.names();"
+"  if (check_has_torch_function((PyObject *)self)) {
+    return handle_torch_function_setter(self, ""names"", names);
+}
+  auto& var = self->cdata;","  if (check_has_torch_function(self)) {
+    return handle_torch_function_setter((THPVariable*)self, ""names"", names);
+}
+  auto& var = ((THPVariable *)self)->cdata;
+if (names == Py_None) "
+"template <typename T>
+using shared_ptr_class_ = py::class_<T, std::shared_ptr<T>>;
+PyObject* dist_autograd_init(PyObject* /* unused */) {
+auto autograd_module =
+THPObjectPtr(PyImport_ImportModule(""torch.distributed.autograd""));","template <typename T>
+using shared_ptr_class_ = py::class_<T, std::shared_ptr<T>>;
+PyObject* dist_autograd_init(PyObject* _unused, PyObject* noargs) {
+auto autograd_module =
+THPObjectPtr(PyImport_ImportModule(""torch.distributed.autograd""));"
+"PyObject* c10d_init(PyObject* _unused) {
+C10_LOG_API_USAGE_ONCE(""c10d.python.import"");
+auto c10d_module = THPObjectPtr(PyImport_ImportModule(""torch.distributed""));","PyObject* c10d_init(PyObject* _unused, PyObject* noargs) {
+C10_LOG_API_USAGE_ONCE(""c10d.python.import"");
+auto c10d_module = THPObjectPtr(PyImport_ImportModule(""torch.distributed""));
+"
+"static PyMethodDef methods[] = { // NOLINT
+    {""_rpc_init"", (PyCFunction)rpc_init, METH_NOARGS, nullptr},
+{nullptr, nullptr, 0, nullptr}};
+PyMethodDef* python_functions() ","static PyMethodDef methods[] = { // NOLINT
+    {""_rpc_init"", rpc_init, METH_NOARGS, nullptr},
+{nullptr, nullptr, 0, nullptr}};
+PyMethodDef* python_functions()"
+"  if (beta <= 0)
+return at::native::l1_loss(input, target, reduction);
+Tensor loss;
+auto iter = TensorIterator::binary_op(loss, input, target);
+smooth_l1_stub(iter.device_type(), iter, beta);","  if (beta == 0) {
+return at::native::l1_loss(input, target, reduction);
+  }
+Tensor loss;
+auto iter = TensorIterator::binary_op(loss, input, target);
+smooth_l1_stub(iter.device_type(), iter, beta);"
+"if (asyncErrorHandling_) {
+      std::unique_lock<std::mutex> lock(workListMutex_);
+      for (auto& work : workList_) {
+        work->checkAndSetException();
+// Aborting NCCL Communicators due to errors is already handled above.
+        if (work->exception()) {
+continue;
+}","if (asyncErrorHandling_) {
+      std::unique_lock<std::mutex> lock(workMetaListMutex_);
+      for (auto& work : workMetaList_) {
+        work.checkAndSetException();
+// Aborting NCCL Communicators due to errors is already handled above.
+        if (work.exception()) {
+continue;
+}"
+"Tensor std_backward(const Tensor & result, const Tensor & grad, const Tensor & self, bool unbiased) {
+  return var_backward(grad / (result * 2), self, unbiased);
+}","Tensor std_backward(const Tensor & result, const Tensor & grad, const Tensor & self, bool unbiased) {
+  return var_backward((grad / (result * 2)).masked_fill_(result == 0, 0), self, unbiased);
+}"
+"std::unordered_map<std::string, std::string> copied_metadata =
+owner_->metadata();
+if (owner_->metadata().find(""model_name"") == owner_->metadata().end()) {
+    copied_metadata[""model_name""] = name();
+}
+if (observer) {
+observer->onEnterRunMethod(copied_metadata, function_->name());","std::unordered_map<std::string, std::string> copied_metadata =
+owner_->metadata();
+if (owner_->metadata().find(""model_name"") == owner_->metadata().end()) {
+    copied_metadata[""model_name""] = owner_->name();
+}
+if (observer) {
+observer->onEnterRunMethod(copied_metadata, function_->name());"
+"int device;
+C10_CUDA_CHECK(cudaGetDevice(&device));
+void* r = nullptr;
+if (size != 0) {
+caching_allocator.malloc(&r, device, size, cuda::getCurrentCUDAStream(device));
+}
+","int device;
+C10_CUDA_CHECK(cudaGetDevice(&device));
+void* r = nullptr;
+    if (forceUncachedAllocator()) {
+      C10_CUDA_CHECK(cudaMalloc(&r, size));
+      return {r, r, &uncached_delete, Device(DeviceType::CUDA, device)};
+    }
+if (size != 0) {
+caching_allocator.malloc(&r, device, size, cuda::getCurrentCUDAStream(device));
+}"
+"void set_data(const Tensor& self, const Tensor& new_data) {
+AT_ERROR(""set_data is not implemented for Tensor"");
+}","void set_data(Tensor& self, const Tensor& new_data) {
+AT_ERROR(""set_data is not implemented for Tensor"");
+}"
+"void retain_grad(const Tensor& self) {
+AT_ERROR(""retain_grad is not implemented for Tensor"");
+}","void retain_grad(Tensor& self) {
+AT_ERROR(""retain_grad is not implemented for Tensor"");
+}"
+"Tensor atan2(const Tensor& self, const Tensor& other) {
+  Tensor result = at::empty({0}, self.options());
+  return native::atan2_out(result, self, other);
+}","Tensor atan2(const Tensor& self, const Tensor& other) {
+  Tensor result;
+  auto iter = TensorIterator::binary_float_op(result, self, other);
+  atan2_stub(iter.device_type(), iter);
+  return iter.output();
+}"
+"  int nested_if_then_else_ = 0;
+const Store* nested_store_{nullptr};
+std::unordered_set<const Var*> thread_local_bufs_;"," int nested_if_then_else_{0};
+const Store* nested_store_{nullptr};
+  bool nested_let_{false};
+std::unordered_set<const Var*> thread_local_bufs_;"
+"    if (last_thread_dim_ && !exprEquals(last_thread_dim_, v->stop())) {
+      need_sync_ = true;
+    }
+    last_thread_dim_ = v->stop();
+
+const Var* metaVar = gpu_thread_vars_[gpu_thread_index];
+body = Substitute(Stmt::clone(body), {{v->var(), metaVar}});","const Var* metaVar = gpu_thread_vars_[gpu_thread_index];
+body = Substitute(Stmt::clone(body), {{v->var(), metaVar}});"
+"// fuseConditions will return the original block if it cannot fuse.
+  new_block = fuseConditions(new_block);
+  /// fuseSyncThreads too.
+  return fuseSyncThreads(new_block);","// fuseConditions will return the original block if it cannot fuse.
+  new_block = fuseConditions(new_block);
+  /// fuseSyncThreads too.
+  return fuseSyncThreads(new_block);"
+"constexpr inline bool lda_cond(int64_t m, int64_t n, int64_t lda) {
+  return n == 1 || lda > std::max<int64_t>(1L, m);
+}","constexpr inline bool lda_cond(int64_t m, int64_t n, int64_t lda) {
+  return n == 1 || lda >= std::max<int64_t>(1L, m);
+}"
+"    if (beta != scalar_t(1)) scal<scalar_t>(m, beta, y, incy);
+for (int64_t j = 0; j < n; j++) {
+scalar_t *column_ = a + lda * j;
+scalar_t z = alpha * x[j * incx];
+for (int64_t i = 0; i < m; i++) {
+y[i * incy] += z * column_[i];
+}
+}","    if (beta != scalar_t(1) && beta != scalar_t(0)) scal<scalar_t>(m, beta, y, incy);
+for (int64_t j = 0; j < n; j++) {
+scalar_t *column_ = a + lda * j;
+scalar_t z = alpha * x[j * incx];
+for (int64_t i = 0; i < m; i++) {
+        //output values are ignored if beta is 0, and set to 0, nans and infs are not propagated
+        if (j==0 && beta==scalar_t(0)) {
+         y[i * incy] = scalar_t(0);
+        }
+y[i * incy] += z * column_[i];
+}
+}"
+"
+if (cond_new->isConstant()) {
+if (!immediateEquals(cond_new, 0)) {
+      return Stmt::clone(true_new);
+} else {
+      return Stmt::clone(false_new);
+}
+}","
+if (cond_new->isConstant()) {
+if (!immediateEquals(cond_new, 0)) {
+      return true_new ? Stmt::clone(true_new) : nullptr;
+} else {
+      return false_new ? Stmt::clone(false_new) : nullptr;
+}
+}"
+"auto& work = *it;
+if (work->isCompleted()) {
+it = workList_.erase(it);
+} ","auto& work = *it;
+if (work->isCompleted()) {
+        work->handleNCCLGuard();
+it = workList_.erase(it);
+} "
+"Stmt* loop = l.getLoopBodyFor(p.second);
+    if (torch::jit::tensorexpr::HasRand(loop).has_rand()) {
+      l.computeInlineWithRandom(loop);
+    } else {
+      l.computeInline(loop);
+    }", l.computeInline(p.second->buf());
+"if (v->op_type() == kSigmoid) {
+auto x = v->param(0)->accept_mutator(this);
+    ExprHandle y = ExprHandle(1.0f) /
+        (ExprHandle(1.0f) + exp(ExprHandle(-0.0f) - ExprHandle(x)));
+return y.node();
+}","if (v->op_type() == kSigmoid) {
+auto x = v->param(0)->accept_mutator(this);
+    auto one = ExprHandle(getImmediateByType(v->dtype(), 1.0));
+    auto zero = ExprHandle(getImmediateByType(v->dtype(), 0.0));
+    ExprHandle y = one / (one + exp(zero - ExprHandle(x)));
+return y.node();
+}"
+"Tensor grad_input;
+auto iter = at::TensorIteratorConfig()
+    .set_check_mem_overlap(true)
+.add_output(grad_input)
+.add_input(input)
+.add_input(buffer)","Tensor grad_input;
+auto iter = at::TensorIteratorConfig()
+.add_output(grad_input)
+.add_input(input)
+.add_input(buffer)"
+"auto iter = TensorIteratorConfig()
+    .set_check_mem_overlap(true)
+.add_output(self)
+.add_input(src)
+.resize_outputs(false)","auto iter = TensorIteratorConfig()
+.add_output(self)
+.add_input(src)
+.resize_outputs(false)"
+"auto norm = reduction == Reduction::Mean ? 1. / input.numel() : 1.;
+auto iter = at::TensorIteratorConfig()
+    .set_check_mem_overlap(true)
+.add_output(grad_input)
+.add_input(input)
+.add_input(target)","auto norm = reduction == Reduction::Mean ? 1. / input.numel() : 1.;
+auto iter = at::TensorIteratorConfig()
+.add_output(grad_input)
+.add_input(input)
+.add_input(target)"
+"auto result_stride_bytes = result.stride(dim) * elementSize(result.scalar_type());
+auto iter = TensorIteratorConfig()
+.resize_outputs(false)
+.add_output(result_slice)
+.add_input(source_slice)","auto result_stride_bytes = result.stride(dim) * elementSize(result.scalar_type());
+auto iter = TensorIteratorConfig()
+      .set_check_mem_overlap(false) 
+.resize_outputs(false)
+.add_output(result_slice)
+.add_input(source_slice)"
+"if (optimized_plan_) {
+return *optimized_plan_;
+}","if (optimized_plan_) {
+    GRAPH_DUMP(""plan already optimized:"", graph);
+return *optimized_plan_;
+}"
+"List<intrusive_ptr<ivalue::Future>>(ctx->srcFutures.elementType());
+if (src->hasError()) {
+        dst->setError(*src->error());
+} else {
+dst->markCompleted(src->constValue());
+}","List<intrusive_ptr<ivalue::Future>>(ctx->srcFutures.elementType());
+if (src->hasError()) {
+        dst->setError(src->exception_ptr());
+} else {
+dst->markCompleted(src->constValue());
+}"
+"if (future_) {
+      future_->setError(Future::FutureError(ss.str()));
+} else if (is_jit_exception) {
+throw JITException(ss.str());
+}","if (future_) {
+      future_->setError(std::make_exception_ptr(Future::FutureError(ss.str())));
+} else if (is_jit_exception) {
+throw JITException(ss.str());
+}"
+"if (value->type()->isSubtypeOf(StringType::get()) &&
+        DeviceObjType::get()->isSubtypeOf(concrete_type)) {
+return graph.insert(aten::device, {value}, {}, loc);
+}","if (value->type()->isSubtypeOf(StringType::get()) &&
+        concrete_type->isSubtypeOf(DeviceObjType::get())) {
+return graph.insert(aten::device, {value}, {}, loc);
+}"
+"std::map<ParallelType, bool> ParallelTypeBitmap::getMap() const {
+std::map<ParallelType, bool> map;
+for (const auto& pt_offset : pt_to_offset_) {
+    map.emplace(std::make_pair(pt_offset.first, bitset_[pt_offset.second]));
+}
+return map;
+}","std::map<ParallelType, bool> ParallelTypeBitmap::getMap() const {
+std::map<ParallelType, bool> map;
+for (const auto& pt_offset : pt_to_offset_) {
+    map.emplace(pt_offset.first, bitset_[pt_offset.second]);
+}
+return map;
+}"
+"static void THPGenerator_dealloc(THPGenerator* self)
+{
+  self->cdata.set_pyobj(nullptr);
+  self->cdata.~Generator();
+  Py_TYPE(self)->tp_free((PyObject*)self);
+}","static void THPGenerator_dealloc(PyObject* _self)
+{
+  auto self = reinterpret_cast<THPGenerator*>(_self);
+  if (self->cdata.defined()) {
+    self->cdata.set_pyobj(nullptr);
+    self->cdata.~Generator();
+  }
+  Py_TYPE(_self)->tp_free(_self);
+}"
+"static Tensor norm(const Tensor& self, optional<Scalar> p, IntArrayRef dim, bool keepdim,
+optional<ScalarType> opt_dtype) {
+  Tensor result;
+  return at::native::norm_out(result, self, p, dim, keepdim, opt_dtype);
+}","static Tensor norm(const Tensor& self, optional<Scalar> p, IntArrayRef dim, bool keepdim,
+optional<ScalarType> opt_dtype) {
+  if (self.is_sparse()) {
+    return at::native_norm(self, p, dim, keepdim, opt_dtype);
+  } else {
+    Tensor result;
+    return at::native::norm_out(result, self, p, dim, keepdim, opt_dtype);
+  }
+}"
+"vkGetDeviceQueue(device_, queueFamilyIndex_, 0, &queue_);
+  VkPhysicalDeviceProperties physicalDeviceProperties;
+vkGetPhysicalDeviceProperties(physicalDevice_, &physicalDeviceProperties);
+VkCommandPoolCreateInfo commandPoolCreateInfo{};","queue_ = {};
+vkGetDeviceQueue(device_, queueFamilyIndex_, 0, &queue_);
+  VkPhysicalDeviceProperties physicalDeviceProperties{};
+vkGetPhysicalDeviceProperties(physicalDevice_, &physicalDeviceProperties);
+VkCommandPoolCreateInfo commandPoolCreateInfo{};"
+"void VImage::addImageMemoryBarrierToGeneral(
+    VkCommandBuffer commandBuffer) const {
+addImageMemoryBarrier(commandBuffer, VK_IMAGE_LAYOUT_GENERAL);
+}","void VImage::addImageMemoryBarrierToGeneral(
+    const VkCommandBuffer commandBuffer) const {
+addImageMemoryBarrier(commandBuffer, VK_IMAGE_LAYOUT_GENERAL);
+}"
+"void VImage::addImageMemoryBarrierToShaderRead(
+    const VkCommandBuffer commandBuffer) const {
+addImageMemoryBarrier(
+commandBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+}","void VImage::addImageMemoryBarrierToShaderRead(
+    const VkCommandBuffer commandBuffer) const {
+addImageMemoryBarrier(
+commandBuffer, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+}"
+"VkDescriptorSetLayoutBinding descriptorSetLayoutBinding(
+    uint32_t binding,
+    VkDescriptorType descriptorType) {
+return {binding, descriptorType, 1, VK_SHADER_STAGE_COMPUTE_BIT, nullptr};
+}","VkDescriptorSetLayoutBinding descriptorSetLayoutBinding(
+    const uint32_t binding,
+    const VkDescriptorType descriptorType) {
+return {binding, descriptorType, 1, VK_SHADER_STAGE_COMPUTE_BIT, nullptr};
+}"
+"ComputeUnit& ComputeUnitFactory::get(
+const std::string& cacheKey,
+    std::function<std::shared_ptr<ComputeUnit>()> factoryFn) {
+  auto it = computeUnits_.find(cacheKey);
+if (it != computeUnits_.end()) {
+return *(it->second.get());
+}","ComputeUnit& ComputeUnitFactory::get(
+const std::string& cacheKey,
+    const std::function<std::shared_ptr<ComputeUnit>()> factoryFn) {
+  const auto it = computeUnits_.find(cacheKey);
+if (it != computeUnits_.end()) {
+return *(it->second.get());
+}"
+"VImage* VulkanTensor::image(c10::optional<ImageSizes> imageSizes) {
+return impl()->image(imageSizes);
+}","VImage* VulkanTensor::image(const c10::optional<ImageSizes> imageSizes) {
+return impl()->image(imageSizes);
+}"
+"const VImage* VulkanTensor::image(c10::optional<ImageSizes> imageSizes) const {
+return impl()->image(imageSizes);
+}","const VImage* VulkanTensor::image(const c10::optional<ImageSizes> imageSizes) const {
+return impl()->image(imageSizes);
+}"
+"if (node->kind() == prim::CallMethod) {
+Value* instance = node->inputs()[0];
+        auto path = getModuleAccessPath(instance, self);
+        auto child = findChildModule(source, path);
+        auto qconfig = module_qconfig_map.at(child._ivalue());
+        instance->setType(type_remap_fn(instance->type(), qconfig));
+}","if (node->kind() == prim::CallMethod) {
+Value* instance = node->inputs()[0];
+        auto child_opt = getInvokedModuleOpt(source, node, self);
+        if (child_opt.has_value()) {
+          auto qconfig = module_qconfig_map.at(child_opt->_ivalue());
+          instance->setType(type_remap_fn(instance->type(), qconfig));
+        }
+}"
+"if (n->kind() == prim::CallMethod) {
+        invoked_methods.push_back(std::make_pair(
+            getInvokedModule(module, n, graph->inputs()[0]), n->s(attr::name)));
+}","if (n->kind() == prim::CallMethod) {
+        auto m_opt = getInvokedModuleOpt(module, n, graph->inputs()[0]);
+        if (m_opt.has_value()) {
+          invoked_methods.push_back(std::make_pair(*m_opt, n->s(attr::name)));
+        }
+}"
+"PropagateRequiresGrad(body);
+new_body_outputs_require =
+fmap(body->return_node()->inputs().slice(1), getRequiresGrad);
+    } while (new_body_inputs_require != body_inputs_require &&
+new_body_outputs_require != body_outputs_require);
+setRequiresGrad(node, bitwiseOr(body_outputs_require, loop_inputs_require));","PropagateRequiresGrad(body);
+new_body_outputs_require =
+fmap(body->return_node()->inputs().slice(1), getRequiresGrad);
+    } while (new_body_inputs_require != body_inputs_require ||
+new_body_outputs_require != body_outputs_require);
+setRequiresGrad(node, bitwiseOr(body_outputs_require, loop_inputs_require));"
+"if (!t->dim()) {
+return nullptr;
+}
+        return *t->dim() == 0 ? t : t->withDim(*t->dim() + 1);","if (!t->dim()) {
+return nullptr;
+}
+        return t->withDim(*t->dim() + 1);"
+"if (!THPVariable_Check(_new_state)) {
+    throw TypeError(""expected a torch.ByteTensor, but got %s"", Py_TYPE(_new_state)->tp_name);
+}","if (!THPVariable_Check(_new_state)) {
+    throw torch::TypeError(""expected a torch.ByteTensor, but got %s"", Py_TYPE(_new_state)->tp_name);
+}"
+"(uint8_t*)selfName.c_str() + selfName.length());
+  addressStore_->set(""names/"" + c10::to_string(selfId), selfNameVector);
+workerIdToInfo_.emplace(selfId, WorkerInfo(selfName, selfId));","(uint8_t*)selfName.c_str() + selfName.length());
+  rankToNameStore_.set(c10::to_string(selfId), selfNameVector);
+workerIdToInfo_.emplace(selfId, WorkerInfo(selfName, selfId));"
+"std::vector<uint8_t> workerNameVector =
+        addressStore_->get(""names/"" + c10::to_string(workerId));","std::vector<uint8_t> workerNameVector =
+        rankToNameStore_.get(c10::to_string(workerId));"
+"e->accept(this);
+if (prec >= self_prec) {
+      os() << ""("";
+}
+};
+withParens(v->ret_val1());","e->accept(this);
+if (prec >= self_prec) {
+      os() << "")"";
+}
+};
+withParens(v->ret_val1());"
+"int64_t output_zero_point) {
+  return apply_impl<false>(input, output_scale, output_zero_point);
+}","int64_t output_zero_point) {
+  return apply_impl<true>(input, output_scale, output_zero_point);
+}"
+"if (observed_values_.count(v)) {
+return;
+}
+  Module observer = observer_module.clone_instance();
+std::string observer_name = ""_observer_"" + c10::to_string(uid_++);","if (observed_values_.count(v)) {
+return;
+}
+  Module observer = observer_module.deepcopy();
+std::string observer_name = ""_observer_"" + c10::to_string(uid_++);"
+"for (const auto& observer_attrs : block_observer_map_.at(block)) {
+const auto& name = std::get<0>(observer_attrs);
+const auto& observer = std::get<1>(observer_attrs);
+      module._ivalue()->setAttr(name, observer.clone_instance()._ivalue());
+}","for (const auto& observer_attrs : block_observer_map_.at(block)) {
+const auto& name = std::get<0>(observer_attrs);
+const auto& observer = std::get<1>(observer_attrs);
+      module._ivalue()->setAttr(name, observer.deepcopy()._ivalue());
+}"
+"while (parent_of_leaf.hasattr(child_name)) {
+child_name = original_name + ""_"" + c10::to_string(uid++);
+}
+    parent_of_leaf.register_module(child_name, child_module.clone_instance());
+return child_name;","while (parent_of_leaf.hasattr(child_name)) {
+child_name = original_name + ""_"" + c10::to_string(uid++);
+}
+    parent_of_leaf.register_module(child_name, child_module.deepcopy());
+return child_name;"
+"for (size_t i = 0; i < n->outputs().size(); ++i) {
+          types.push_back(n->output(0)->type());
+}","for (size_t i = 0; i < n->outputs().size(); ++i) {
+          types.push_back(n->output(i)->type());
+}"
+"  if (FLAGS_caffe2_log_level < google::GLOG_ERROR) {
+FLAGS_logtostderr = 1;
+}","  if (FLAGS_caffe2_log_level < google::GLOG_WARNING) {
+FLAGS_logtostderr = 1;
+}"
+"if (immediateEquals(loops, 0)) {
+return new Block({});
+} else if (immediateEquals(loops, 1)) {
+      return Substitute(body_new, {{var_new, start_new}});
+}","if (immediateEquals(loops, 0)) {
+return new Block({});
+} else if (immediateEquals(loops, 1)) {
+      body_new = Substitute(body, {{var_new, start_new}});
+      body_new = body_new->accept_mutator(this);
+      return body_new;
+}
+}"
+"  if (FLAGS_caffe2_log_level < google::GLOG_WARNING) {
+FLAGS_logtostderr = 1;
+}","  if (FLAGS_caffe2_log_level < google::GLOG_ERROR) {
+FLAGS_logtostderr = 1;
+}"
+"for (int64_t i = 0; i < n; i++) {
+      recursiveStore(data, sizes, strides, dim + 1, elementSize, seq[i]);
+      data += strides[dim] * elementSize;
+}","for (int64_t i = 0; i < n; i++) {
+      recursiveStore(data, sizes, strides, dim + 1, tenElementSize, seq[i]);
+      data += strides[dim] * tenElementSize;
+}"
+"llvm::BasicBlock* bb_;
+  llvm::Value* value_;
+llvm::JITTargetAddress kernelAddress_;","llvm::BasicBlock* bb_;
+  llvm::Value* value_{nullptr};
+llvm::JITTargetAddress kernelAddress_;"
+"AT_CUDA_CHECK(cudaGetDevice(&device));
+if (!myPoolWindow)
+    myPoolWindow.reset(pool.newPoolWindow());
+auto handle = myPoolWindow->reserve(device);","AT_CUDA_CHECK(cudaGetDevice(&device));
+if (!myPoolWindow)
+    myPoolWindow.reset(pool->newPoolWindow());
+auto handle = myPoolWindow->reserve(device);"
+"std::vector<const Expr*> indices;
+  for (size_t i = 0; i < buf->ndim(); i++) {
+indices.push_back(this->args_[i]);
+}","std::vector<const Expr*> indices;
+  for (int i = 0; i < buf->ndim(); i++) {
+indices.push_back(this->args_[i]);
+}"
+"std::vector<llvm::Type*> params;
+  for (int i = 0; i < args.size(); i++) {
+auto const& arg = args[i];","std::vector<llvm::Type*> params;
+  for (size_t i = 0; i < args.size(); i++) {
+auto const& arg = args[i];"
+"fntype, llvm::Function::PrivateLinkage, ""pytorch"", module_.get());
+  for (int i = 0; i < args.size(); i++) {
+if (!args[i].isVar()) {","fntype, llvm::Function::PrivateLinkage, ""pytorch"", module_.get());
+  for (size_t i = 0; i < args.size(); i++) {
+if (!args[i].isVar()) {"
+"c10::intrusive_ptr<xnnpack::LinearOpContext> createLinearClampPrePackOpContext(
+Tensor weight,
+c10::optional<Tensor> bias,
+    c10::optional<double> output_min,
+    c10::optional<double> output_max) {
+return xnnpack::XNNPackLinearOpContext::create_context(
+std::move(weight), std::move(bias), output_min, output_max);
+}","c10::intrusive_ptr<xnnpack::LinearOpContext> createLinearClampPrePackOpContext(
+Tensor weight,
+c10::optional<Tensor> bias,
+    c10::optional<Scalar> output_min,
+    c10::optional<Scalar> output_max) {
+return xnnpack::XNNPackLinearOpContext::create_context(
+std::move(weight), std::move(bias), output_min, output_max);
+}"
+"auto x_nearest = x.round();
+auto y_nearest = y.round();
+    auto i_x_nearest = convert_to_int_of_same_size<scalar_t>(x_nearest);
+    auto i_y_nearest = convert_to_int_of_same_size<scalar_t>(y_nearest);","auto x_nearest = x.round();
+auto y_nearest = y.round();
+    auto i_x_nearest = convert_to_int_of_same_size(x_nearest);
+    auto i_y_nearest = convert_to_int_of_same_size(y_nearest);"
+"Tensor tensor;
+if (tensor_.is_quantized()) {
+      Tensor tensor = tensor_.dequantize().to(kCPU, kDouble).contiguous();
+} else {
+tensor = tensor_.to(kCPU, kDouble).contiguous();
+}","Tensor tensor;
+if (tensor_.is_quantized()) {
+      tensor = tensor_.dequantize().to(kCPU, kDouble).contiguous();
+} else {
+tensor = tensor_.to(kCPU, kDouble).contiguous();
+}"
+"TORCH_INTERNAL_ASSERT(false, ""unrecognized message type "", message.type());
+}
+  return 1;
+}","TORCH_INTERNAL_ASSERT(false, ""unrecognized message type "", message.type());
+}
+  return true;
+}"
