@@ -50,15 +50,6 @@ rank = p2pRank;
 }"," if (str != ""None"") {
       default_string = parse_string_literal(str);
 }"
-"ss <<   ""kernel_size="" << args.weight.sizes().slice(2) << "", "";
-  ss <<   ""padding="" << ArrayRef<int>(args.params.padding, dim-2) << "", "";
-  ss <<   ""stride="" << ArrayRef<int>(args.params.stride, dim-2) << "", "";
-  ss <<   ""dilation="" << ArrayRef<int>(args.params.dilation, dim-2) << "", "";
-ss <<   ""groups="" << args.params.groups << "")\n"";","ss <<   ""kernel_size="" << args.weight.sizes().slice(2) << "", "";
-  ss <<   ""padding="" << ArrayRef<int>(args.params.padding, dim-2) << "", "";
-  ss <<   ""stride="" << ArrayRef<int>(args.params.stride, dim-2) << "", "";
-  ss <<   ""dilation="" << ArrayRef<int>(args.params.dilation, dim-2) << "", "";
-ss <<   ""groups="" << args.params.groups << "")\n"";"
 "  if (check_has_torch_function((PyObject *)self)) {
     return handle_torch_function_getter(self, ""names"");
 }
@@ -381,14 +372,6 @@ optional<ScalarType> opt_dtype) {
     return at::native::norm_out(result, self, p, dim, keepdim, opt_dtype);
   }
 }"
-"vkGetDeviceQueue(device_, queueFamilyIndex_, 0, &queue_);
-  VkPhysicalDeviceProperties physicalDeviceProperties;
-vkGetPhysicalDeviceProperties(physicalDevice_, &physicalDeviceProperties);
-VkCommandPoolCreateInfo commandPoolCreateInfo{};","queue_ = {};
-vkGetDeviceQueue(device_, queueFamilyIndex_, 0, &queue_);
-  VkPhysicalDeviceProperties physicalDeviceProperties{};
-vkGetPhysicalDeviceProperties(physicalDevice_, &physicalDeviceProperties);
-VkCommandPoolCreateInfo commandPoolCreateInfo{};"
 "void VImage::addImageMemoryBarrierToGeneral(
     VkCommandBuffer commandBuffer) const {
 addImageMemoryBarrier(commandBuffer, VK_IMAGE_LAYOUT_GENERAL);

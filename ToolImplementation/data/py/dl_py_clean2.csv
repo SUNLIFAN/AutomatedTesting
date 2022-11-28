@@ -192,14 +192,12 @@ return torch.div(a, b, rounding_mode=""trunc"")
         return torch.true_divide(a, b)
 div = _make_elementwise_binary_prim(
 "
-"""to be of type ``torch.distributed.P2POp``.""
-)
+"
     backend = get_backend(p2p_op_list[0].group)
     if not all(backend == get_backend(p2p_op.group) for p2p_op in p2p_op_list):
         raise RuntimeError(""All groups need to use the same backend."")
 def is_mpi_available():
-","""to be of type ``torch.distributed.P2POp``.""
-)
+","
     group = p2p_op_list[0].group
     if not all(group == p2p_op.group for p2p_op in p2p_op_list):
         raise RuntimeError(""All ops need to use the same group."")
@@ -266,15 +264,6 @@ continue
 target_tensor = shard.tensor.detach()
 offsets = []
 lengths = []
-"
-"storage_key=storage_key,
-)
-]
-    return (write_reqs, _compute_bytes_md(storage_key, bytes))
-","storage_key=storage_key,
-)
-]
-    return (write_reqs, _compute_bytes_md(bytes), storage_md)
 "
 "
 tensor_read_requests = []
@@ -381,12 +370,12 @@ unwraps += unwrap_optional_tensor(opt_tensor, cur_level_var)
 unwrapped_arg_list = []
 for arg in arg_names:
 "
-"}}""""""
+"
 def gen_returns(returns: List[Return], cur_level_var: str, results_var: str) -> str:
 idx = 0
 wrapped_returns = []
 for ret in returns:
-","}}""""""
+","
 def gen_returns(
     returns: Tuple[Return, ...], cur_level_var: str, results_var: str
 ) -> str:
@@ -394,23 +383,23 @@ idx = 0
 wrapped_returns = []
 for ret in returns:
 "
-"}}""""""
+"
 def gen_vmap_plumbing(native_function: NativeFunction) -> str:
 schema = native_function.func
 sig = DispatcherSignature.from_schema(schema)
 returns = schema.returns
-","}}""""""
+","
 def gen_vmap_plumbing(native_function: NativeFunction) -> Optional[str]:
 schema = native_function.func
 sig = DispatcherSignature.from_schema(schema)
 returns = schema.returns
 "
-"return result
+"
 def gen_all_vmap_plumbing(native_functions):
 body = ""\n"".join(list(mapMaybe(ComputeBatchRulePlumbing(), native_functions)))
 return f""""""
 #pragma once
-","return result
+","
 def gen_all_vmap_plumbing(native_functions: Sequence[NativeFunction]) -> str:
 body = ""\n"".join(list(mapMaybe(ComputeBatchRulePlumbing(), native_functions)))
 return f""""""
@@ -592,15 +581,6 @@ return values, keys
 values = [d[key] for key in keys]
 return values, keys
 "
-"
-joint_forward_backward = create_joint_forward_backward(flat_fn)
-compiled_fw = None
-","
-    if decompositions is None:
-        decompositions = {}
-joint_forward_backward = create_joint_forward_backward(flat_fn)
-compiled_fw = None
-"
 "assert self.spec is None or self.spec == spec
 self.spec = spec
 if type(self.spec) in [tuple, list] and all(
@@ -702,16 +682,16 @@ raise ValueError(
 f'vmap: Expected all tensors to have the same size in the mapped '
 f'dimension, got sizes {batch_sizes} for the mapped dimension')
 "
-"@register_decomposition(aten.rsub.Tensor)
+"
 def rsub(self: Tensor, other: Tensor, alpha: float = 1) -> Tensor:
 return torch.sub(other, self, alpha=alpha)
-@register_decomposition(aten.rsub.Scalar)
+
 def rsub(self: Tensor, other: float, alpha: float = 1) -> Tensor:
 return torch.sub(other, self, alpha=alpha)
-","@register_decomposition(aten.rsub.Tensor)
+","
 def rsub_Tensor(self: Tensor, other: Tensor, alpha: float = 1) -> Tensor:
 return torch.sub(other, self, alpha=alpha)
-@register_decomposition(aten.rsub.Scalar)
+
 def rsub_Scalar(self: Tensor, other: float, alpha: float = 1) -> Tensor:
 return torch.sub(other, self, alpha=alpha)
 "
@@ -746,12 +726,12 @@ return torch.sqrt(torch.var(x, dims, correction=correction, keepdim=keepdim))
 def std_decomposition(x: Tensor, dims: List[int], correction: int = 0, keepdim: bool = False):
 return torch.sqrt(torch.var(x, dims, correction=correction, keepdim=keepdim))
 "
-"@functools.wraps(_old_str)
+"
 def _functorch_str(tensor):
 level = _C.maybe_get_level(tensor)
 if level == -1:
 return _old_str(tensor)
-","@functools.wraps(_old_str)
+","
 def _functorch_str(tensor, *, tensor_contents=None):
 level = _C.maybe_get_level(tensor)
 if level == -1:
@@ -868,13 +848,13 @@ d_bias = grad_out
 else:
         d_bias = aten.new_empty(input, (0,))
 return (d_input, d_weight, d_bias)
-# @register_decomposition(aten.addmm)
+
 ","else:
 d_bias = grad_out
 else:
         d_bias = None
 return (d_input, d_weight, d_bias)
-# @register_decomposition(aten.addmm)
+
 "
 "if output_mask[0]:
 d_input = aten.mul(aten.div(rstd, N), inner)
@@ -928,29 +908,23 @@ raise RuntimeError('make_functional_deprecated_v1(model): `model` has buffers. P
 def fun(weights, data):
 mutable_model = copy.deepcopy(model)
 "
-"To put the state back into a model, use `load_state`.
-""""""
+"
     weights, weight_descriptors = extract_weights(model)
     buffers, buf_descriptors = extract_buffers(model)
 def fun(weights, buffers, data):
 mutable_model = copy.deepcopy(model)
-","To put the state back into a model, use `load_state`.
-""""""
+","
     weights, weight_descriptors, _ = extract_weights(model)
     buffers, buf_descriptors, _ = extract_buffers(model)
 def fun(weights, buffers, data):
 mutable_model = copy.deepcopy(model)
 "
-"aten.silu_backward,
-]
-)
+"
 default_decompositions = {
     k: v for k, v in decomposition_table.items() if k in default_decompositions
 }
 def print_compile(fx_g, _):
-","aten.silu_backward,
-]
-)
+","
 default_decompositions = get_decompositions(default_decompositions)
 def print_compile(fx_g, _):
 "
@@ -1109,16 +1083,12 @@ return compiled_f(
 **kwargs
 )
 "
-"# + norm_ops
-# + view_ops
-)
+"
 
 for node in full_bw_graph.nodes:
 if node in tangent_closure:
 nx_graph.add_edge(node.name+""_in"", ""sink"", capacity=math.inf)
-","# + norm_ops
-# + view_ops
-)
+","
     ops = set([i.target for i in joint_module.graph.nodes if i.op == 'call_function'])
     print(ops - recomputable_ops)
     AGGRESSIVE_RECOMPUTATION = False
@@ -1479,19 +1449,6 @@ def _apply_func_submodules(
     return refs.where(refs.logical_and(a >= -lambd, a <= lambd), 0, a)
 @register_decomposition(torch.ops.aten.softshrink)
 "
-"aten.to.device,
-aten.to.prim_Device,
-aten._pin_memory.default,
-    aten._resize_output.functional,
-aten._resize_output.out,
-)
-","aten.to.device,
-aten.to.prim_Device,
-aten._pin_memory.default,
-    aten._resize_output.default,
-aten._resize_output.out,
-)
-"
 "def name(func: FunctionSchema, *, faithful_name_for_out_overloads: bool = False) -> str:
 name = str(func.name.name)
     if func.is_functional_fn():
@@ -1687,16 +1644,14 @@ if not found_one:
 )
 return paths
 "
-")
+"
 def main() -> None:
 parser = argparse.ArgumentParser(description=""Generate unboxing source files"")
-parser.add_argument(
-""-s"",
-",")
+
+","
 def main(args: List[str]) -> None:
 parser = argparse.ArgumentParser(description=""Generate unboxing source files"")
-parser.add_argument(
-""-s"",
+
 "
 "env_callable=lambda fn: {
 ""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
@@ -1735,64 +1690,30 @@ _prev_node_input_type,
 "
             prev_node = node.args[0]
 assert isinstance(prev_node, Node)
-(
-_prev_node_input_type,
+
 ","
             prev_node = get_normalized_nth_input(node, gm, 0)
 assert isinstance(prev_node, Node)
-(
-_prev_node_input_type,
+
 "
 "
             prev_node = node.args[0]
 assert isinstance(prev_node, Node)
-(
-_prev_node_input_type,
+
 ","
             prev_node = get_normalized_nth_input(node, gm, 0)
 assert isinstance(prev_node, Node)
-(
-_prev_node_input_type,
-"
-"prev_node, gm, logger_cls, node_type_to_io_type_map
-)
-            cur_node_dtype_target = node.args[1]
-assert (
-cur_node_dtype_target is torch.float16
-), f""{cur_node_dtype_target} handling needs to be added""
-","prev_node, gm, logger_cls, node_type_to_io_type_map
-)
-            cur_node_dtype_target = get_normalized_nth_input(node, gm, 1)
-assert (
-cur_node_dtype_target is torch.float16
-), f""{cur_node_dtype_target} handling needs to be added""
+
 "
 "return (prev_node_output_type, NodeInputOrOutputType.FP16)
 elif node.target in METHS_IO_TYPE_FP32_OR_INT8:
             first_arg = node.args[0]
 assert isinstance(first_arg, Node)
-(
-_prev_node_input_type,
 ","return (prev_node_output_type, NodeInputOrOutputType.FP16)
 elif node.target in METHS_IO_TYPE_FP32_OR_INT8:
             first_arg = get_normalized_nth_input(node, gm, 0)
 assert isinstance(first_arg, Node)
-(
-_prev_node_input_type,
-"
-"def key_func(fn: Union[NativeFunction, NativeFunctionsGroup]) -> str:
-return fn.root_name
-cpu_fm.write_sharded(
-""UnboxingFunctions.cpp"",
-native_functions,
-","def key_func(fn: Union[NativeFunction, NativeFunctionsGroup]) -> str:
-return fn.root_name
-    selected_op_num: int = len(selector.operators)
-    # a best practice threshold of operators to enable sharding
-    sharding_threshold: int = 100
-cpu_fm.write_sharded(
-""UnboxingFunctions.cpp"",
-native_functions,
+
 "
 "env_callable=lambda fn: {
 ""definitions"": [ComputeUnboxingFunctions(Target.DEFINITION, selector)(fn)]
@@ -1800,14 +1721,13 @@ native_functions,
         num_shards=5,
 sharded_keys={""definitions""},
 )
-cpu_fm.write(
+
 ","env_callable=lambda fn: {
 ""definitions"": [ComputeUnboxingFunctions(Target.DEFINITION, selector)(fn)]
 },
         num_shards=1 if selected_op_num < sharding_threshold else 5,
 sharded_keys={""definitions""},
 )
-cpu_fm.write(
 "
 "env_callable=lambda fn: {
 ""unboxed_ops"": [ComputeCodegenUnboxedKernels(selector)(fn)]
@@ -1886,13 +1806,13 @@ output = function(*args)
         if torch.cuda._initialized and not had_cuda_in_fwd:
 # Cuda was not initialized before running the forward, so we didn't
 # stash the CUDA state.
-raise RuntimeError(
+
 ","with torch.autograd.graph.saved_tensors_hooks(pack, unpack):
 output = function(*args)
         if torch.cuda._initialized and preserve_rng_state and not had_cuda_in_fwd:
 # Cuda was not initialized before running the forward, so we didn't
 # stash the CUDA state.
-raise RuntimeError(
+
 "
 "self._op_impls = set()
 self.kind = kind
@@ -1906,23 +1826,6 @@ self.kind = kind
 self.dispatch_key = dispatch_key
 def __repr__(self):
 return ""Library(kind={}, ns={}, dispatch_key={})>"".format(self.kind, self.ns, self.dispatch_key)
-"
-"'default_per_channel_weight_observer',
-# FakeQuantize (for qat)
-'default_fake_quant', 'default_weight_fake_quant',
-    'default_symmetric_fixed_qparams_fake_quant',
-    'default_affine_fixed_qparams_fake_quant',
-'default_per_channel_weight_fake_quant',
-'default_histogram_fake_quant',
-# QConfig
-","'default_per_channel_weight_observer',
-# FakeQuantize (for qat)
-'default_fake_quant', 'default_weight_fake_quant',
-    'default_fixed_qparams_range_neg1to1_fake_quant',
-    'default_fixed_qparams_range_0to1_fake_quant',
-'default_per_channel_weight_fake_quant',
-'default_histogram_fake_quant',
-# QConfig
 "
 "grad_output: Tensor, output: Tensor, dim: int, input_dtype: int
 ):

@@ -1,23 +1,21 @@
 buggy_code,fixer_code
-"cache_.emplace(cacheKey, compileFn);
-}
+"
   const int64_t size() const { return cache_.size(); }
 /// Clear the cache.
 void clear() { cache_.clear(); }
-","cache_.emplace(cacheKey, compileFn);
-}
+","
   int64_t size() const { return cache_.size(); }
 /// Clear the cache.
 void clear() { cache_.clear(); }
 "
-"} else {
+" else {
 bound_ = true;
 dims_.resize(size);
             for (ssize_t i = 0; i < size; ++i) {
 dims_[i] = Dim::create(py::unicode_from_format(""%S%i"", name_.ptr(), (int)i));
 }
 }
-","} else {
+","else {
 bound_ = true;
 dims_.resize(size);
             for (Py_ssize_t i = 0; i < size; ++i) {
@@ -156,16 +154,13 @@ rstd_val = T(1) / std::sqrt(rstd_val + eps);
 const T_ACC scale = rstd_val;
 const T_ACC bias = -rstd_val * mean_val;
 "
-"output_data + start_idx * output_shape[1]);
-});
-} else {
+" else {
       const auto weight_data = weight.data_ptr<float>();
 at::parallel_for(
 0, embedding_rows, 1, [&](int64_t start_idx, int64_t end_idx) {
 fbgemm::FloatOrHalfToFusedNBitRowwiseQuantizedSBHalf<float>(
-","output_data + start_idx * output_shape[1]);
-});
-} else {
+","
+ else {
       const auto weight_data = weight_contig.data_ptr<float>();
 at::parallel_for(
 0, embedding_rows, 1, [&](int64_t start_idx, int64_t end_idx) {
@@ -228,13 +223,13 @@ if (weight && weight->defined()) {
 auto shape = weight->sizes();
 VmapDimVector new_shape(self_.dim(), 1);
 new_shape[channel_dim] = shape[0];
-","Tensor weight_;
+}","Tensor weight_;
 if (weight && weight->defined()) {
     auto self_ = self;
 auto shape = weight->sizes();
 VmapDimVector new_shape(self_.dim(), 1);
 new_shape[channel_dim] = shape[0];
-"
+}"
 "if (!is_input) {
 set_history(tensor, grad_fn);
 }
@@ -250,39 +245,39 @@ set_history(tensor, grad_fn);
 }
 torch::jit::push(stack, result);
 "
-"}  // namespace
+"
 void index_put__batch_rule(
     Tensor& self,
 optional<int64_t> self_bdim,
 ArrayRef<optional<Tensor>> indices,
-ArrayRef<optional<int64_t>> indices_bdims,
-","}  // namespace
+ArrayRef<optional<int64_t>> indices_bdims,)
+","
 void index_put__batch_rule(
     const Tensor& self,
 optional<int64_t> self_bdim,
 ArrayRef<optional<Tensor>> indices,
-ArrayRef<optional<int64_t>> indices_bdims,
+ArrayRef<optional<int64_t>> indices_bdims,)
 "
-"}
+"
 void _index_put_impl__batch_rule(
     Tensor& self,
 optional<int64_t> self_bdim,
 ArrayRef<optional<Tensor>> indices,
-ArrayRef<optional<int64_t>> indices_bdims,
-","}
+ArrayRef<optional<int64_t>> indices_bdims,)
+","
 void _index_put_impl__batch_rule(
     const Tensor& self,
 optional<int64_t> self_bdim,
 ArrayRef<optional<Tensor>> indices,
-ArrayRef<optional<int64_t>> indices_bdims,
+ArrayRef<optional<int64_t>> indices_bdims,)
 "
-"}
+"
 std::tuple<Tensor,optional<int64_t>> index_put_batch_rule(
     Tensor& self,
 optional<int64_t> self_bdim,
 ArrayRef<optional<Tensor>> indices,
 ArrayRef<optional<int64_t>> indices_bdims,
-","}
+","
 std::tuple<Tensor,optional<int64_t>> index_put_batch_rule(
     const Tensor& self,
 optional<int64_t> self_bdim,
@@ -349,9 +344,7 @@ int64_t cur_level) {
 if (!isInplaceOp(op.schema())) {
 return;
 "
-"ss << ""Tensor"" << tensor.sizes();
-return;
-}
+"
   if (wrapped->is_alive()) {
     ss << ""Wrapper["";
   } else {
@@ -362,9 +355,7 @@ if (wrapped->level().has_value()) {
 } else {
 ss << ""dead, "";
 }
-","ss << ""Tensor"" << tensor.sizes();
-return;
-}
+","
   ss << ""Wrapper["";
 if (wrapped->level().has_value()) {
     ss << ""lvl="" << wrapped->level().value() << "", "";
@@ -372,15 +363,13 @@ if (wrapped->level().has_value()) {
 ss << ""dead, "";
 }
 "
-"return dimflags;
-}
+"
 std::vector<int> dynamic_hasher(const LocalState &state, const at::Tensor &v) {
     std::vector<int> hash = {
 0,
 static_cast<int>(packFlags(state, v)),
 static_cast<int>(state.apply(v.key_set()).raw_repr()),
-","return dimflags;
-}
+","
 hash_key_t dynamic_hasher(const LocalState &state, const at::Tensor &v) {
     hash_key_t hash = {
 0,
@@ -402,28 +391,24 @@ hash_key_t static_hasher(const LocalState &state, const at::Tensor &v) {
 static_cast<int>(packFlags(state, v)),
 static_cast<int>(state.apply(v.key_set()).raw_repr()),
 "
-"/// Cache type mapping specialization keys to compiled kernels.
-class vector_hasher {
+"
 public:
     std::size_t operator()(std::vector<int> const& vec) const {
 std::size_t seed = vec.size();
 for(auto& i : vec) {
 seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-","/// Cache type mapping specialization keys to compiled kernels.
-class vector_hasher {
+","
 public:
     std::size_t operator()(hash_key_t const& vec) const {
 std::size_t seed = vec.size();
 for(auto& i : vec) {
 seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 "
-"py::object at(int64_t id, int numArgs, const std::string &hasherType,
-PyObject *args) {
+"
 std::vector<at::Tensor> tensorArgs = parsePythonArgs(numArgs, args);
     std::vector<int> cacheKey = computeCacheKey(tensorArgs, numArgs, hasherType, id);
 auto item = cache_.find(cacheKey); // protected by GIL
-","py::object at(int64_t id, int numArgs, const std::string &hasherType,
-PyObject *args) {
+","
 std::vector<at::Tensor> tensorArgs = parsePythonArgs(numArgs, args);
     hash_key_t cacheKey = computeCacheKey(tensorArgs, numArgs, hasherType, id);
 auto item = cache_.find(cacheKey); // protected by GIL
@@ -440,35 +425,6 @@ LocalState state;
     hash_key_t cacheKey= computeCacheKey(tensorArgs, numArgs, hasherType, id);
 cache_.emplace(cacheKey, compileFn);
 }
-"
-"const Tensor& a, bool a_has_bdim,
-const Tensor& b, bool b_has_bdim,
-const Tensor& c, bool c_has_bdim) {
-  int64_t bdim_size = -1;
-Tensor flagpole;
-if (a_has_bdim) {
-    bdim_size = a.size(0);
-flagpole = a;
-} else if (b_has_bdim) {
-    bdim_size = b.size(0);
-flagpole = b;
-} else if (c_has_bdim) {
-    bdim_size = c.size(0);
-flagpole = c;
-} else {
-TORCH_INTERNAL_ASSERT(false);
-","const Tensor& a, bool a_has_bdim,
-const Tensor& b, bool b_has_bdim,
-const Tensor& c, bool c_has_bdim) {
-Tensor flagpole;
-if (a_has_bdim) {
-flagpole = a;
-} else if (b_has_bdim) {
-flagpole = b;
-} else if (c_has_bdim) {
-flagpole = c;
-} else {
-TORCH_INTERNAL_ASSERT(false);
 "
 "VmapDimVector sizes_with_bdim = { sizes.begin(), sizes.end() };
 sizes_with_bdim.insert(sizes_with_bdim.begin(), 1);
@@ -544,13 +500,11 @@ static VmapDimVector range(int64_t start, int64_t stop) {
   TORCH_INTERNAL_ASSERT(stop > start);
 VmapDimVector dims;
 dims.reserve(stop - start);
-for (int64_t i = start; i < stop; i++) {
 ","// [start, start + 1, ..., stop - 1]
 static VmapDimVector range(int64_t start, int64_t stop) {
   TORCH_INTERNAL_ASSERT(stop >= start);
 VmapDimVector dims;
 dims.reserve(stop - start);
-for (int64_t i = start; i < stop; i++) {
 "
 "if (!maybe_tensor_wrapper) {
 continue;
@@ -667,8 +621,7 @@ key_set = key_set.add(DispatchKey::CUDA);
 return at::detail::make_tensor<BatchedTensorImpl>(key_set, tensor, std::move(bdims));
 }
 "
-"return false;
-}
+"
 auto bdims = batched->bdims();
   auto* it = std::find_if(bdims.begin(), bdims.end(), [&](const BatchDim& bdim) {
     return bdim.level() == level;
@@ -676,8 +629,7 @@ auto bdims = batched->bdims();
   return it != bdims.end();
 }
 Tensor _add_batch_dim(const Tensor& self, int64_t batch_dim, int64_t level) {
-","return false;
-}
+","
 auto bdims = batched->bdims();
   return bdims.back().level() >= level;
 }
@@ -752,12 +704,12 @@ if (info != 0) {
 return;
 }
 "
-"}
+"
 std::tuple<Tensor, Tensor> _symeig_helper_cpu(const Tensor& self, bool eigenvectors, bool upper) {
   std::vector<int64_t> infos(batchCount(self), 0);
 auto self_sizes = self.sizes().vec();
 self_sizes.pop_back();
-","}
+","
 std::tuple<Tensor, Tensor> _symeig_helper_cpu(const Tensor& self, bool eigenvectors, bool upper) {
   auto infos = at::zeros({batchCount(self)}, self.options().dtype(kInt));
 auto self_sizes = self.sizes().vec();
@@ -769,13 +721,13 @@ void apply_eig(const Tensor& self, bool eigenvectors, Tensor& vals_, Tensor& vec
 #if !AT_BUILD_WITH_LAPACK()
 TORCH_CHECK(false, ""Calling torch.eig on a CPU tensor requires compiling "",
 ""PyTorch with LAPACK. Please use PyTorch built with LAPACK support."");
-","}
+}","
 template <typename scalar_t>
 void apply_eig(const Tensor& self, bool eigenvectors, Tensor& vals_, Tensor& vecs_, int* info_ptr) {
 #if !AT_BUILD_WITH_LAPACK()
 TORCH_CHECK(false, ""Calling torch.eig on a CPU tensor requires compiling "",
 ""PyTorch with LAPACK. Please use PyTorch built with LAPACK support."");
-"
+}"
 "char* other_data = data[1];
 for (const auto i : c10::irange(dim_size)) {
 (void)i; //Suppress unused variable warning
@@ -797,27 +749,27 @@ VaryingShape<int64_t> sizes;
   if (t.layout() == at::kStrided) {
 sizes = VaryingShape<int64_t>{t.sizes().vec()};
 strides = VaryingShape<int64_t>{t.strides().vec()};
-return TensorType::create(
+}
 ","VaryingShape<size_t> stride_indices;
 VaryingShape<int64_t> strides;
 VaryingShape<int64_t> sizes;
   if (t.layout() == at::kStrided && !t.is_nested()) {
 sizes = VaryingShape<int64_t>{t.sizes().vec()};
 strides = VaryingShape<int64_t>{t.strides().vec()};
-return TensorType::create(
+}
 "
 "bool insertableTensor(const at::Tensor& ten) {
 // bail if tensor has no storage i.e. opaque tensor used in MKLdnn.
 // or gradients because we have no way of serializing them & are mutable
   return !ten.requires_grad() && ten.has_storage();
 }
-bool insertableIValue(const IValue& ivalue) {
+
 ","bool insertableTensor(const at::Tensor& ten) {
 // bail if tensor has no storage i.e. opaque tensor used in MKLdnn.
 // or gradients because we have no way of serializing them & are mutable
   return !ten.requires_grad() && ten.has_storage() && !ten.is_nested();
 }
-bool insertableIValue(const IValue& ivalue) {
+
 "
 "if (lhs.is_mkldnn() || rhs.is_mkldnn()) {
 return false;
@@ -825,7 +777,7 @@ return false;
 // If device is not equal, lhs.equal(rhs) would throw an error.
 if (lhs.device() != rhs.device()) {
 return false;
-","if (lhs.is_mkldnn() || rhs.is_mkldnn()) {
+}","if (lhs.is_mkldnn() || rhs.is_mkldnn()) {
 return false;
 }
   if (lhs.is_nested() || rhs.is_nested()) {
@@ -834,22 +786,7 @@ return false;
 // If device is not equal, lhs.equal(rhs) would throw an error.
 if (lhs.device() != rhs.device()) {
 return false;
-"
-"// NOLINTNEXTLINE
-strides[i] = 1;
-while (--i >= 0) {
-      strides[i] = sizes[i] * strides[i + 1];
-}
-}
-return from_blob_quantized_per_tensor_affine(
-","// NOLINTNEXTLINE
-strides[i] = 1;
-while (--i >= 0) {
-      strides[i] = sizes[i + 1] * strides[i + 1];
-}
-}
-return from_blob_quantized_per_tensor_affine(
-"
+}"
 "annotations_.emplace_back(""Python id"", std::to_string(t.id_));
 annotations_.emplace_back(
 ""Python parent id"",
@@ -876,14 +813,14 @@ data, c10::IntArrayRef(shapes), c10::IntArrayRef(strides), at::kChar)
 // Need clone because at::from_blob does not take ownership of data.
 data_node->t_(Symbol::attr(""value""), data_value.clone());
 "
-"}
+"
 auto input =
 emitSugaredExpr(apply.inputs()[0], 1)->asValue(loc, method);
 
 return std::make_shared<SimpleValue>(emitIndex(loc, self, {input}));
 }
 default:
-","}
+","
 auto input =
 emitSugaredExpr(apply.inputs()[0], 1)->asValue(loc, method);
         if (input->type()->kind() == TypeKind::TupleType) {
@@ -921,31 +858,6 @@ TORCH_CHECK(PyTuple_Size(args) == 2,
 int fd = PyObject_AsFileDescriptor(PyTuple_GetItem(args, 0));
 THPUtils_assert(fd != -1, ""_new_with_file couldn't retrieve a file ""
 ""descriptor from given object"");
-"
-"const auto num_arguments = arguments.size();
-const auto num_returns = returns.size();
-const auto stack_start = stack->size() - num_arguments;
-  bool any_is_inplace = false;
-at::Tensor aliased_input;
-","const auto num_arguments = arguments.size();
-const auto num_returns = returns.size();
-const auto stack_start = stack->size() - num_arguments;
-at::Tensor aliased_input;
-"
-"const c10::IValue& aliased_input_iv = (*stack)[stack_start + i]; // get a reference to an ivalue on the stack
-TORCH_CHECK(aliased_input_iv.isTensor());
-aliased_input = aliased_input_iv.toTensor();  // TODO: Can we avoid saving this tensor and incurring the refcount bump?
-      } else {
-        any_is_inplace = true;
-}
-}
-}
-","const c10::IValue& aliased_input_iv = (*stack)[stack_start + i]; // get a reference to an ivalue on the stack
-TORCH_CHECK(aliased_input_iv.isTensor());
-aliased_input = aliased_input_iv.toTensor();  // TODO: Can we avoid saving this tensor and incurring the refcount bump?
-}
-}
-}
 "
 "// onnx Sequence type requires element type to be set.
 // If the list to insert is empty, we set the elem type by
@@ -1271,32 +1183,6 @@ constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
 };
 static ReduceMaximum reduce_maximum;
 "
-"namespace {
-// TODO: Consider representing debug info as a struct instead so you
-// don't have to allocate strings all the time
-  std::string debugString(std::string file, uint32_t line) {
-#ifdef STRIP_ERROR_MESSAGES
-return std::string();
-#else
-","namespace {
-// TODO: Consider representing debug info as a struct instead so you
-// don't have to allocate strings all the time
-  std::string debugString(const std::string& file, uint32_t line) {
-#ifdef STRIP_ERROR_MESSAGES
-return std::string();
-#else
-"
-"}
-class PythonKernelHolder : public c10::OperatorKernel {
-  SafePyObject func_;
-public:
-PythonKernelHolder(py::object func) : func_(func.release().ptr(), getPyInterpreter()) {}
-","}
-class PythonKernelHolder : public c10::OperatorKernel {
-  c10::SafePyObject func_;
-public:
-PythonKernelHolder(py::object func) : func_(func.release().ptr(), getPyInterpreter()) {}
-"
 "public:
 template <typename scalar_t>
 constexpr void operator() (scalar_t * self_data, scalar_t * src_data) const {
@@ -1406,23 +1292,21 @@ Tensor cpu_min_indices, cpu_max_indices;
     if (indices.is_cuda()) {
 cpu_min_indices = min_indices.to(at::DeviceType::CPU);
 cpu_max_indices = max_indices.to(at::DeviceType::CPU);
-} else {
+} 
 ","Tensor max_indices =
 std::get</* values */ 0>(indices.max(/* dim */ 1, /* keepdim */ false));
 Tensor cpu_min_indices, cpu_max_indices;
     if (!indices.is_cpu()) {
 cpu_min_indices = min_indices.to(at::DeviceType::CPU);
 cpu_max_indices = max_indices.to(at::DeviceType::CPU);
-} else {
+} 
 "
-"return false;
-}
+"
 const auto& ty = static_cast<detail::ListImpl*>(payload.u.as_intrusive_ptr)->elementType;
   return ty == c10::getTypePtr<c10::optional<at::Tensor>>();
 }
 bool IValue::isIntList() const {
-","return false;
-}
+","
 const auto& ty = static_cast<detail::ListImpl*>(payload.u.as_intrusive_ptr)->elementType;
   const auto expected_ty = c10::getTypePtr<c10::optional<at::Tensor>>();
   return expected_ty == ty;
@@ -1470,19 +1354,6 @@ return typePtr;
 }
 }
 "
-"return;
-}
-  c10::string_view str = source_view_->text();
-if (size() == str.size()) {
-// this is just the entire file, not a subset, so print it out.
-// primarily used to print out python stack traces
-","return;
-}
-  auto str = source_view_->text_str().str();
-if (size() == str.size()) {
-// this is just the entire file, not a subset, so print it out.
-// primarily used to print out python stack traces
-"
 "line_end = start();
 while (line_start < range_end) {
 // move line_end to end of line
@@ -1510,73 +1381,27 @@ return (
 (source_n->starting_line_no() == source_m->starting_line_no()));
 }
 "
-"return SourceRange(self.source_, start, end);
-})
-.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
-        auto text_view = self.source_->text();
-        std::string text(text_view.begin(), text_view.end());
-        return text;
-});
-py::class_<TreeView>(m, ""TreeView"")
-","return SourceRange(self.source_, start, end);
-})
-.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
-        auto text_view = self.source_->text_str().str();
-        return text_view;
-});
-py::class_<TreeView>(m, ""TreeView"")
 "
-"return static_cast<int64_t>((*self)->starting_line_no());
-})
-.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
-        return (*self)->text();
-});
-torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
-","return static_cast<int64_t>((*self)->starting_line_no());
-})
-.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
-        return (*self)->text_str().str();
-});
-torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
-"
-"return export_prefix + path + ""."" + kExportSuffix;
-}
 std::shared_ptr<SourceView> findSourceInArchiveFromQualifier(
 caffe2::serialize::PyTorchStreamReader& reader,
 const std::string& export_prefix,
-const std::string& qualifier) {
-","return export_prefix + path + ""."" + kExportSuffix;
-}
+const std::string& qualifier) 
+","
 std::shared_ptr<Source> findSourceInArchiveFromQualifier(
 caffe2::serialize::PyTorchStreamReader& reader,
 const std::string& export_prefix,
-const std::string& qualifier) {
+const std::string& qualifier) 
 "
-"return;
-}
+"
 loaded_sources_.insert(qualifier);
   std::shared_ptr<SourceView> src = source_loader_(qualifier);
 // The importer, when looking for classes/functions doesn't know if 'foo'
 // contains definitions or if it is a prefix of 'foo.bar', we only figure it
-","return;
-}
+","
 loaded_sources_.insert(qualifier);
   std::shared_ptr<Source> src = source_loader_(qualifier);
 // The importer, when looking for classes/functions doesn't know if 'foo'
 // contains definitions or if it is a prefix of 'foo.bar', we only figure it
-"
-"size_t size)
-: data(std::move(data)),
-size(size),
-      deserializer(new SourceRangeDeserializer()),
-unpickled_records(nullptr) {}
-void ConcreteSourceRangeUnpickler::unpickle() {
-","size_t size)
-: data(std::move(data)),
-size(size),
-      deserializer(nullptr),
-unpickled_records(nullptr) {}
-void ConcreteSourceRangeUnpickler::unpickle() {
 "
 "auto input = qx;
 if (ndim == 4) {
@@ -1584,26 +1409,13 @@ if (ndim == 4) {
 } else { // 3D
 std::vector<int64_t> new_sizes{1, qx.size(0), qx.size(1), qx.size(2)};
 input = qx.view(new_sizes);
-","auto input = qx;
+}","auto input = qx;
 if (ndim == 4) {
     input = qx.to(MemoryFormat::ChannelsLast);
 } else { // 3D
 std::vector<int64_t> new_sizes{1, qx.size(0), qx.size(1), qx.size(2)};
 input = qx.view(new_sizes);
-"
-"}
-auto ret_ptr = c10::make_intrusive<PackedConvWeightCudnn<kSpatialDim>>(
-          weight.contiguous(c10::MemoryFormat::ChannelsLast), // TODO: this assumes 2D I think. make it more general?
-bias,
-stride,
-padding,
-","}
-auto ret_ptr = c10::make_intrusive<PackedConvWeightCudnn<kSpatialDim>>(
-          weight.to(c10::MemoryFormat::ChannelsLast), // TODO: this assumes 2D I think. make it more general?
-bias,
-stride,
-padding,
-"
+}"
 "uint8_t output_alignment;
 // default to -1 when no bias
 int8_t bias_alignment;
@@ -1618,18 +1430,18 @@ int8_t bias_alignment;
 std::unordered_map<CacheKey, cudnn_frontend::ManagedOpaqueDescriptor, at::native::ParamsHash<CacheKey>, at::native::ParamsEqual<CacheKey>> execution_plan_cache;
 }
 "
-"} else {
+"{
 key.bias_alignment = -1;
 }
 auto run = [&](cudnn_frontend::ManagedOpaqueDescriptor plan_desc) {
 auto workspace_size = 0;
-","} else {
+}","{
 key.bias_alignment = -1;
 }
   key.kReluFused = kReluFused;
 auto run = [&](cudnn_frontend::ManagedOpaqueDescriptor plan_desc) {
 auto workspace_size = 0;
-"
+}"
 "ParsedArgs<5> parsed_args;
 auto r = parser.parse(args, kwargs, parsed_args);
 if (r.has_torch_function()) {
@@ -1645,7 +1457,7 @@ if (r.has_torch_function()) {
 auto parsed = parse_to_conversion(r, /*allow_copy*/ false); // we don't want copy for nn.Module.to
 auto& device = std::get<0>(parsed);
 "
-"}
+"
 void addOutputForIValue(const IValue& value) {
 if (value.isTensorList()) {
 for (const at::Tensor tensor : value.toTensorList()) {
@@ -1658,7 +1470,7 @@ addOutputForTensor(value.toTensor());
 add_next_edge(autograd::Edge{});
 }
 }
-","}
+","
 void addOutputForIValue(const IValue& value) {
 if (value.isTensorList()) {
       input_tensor_lists_.insert({index_, value.toTensorList().size()});
@@ -1676,12 +1488,12 @@ add_next_edge(autograd::Edge{});
 }
 }
 "
-"}
+"
 bool DeduplicateInitializersByValue(at::Tensor& t1, at::Tensor& t2) {
   return t1.dtype() == t2.dtype() && t1.equal(t2);
 }
-void DeduplicateInitializers(
-","}
+
+","
 bool DeduplicateInitializersByValue(at::Tensor& t1, at::Tensor& t2) {
   if (t1.dtype() != t2.dtype() || !t1.sizes().equals(t2.sizes()) ||
       !t1.strides().equals(t2.strides())) {
@@ -1694,7 +1506,7 @@ bool DeduplicateInitializersByValue(at::Tensor& t1, at::Tensor& t2) {
 
   return t1.equal(t2);
 }
-void DeduplicateInitializers(
+
 "
 "try {
 if (event_sync_required_) {
@@ -1769,32 +1581,6 @@ std::unique_lock<std::mutex> cudaFreeMutexLock(
 }
 }
 "
-"namespace impl {
-namespace {
-static inline void torch_cuda_check_impl(cudaError_t result, const char * file, int line) {
-if(result != cudaSuccess) {
-std::stringstream ss;
-ss << file << "":"" << line << "": "";
-","namespace impl {
-namespace {
-static inline void cudaCheck(cudaError_t result, const char * file, int line) {
-if(result != cudaSuccess) {
-std::stringstream ss;
-ss << file << "":"" << line << "": "";
-"
-"throw std::runtime_error(ss.str());
-}
-}
-#define TORCH_CUDA_CHECK(result) torch_cuda_check_impl(result,__FILE__,__LINE__);
-struct CUDAMethods : public CUDAStubs {
-void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
-","throw std::runtime_error(ss.str());
-}
-}
-#define TORCH_CUDA_CHECK(result) cudaCheck(result,__FILE__,__LINE__);
-struct CUDAMethods : public CUDAStubs {
-void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
-"
 "try {
 if (event_sync_required_) {
 at::cuda::CUDAGuard device_guard(device_.index());
@@ -1868,62 +1654,6 @@ std::unique_lock<std::mutex> cudaFreeMutexLock(
 }
 }
 "
-"namespace impl {
-namespace {
-static inline void cudaCheck(cudaError_t result, const char * file, int line) {
-if(result != cudaSuccess) {
-std::stringstream ss;
-ss << file << "":"" << line << "": "";
-","namespace impl {
-namespace {
-static inline void torch_cuda_check_impl(cudaError_t result, const char * file, int line) {
-if(result != cudaSuccess) {
-std::stringstream ss;
-ss << file << "":"" << line << "": "";
-"
-"throw std::runtime_error(ss.str());
-}
-}
-#define TORCH_CUDA_CHECK(result) cudaCheck(result,__FILE__,__LINE__);
-struct CUDAMethods : public CUDAStubs {
-void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
-","throw std::runtime_error(ss.str());
-}
-}
-#define TORCH_CUDA_CHECK(result) torch_cuda_check_impl(result,__FILE__,__LINE__);
-struct CUDAMethods : public CUDAStubs {
-void record(int* device, CUDAEventStub* event, int64_t* cpu_ns) const override {
-"
-"if (at::cuda::currentStreamCaptureStatusMayInitCtx() ==
-at::cuda::CaptureStatus::None) {
-#endif
-    return cudaMalloc(p, size);
-#if defined(CUDA_VERSION) && CUDA_VERSION >= 11000
-} else {
-// It's ok to capture cudaMallocs, as long as we never cudaFree those
-","if (at::cuda::currentStreamCaptureStatusMayInitCtx() ==
-at::cuda::CaptureStatus::None) {
-#endif
-    return C10_CUDA_ERROR_HANDLED(cudaMalloc(p, size));
-#if defined(CUDA_VERSION) && CUDA_VERSION >= 11000
-} else {
-// It's ok to capture cudaMallocs, as long as we never cudaFree those
-"
-"// Capturing cudaMalloc behaves nicely: it gives the graph new VA,
-// but is ignored (won't leakily allocate new memory) in replays.
-at::cuda::CUDAStreamCaptureModeGuard g{cudaStreamCaptureModeRelaxed};
-    return cudaMalloc(p, size);
-}
-#endif
-}
-","// Capturing cudaMalloc behaves nicely: it gives the graph new VA,
-// but is ignored (won't leakily allocate new memory) in replays.
-at::cuda::CUDAStreamCaptureModeGuard g{cudaStreamCaptureModeRelaxed};
-    return C10_CUDA_ERROR_HANDLED(cudaMalloc(p, size));
-}
-#endif
-}
-"
 "if (*largest ==
 0) { // make an initial guess if a zero *largest is passed in
 size_t tmp_bytes;
@@ -1956,58 +1686,24 @@ if (err == cudaErrorNotReady) {
 // ignore and clear the error if not ready
 cudaGetLastError();
 "
-"fraction,
-"". Please set within (0, 1)."");
-int activated_device;
-    cudaGetDevice(&activated_device);
-if (activated_device != device) {
-      cudaSetDevice(device);
-}
-device_allocator[device]->setMemoryFraction(fraction);
-}
-","fraction,
-"". Please set within (0, 1)."");
-int activated_device;
-    C10_CUDA_CHECK(cudaGetDevice(&activated_device));
-if (activated_device != device) {
-      C10_CUDA_CHECK(cudaSetDevice(device));
-}
-device_allocator[device]->setMemoryFraction(fraction);
-}
 "
-"X_->data_ptr<scalar_t>(),
-CUSPARSE_SOLVE_POLICY_NO_LEVEL,
-work_data.get());
-});
-if (!X.is_same(*X_)) {
-X.copy_(*X_);
-","X_->data_ptr<scalar_t>(),
-CUSPARSE_SOLVE_POLICY_NO_LEVEL,
-work_data.get());
-
-        bsrsv2_bsrsm2_may_need_to_sync();
-});
-if (!X.is_same(*X_)) {
-X.copy_(*X_);
-"
-"}
 Tensor ravel(const Tensor& self) {
   return self.reshape(-1);
 }
 static inline void handle_unflatten_exception(const std::runtime_error &e,
-","}
+","
 Tensor ravel(const Tensor& self) {
   return self.contiguous().view(-1);
 }
 static inline void handle_unflatten_exception(const std::runtime_error &e,
 "
-"} else {
+"{
 facebook::jni::throwNewJavaException(
 facebook::jni::gJavaLangIllegalArgumentException,
           ""at::Tensor scalar type is not supported on java side"");
 }
 const auto& tensorShape = tensor.sizes();
-","} else {
+","{
 facebook::jni::throwNewJavaException(
 facebook::jni::gJavaLangIllegalArgumentException,
           ""at::Tensor scalar type %s is not supported on java side"",
@@ -2082,40 +1778,29 @@ auto strtabSecNo = ehdr_->e_shstrndx;
 strtabSecNo >= 0 && strtabSecNo < numSections_,
 ""e_shstrndx out of range"");
 "
-"}
+"
 at::optional<Section> ElfFile::findSection(const char* name) const {
   TORCH_CHECK(name != nullptr, ""Null name"");
 at::optional<Section> found = at::nullopt;
 for (const auto& section : sections_) {
 if (strcmp(name, section.name) == 0) {
-","}
+","
 at::optional<Section> ElfFile::findSection(const char* name) const {
   MULTIPY_CHECK(name != nullptr, ""Null name"");
 at::optional<Section> found = at::nullopt;
 for (const auto& section : sections_) {
 if (strcmp(name, section.name) == 0) {
 "
-"}
-void XarEnvironment::setupPythonApp() {
-  TORCH_CHECK(
-!alreadySetupPythonApp_,
-""Already setup the python application. It should only been done once!"");
-","}
-void XarEnvironment::setupPythonApp() {
-  MULTIPY_CHECK(
-!alreadySetupPythonApp_,
-""Already setup the python application. It should only been done once!"");
-"
 "xnn_operator_t xnnp_op = nullptr;
 // Update the input scale so we may cache the op
     this->input_scale = input_scale;
 // create an empty tensor for packing the weights
-const at::Tensor weight_contig =
+
 ","xnn_operator_t xnnp_op = nullptr;
 // Update the input scale so we may cache the op
     input_scale = act_input_scale;
 // create an empty tensor for packing the weights
-const at::Tensor weight_contig =
+
 "
 "vec_conv.emplace_back(FusionBehavior::DYNAMIC, pair.second);
 } else {
@@ -2131,13 +1816,13 @@ TORCH_INTERNAL_ASSERT(
 pair.first);
 }
 "
-"}
+"
 return [](ProcessedNode* p_node) {
 const auto inputs = p_node->Input(0).toTensorVector();
 const auto dim = p_node->Input(1).toInt();
 if (p_node->Output(0).isNone()) {
 p_node->Output(0) = at::native::_stack_cpu(inputs, dim);
-","}
+","
 return [](ProcessedNode* p_node) {
 const auto inputs = p_node->Input(0).toTensorVector();
     TORCH_CHECK(inputs.size() > 0, ""stack expects non-empty tensor list"");
@@ -2145,14 +1830,12 @@ const auto dim = p_node->Input(1).toInt();
 if (p_node->Output(0).isNone()) {
 p_node->Output(0) = at::native::_stack_cpu(inputs, dim);
 "
-"return torch::utils::indexing_tensor_from_data(options, kLong, c10::nullopt, seq);
-}
+"
 static inline Variable valueToTensor(c10::TensorOptions options, PyObject* value, const at::Device& device) {
 if (THPVariable_Check(value)) {
 return THPVariable_Unpack(value);
 }
-","return torch::utils::indexing_tensor_from_data(options, kLong, c10::nullopt, seq);
-}
+","
 inline Variable valueToTensor(c10::TensorOptions options, PyObject* value, const at::Device& device) {
 if (THPVariable_Check(value)) {
 return THPVariable_Unpack(value);
@@ -2174,18 +1857,6 @@ kwargs.empty(), ""Schema is not available, but BlockRunner got kwargs."");
 for (size_t i = 0; i < args.size(); ++i) {
 set_arg(i, std::forward<IValueList>(args));
 }
-"
-"namespace torch {
-static thread_local bool enable_torch_function = true;
-PyObject* disabled_torch_function = nullptr;
-bool torch_function_enabled() {
-return enable_torch_function;
-","namespace torch {
-static thread_local bool enable_torch_function = true;
-PyObject* disabled_torch_function = nullptr;
-  PyObject* disabled_torch_dispatch = nullptr;
-bool torch_function_enabled() {
-return enable_torch_function;
 "
 "// Create output tensor data structure to pass into allgather.
 std::vector<std::vector<at::Tensor>> output_tensors;
@@ -2267,17 +1938,6 @@ BucketKey(c10::ScalarType type, c10::Device device)
 const c10::ScalarType type;
 const c10::Device device;
 "
-"}
-struct ParserImpl {
-  explicit ParserImpl(const std::shared_ptr<SourceView>& source)
-: L(source), shared(sharedParserData()) {}
-Ident parseIdent() {
-","}
-struct ParserImpl {
-  explicit ParserImpl(const std::shared_ptr<Source>& source)
-: L(source), shared(sharedParserData()) {}
-Ident parseIdent() {
-"
 "// expression and base type names.
 if (resolver_) {
 if (auto typePtr =
@@ -2293,14 +1953,12 @@ return typePtr;
 }
 }
 "
-"return;
-}
+"
   c10::string_view str = source_view_->text();
 if (size() == str.size()) {
 // this is just the entire file, not a subset, so print it out.
 // primarily used to print out python stack traces
-","return;
-}
+","
   auto str = source_view_->text_str().str();
 if (size() == str.size()) {
 // this is just the entire file, not a subset, so print it out.
@@ -2333,25 +1991,25 @@ return (
 (source_n->starting_line_no() == source_m->starting_line_no()));
 }
 "
-"size_t size)
+"
 : data(std::move(data)),
 size(size),
       deserializer(new SourceRangeDeserializer()),
 unpickled_records(nullptr) {}
 void ConcreteSourceRangeUnpickler::unpickle() {
-","size_t size)
+","
 : data(std::move(data)),
 size(size),
       deserializer(nullptr),
 unpickled_records(nullptr) {}
 void ConcreteSourceRangeUnpickler::unpickle() {
 "
-"}
+"
 Tensor& normal_meta_(Tensor& self, double mean, double std, c10::optional<Generator> gen) {
   TORCH_CHECK(std > 0.0, ""normal_ expects std > 0.0, but found std="", std);  // TODO: dedupe
 return self;
 }
-","}
+","
 Tensor& normal_meta_(Tensor& self, double mean, double std, c10::optional<Generator> gen) {
   TORCH_CHECK(std >= 0.0, ""normal_ expects std >= 0.0, but found std="", std);  // TODO: dedupe
 return self;
@@ -2403,13 +2061,13 @@ collective_fingerprint.tensor_device_types_) {
 c10::toString(static_cast<at::DeviceType>(tensor_device_type)));
 }
 "
-"}
+"
 // Use median of three for pivot choice
     P = (L + R) >> 1;
 swap_fn(P, L + 1);
 if (gt_or_nan(arr[L + 1], arr[R])) {
 swap_fn(L + 1, R);
-","}
+","
 // Use median of three for pivot choice
     P = L + (R - L) / 2;
 swap_fn(P, L + 1);
@@ -2431,19 +2089,12 @@ return typePtr;
 }
 }
 "
-"return;
-}
-  auto str = source_view_->text_str().str();
-if (size() == str.size()) {
-// this is just the entire file, not a subset, so print it out.
-// primarily used to print out python stack traces
-","return;
-}
-  c10::string_view str = source_view_->text();
-if (size() == str.size()) {
-// this is just the entire file, not a subset, so print it out.
-// primarily used to print out python stack traces
 "
+  auto str = source_view_->text_str().str();
+if (size() == str.size()) 
+","
+  c10::string_view str = source_view_->text();
+if (size() == str.size())"
 "line_end = start();
 while (line_start < range_end) {
 // move line_end to end of line
@@ -2486,83 +2137,6 @@ return (
 (source_n->starting_line_no() == source_m->starting_line_no()));
 }
 "
-"return SourceRange(self.source_, start, end);
-})
-.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
-        auto text_view = self.source_->text_str().str();
-        return text_view;
-});
-py::class_<TreeView>(m, ""TreeView"")
-","return SourceRange(self.source_, start, end);
-})
-.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
-        auto text_view = self.source_->text();
-        std::string text(text_view.begin(), text_view.end());
-        return text;
-});
-py::class_<TreeView>(m, ""TreeView"")
-"
-"return static_cast<int64_t>((*self)->starting_line_no());
-})
-.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
-        return (*self)->text_str().str();
-});
-torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
-","return static_cast<int64_t>((*self)->starting_line_no());
-})
-.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
-        return (*self)->text();
-});
-torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
-"
-"size_t size)
-: data(std::move(data)),
-size(size),
-      deserializer(nullptr),
-unpickled_records(nullptr) {}
-void ConcreteSourceRangeUnpickler::unpickle() {
-","size_t size)
-: data(std::move(data)),
-size(size),
-      deserializer(new SourceRangeDeserializer()),
-unpickled_records(nullptr) {}
-void ConcreteSourceRangeUnpickler::unpickle() {
-"
-"}
-struct ParserImpl {
-  explicit ParserImpl(const std::shared_ptr<SourceView>& source)
-: L(source), shared(sharedParserData()) {}
-Ident parseIdent() {
-","}
-struct ParserImpl {
-  explicit ParserImpl(const std::shared_ptr<Source>& source)
-: L(source), shared(sharedParserData()) {}
-Ident parseIdent() {
-"
-"SharedParserData& shared;
-};
-Parser::Parser(const std::shared_ptr<SourceView>& src)
-: pImpl(new ParserImpl(src)) {}
-Parser::~Parser() = default;
-","SharedParserData& shared;
-};
-Parser::Parser(const std::shared_ptr<Source>& src)
-: pImpl(new ParserImpl(src)) {}
-Parser::~Parser() = default;
-"
-"return;
-}
-  c10::string_view str = source_view_->text();
-if (size() == str.size()) {
-// this is just the entire file, not a subset, so print it out.
-// primarily used to print out python stack traces
-","return;
-}
-  auto str = source_view_->text_str().str();
-if (size() == str.size()) {
-// this is just the entire file, not a subset, so print it out.
-// primarily used to print out python stack traces
-"
 "line_end = start();
 while (line_start < range_end) {
 // move line_end to end of line
@@ -2590,85 +2164,6 @@ return (
 (source_n->starting_line_no() == source_m->starting_line_no()));
 }
 "
-"return SourceRange(self.source_, start, end);
-})
-.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
-        auto text_view = self.source_->text();
-        std::string text(text_view.begin(), text_view.end());
-        return text;
-});
-py::class_<TreeView>(m, ""TreeView"")
-","return SourceRange(self.source_, start, end);
-})
-.def_property_readonly(""source"", [](const SourceRangeFactory& self) {
-        auto text_view = self.source_->text_str().str();
-        return text_view;
-});
-py::class_<TreeView>(m, ""TreeView"")
-"
-"return static_cast<int64_t>((*self)->starting_line_no());
-})
-.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
-        return (*self)->text();
-});
-torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
-","return static_cast<int64_t>((*self)->starting_line_no());
-})
-.def(""text"", [](const c10::intrusive_ptr<SourceRef>& self) {
-        return (*self)->text_str().str();
-});
-torch::class_<InstructionStats>(""profiling"", ""InstructionStats"")
-"
-"return export_prefix + path + ""."" + kExportSuffix;
-}
-std::shared_ptr<SourceView> findSourceInArchiveFromQualifier(
-caffe2::serialize::PyTorchStreamReader& reader,
-const std::string& export_prefix,
-const std::string& qualifier) {
-","return export_prefix + path + ""."" + kExportSuffix;
-}
-std::shared_ptr<Source> findSourceInArchiveFromQualifier(
-caffe2::serialize::PyTorchStreamReader& reader,
-const std::string& export_prefix,
-const std::string& qualifier) {
-"
-"return;
-}
-loaded_sources_.insert(qualifier);
-  std::shared_ptr<SourceView> src = source_loader_(qualifier);
-// The importer, when looking for classes/functions doesn't know if 'foo'
-// contains definitions or if it is a prefix of 'foo.bar', we only figure it
-","return;
-}
-loaded_sources_.insert(qualifier);
-  std::shared_ptr<Source> src = source_loader_(qualifier);
-// The importer, when looking for classes/functions doesn't know if 'foo'
-// contains definitions or if it is a prefix of 'foo.bar', we only figure it
-"
-"size_t size)
-: data(std::move(data)),
-size(size),
-      deserializer(new SourceRangeDeserializer()),
-unpickled_records(nullptr) {}
-void ConcreteSourceRangeUnpickler::unpickle() {
-","size_t size)
-: data(std::move(data)),
-size(size),
-      deserializer(nullptr),
-unpickled_records(nullptr) {}
-void ConcreteSourceRangeUnpickler::unpickle() {
-"
-"// Retry if the server is not yet listening or if its backlog is exhausted.
-if (err == std::errc::connection_refused || err == std::errc::connection_reset) {
-      C10D_WARNING(""The server socket on {} is not yet listening {}, will retry."", addr, err);
-if (Clock::now() < deadline_ - delay_duration_) {
-// Wait a little to avoid choking the server.
-","// Retry if the server is not yet listening or if its backlog is exhausted.
-if (err == std::errc::connection_refused || err == std::errc::connection_reset) {
-      C10D_TRACE(""The server socket on {} is not yet listening {}, will retry."", addr, err);
-if (Clock::now() < deadline_ - delay_duration_) {
-// Wait a little to avoid choking the server.
-"
 "{
 auto qengines = at::globalContext().supportedQEngines();
 auto list = THPObjectPtr(PyList_New(qengines.size()));
@@ -2691,18 +2186,6 @@ PyList_SET_ITEM(list.get(), i, i64);
 }
 return list.release();
 "
-"});
-auto q_k_v_s =
-at::native::split(q_k_v.view({3 * B, num_head, T, dim_per_head}), B, 0);
-return std::make_tuple(q_k_v_s[0], q_k_v_s[1], q_k_v_s[2]);
-}
-","});
-auto q_k_v_s =
-at::native::split(q_k_v.view({3 * B, num_head, T, dim_per_head}), B, 0);
-  TORCH_INTERNAL_ASSERT_DEBUG_ONLY(q_k_v_s.size() == 3);
-return std::make_tuple(q_k_v_s[0], q_k_v_s[1], q_k_v_s[2]);
-}
-"
 "if (bag_size.defined()) {
 bag_size_data = bag_size.data_ptr<index_t>();
 }
@@ -2717,15 +2200,13 @@ auto src_stride0 = src.strides()[0];
 auto src_stride1 = src.strides()[1];
 auto output_stride0 = output.strides()[0];
 "
-"bag_size_data = bag_size.data_ptr<index_t>();
-}
+"
 auto numel = add_indices.numel();
   int64_t ddim = src.sizes()[1];
 auto src_stride0 = src.strides()[0];
 auto src_stride1 = src.strides()[1];
 auto output_stride0 = output.strides()[0];
-","bag_size_data = bag_size.data_ptr<index_t>();
-}
+","
 auto numel = add_indices.numel();
   int64_t ddim = src.size(1);
   auto vocab_size = src.size(0);

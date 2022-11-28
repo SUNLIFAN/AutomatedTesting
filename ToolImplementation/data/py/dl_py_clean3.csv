@@ -217,16 +217,6 @@ op = torch._C._jit_get_operation(qualified_op_name)"
                 ""Registration to both CompositeImplicitAutograd and CompositeExplicitAutograd is not allowed.""
             )","        if 'CompositeImplicitAutograd' in dispatchKeys and 'CompositeExplicitAutograd' in dispatchKeys:
             raise RuntimeError(""Registration to both CompositeImplicitAutograd and CompositeExplicitAutograd is not allowed."")"
-"filename (str): file name to map
-shared (bool): whether to share memory
-size (int): number of elements in the storage
-"""""",
-)
-","filename (str): file name to map
-shared (bool): whether to share memory
-size (int): number of elements in the storage
-"""""")
-"
 "    if (
         getattr(ret.__class__, ""__setstate__"", Tensor.__setstate__)
         is not Tensor.__setstate__

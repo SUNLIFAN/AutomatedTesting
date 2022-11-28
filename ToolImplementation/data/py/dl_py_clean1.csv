@@ -245,12 +245,12 @@ return None
             return None
 op_name = f""aten::{f.func.name}""
 if self.target is Target.REGISTRATION and not self.selector.is_operator_selected(op_name):"
-"@method_with_native_function
+"
 def __call__(self, f: NativeFunction) -> Optional[str]:
         if f.manual_kernel_registration:
             return None
 if Variant.function not in f.variants:
-return None","@method_with_native_function
+return None","
 def __call__(self, f: NativeFunction) -> Optional[str]:
 if Variant.function not in f.variants:
 return None"
