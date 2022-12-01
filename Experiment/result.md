@@ -89,6 +89,12 @@ history:
 
 #### without prompt:
 
-bleu-4:
+best:
 
-exact match: 
+bleu-4: 83.64
+
+exact match: 22.54
+
+这组应该有点异常，测试集比验证集好太多
+
+27 个 epoch 退出
