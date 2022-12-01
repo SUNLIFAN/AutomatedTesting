@@ -4,6 +4,11 @@
 
 ## CodeT5 original
 
+在原数据集上的结果:
+
+bleu-4: 89.33
+em: 14.4385
+
 在 cpp 数据集上的效果:
 
 avg src len: 33, avg trg len: 45, max src len: 97, max trg len: 122
@@ -48,6 +53,42 @@ exact match: 0.00
 
 ## AutoFix
 
-bleu-4: 80.35
+#### with prompt:
 
-exact match: 17.6471
+test:
+
+bleu-4: 83.1
+
+exact match:23.5294
+
+bleu-4: 
+
+history:
+
+0 bleu: 71, em: 0
+1 bleu: 75.81, em: 0
+2 bleu: 77.66, em: 1.8519
+3 bleu: 79.73, em: 1.8519
+4 bleu: 79.05, em: 1.8519
+5 bleu: 81.01, em: 14.8148
+6 bleu: 81.92, em: 14.8148
+7 bleu: 81.57, em: 18.5185
+8 bleu: 81.7, em: 18.5185
+9 bleu: 82.07, em: 18.5185
+10 bleu: 82.9, em: 20.3704
+11 bleu: 82.09, em: 22.2222
+12 bleu: 82.73, em: 24.0741
+13 bleu: 82.34, em: 22.2222
+14 bleu: 82.23, em: 22.2222
+15 bleu: 82.22, em: 22.2222
+16 bleu: 82.51, em: 24.0741
+17 bleu: 82.45, em: 24.0741
+18 bleu: 82.43, em: 24.0741
+
+6 epochs no higher bleu, early stop
+
+#### without prompt:
+
+bleu-4:
+
+exact match: 
