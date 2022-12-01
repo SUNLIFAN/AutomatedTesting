@@ -48,3 +48,6 @@ exact match: 0.00
 
 ## AutoFix
 
+bleu-4: 80.35
+
+exact match: 17.6471

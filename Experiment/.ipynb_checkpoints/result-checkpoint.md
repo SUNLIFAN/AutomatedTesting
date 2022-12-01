@@ -47,3 +47,7 @@ exact match: 0.00
 这里的 bleu-4 比 CodeT5 明显差很多的原因可能是因为 CodeBert 微调的代码序列更短，仅针对缺陷局部进行修复，面对长的输入序列表现很差。
 
 ## AutoFix
+
+bleu-4: 80.35
+
+exact match: 17.6471
