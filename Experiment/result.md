@@ -55,46 +55,77 @@ exact match: 0.00
 
 #### with prompt:
 
-test:
+16 epoch, bleu: 83.01, em: 23.5294
 
-bleu-4: 83.1
+16 epoch, bleu: 82.19, em: 23.5294
 
-exact match:23.5294
+18 epoch, bleu: 83.74, em: 25.4904
 
-bleu-4: 
+17 epoch, bleu: 83.18, em: 22.5490
 
-history:
+24 epoch, bleu: 83.94, em: 22.5490
 
-0 bleu: 71, em: 0
-1 bleu: 75.81, em: 0
-2 bleu: 77.66, em: 1.8519
-3 bleu: 79.73, em: 1.8519
-4 bleu: 79.05, em: 1.8519
-5 bleu: 81.01, em: 14.8148
-6 bleu: 81.92, em: 14.8148
-7 bleu: 81.57, em: 18.5185
-8 bleu: 81.7, em: 18.5185
-9 bleu: 82.07, em: 18.5185
-10 bleu: 82.9, em: 20.3704
-11 bleu: 82.09, em: 22.2222
-12 bleu: 82.73, em: 24.0741
-13 bleu: 82.34, em: 22.2222
-14 bleu: 82.23, em: 22.2222
-15 bleu: 82.22, em: 22.2222
-16 bleu: 82.51, em: 24.0741
-17 bleu: 82.45, em: 24.0741
-18 bleu: 82.43, em: 24.0741
+avg epoch: 18.2
 
-6 epochs no higher bleu, early stop
+avg bleu: 83.212
+
+avg em: 23.53
+
+example history: 
+
+epoch 0: 70.38 0.0
+
+epoch 1: 76.56 0.0
+
+epoch 2: 78.05 0.0
+
+epoch 3: 79.4 0.0
+
+epoch 4: 79.75 7.4
+
+epoch 5: 80.87 12.963
+
+epoch 6: 80.82 14.81
+
+epoch 7: 81.52 18.5185
+
+epoch 8: 81.61 18.5185
+
+epoch 9: 81.78 18.5185
+
+epoch 10: 82.49 18.5185
+
+epoch 11: 83.02 20.3704
+
+epoch 12: 81.94 24.0794
+
+epoch 13: 83.28 24.0741
+
+epoch 14: 81.99 22.2222
+
+epoch 15: 82.75 24.0741
+
+epoch 16: 82.4 24.0741
+
+epoch 17: 83.6 22.2222
 
 #### without prompt:
 
-best:
+16 epoch, bleu: 83.19, em: 21.56
 
-bleu-4: 83.64
+15 epoch, bleu: 82.29, em: 21.56
 
-exact match: 22.54
+20 epoch bleu: 83.28, em: 22.54
 
-这组应该有点异常，测试集比验证集好太多
+16 epoch bleu: 83.86, em: 21.56
 
-27 个 epoch 退出
+22 epoch bleu: 83.54, em: 22.549
+
+avg epoch: 17.8 epoch
+
+avg bleu: 83.232
+
+avg em: 21.95
+
+example history:
+
