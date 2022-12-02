@@ -1,0 +1,177 @@
+torch . [ . 0 ] ) self . zero_point ] . dtype . . . = . activation_post_process qscheme 
+env_callable = lambda fn : { "unboxed_ops" : [ ComputeCodegenUnboxedKernels ( selector ) ( fn ) ] } , num_shards = 10 , sharded_keys = { "unboxed_ops" } , ) 
+for in optional_tensors unwraps unwrap_optional_tensor ( opt_tensor , ) unwrap_code = "n" . ( = for arg in arg_names : 
+func_args _wrap_all_tensors_to_functional ( args , func_level ) _wrap_all_tensors_to_functional ( kwargs , func_level ) flattened_unwrapped_args , _ = ) flattened_wrapped_args _ = tree_flatten ( ) flattened_unwrapped_kwargs = tree_flatten ( kwargs ) flattened_wrapped_kwargs , _ = tree_flatten ( ( * , * func_kwargs ) outputs _unwrap_all_tensors_from_functional ( func_outputs  
+test_x arange ( -2 * math . , 2 . pi , 01 ) ( test_y * . sin ( + t_b ) net ( t_params , plt test_x data numpy ) , test_y . . numpy label ( x plt . plot ( . data . numpy test_f . data numpy ) = (  
+exp_avg . mul_ ( beta1 ) . add_ ( grad , alpha = 1 - beta1 ) exp_avg_sq . mul_ ( beta2 ) . addcmul_ ( grad , grad , value = 1 - beta2 ) if amsgrad : 
+def icdf ( self , value ) : return torch . tan ( math . pi * ( value + 0 . 5 ) ) * self . scale + self . loc  
+ssi = SessionStartInfo ) k , v in hparam_dict . ( ) v : continue if ( v , int or ( v float ) : . hparams [ k ] . number_value v continue  
+raise AttributeError ( f "'_OpNamespace' object has no attribute '{op_name}'" ) from e 
+: args . extend ( func . out args . extend ( . arguments non_out ) return r for arg args argument ( arg is_out func . is_out_fn ) ] 
+E , X , R = self . E , self . X , self . R rerr = ( torch . norm ( R , 2 , ( 0 , ) ) * ( torch . norm ( X , 2 , ( 0 , ) ) * ( A_norm + E [ : X . shape [ -1 ] ] * B_norm ) ) * * -1 ) converged = rerr < tol 
+len ( : quantized graph erase_node ) in ] : if isinstance ( ) : erase_node arg return  
+def safe_unflatten ( tensor , dim , shape ) : if len ( shape ) == 0 : assert tensor . numel ( ) == 1 return tensor . squeeze ( ) return tensor . unflatten ( dim , shape ) def jacfwd ( f , argnums = 0 ) : 
+return n . std . correction ) def std_decomposition ( : Tensor dims : int , correction int 0 , keepdim : bool ) : return torch sqrt . var ( x , correction = correction , keepdim keepdim ) ) 
+return _old_backward args , * . Tensor . backward =  
+scale_factor . reshape ( weight_shape ) ) conv = self . _conv_forward ( input , scaled_weight , self . zero_bias ) conv_orig = conv / scale_factor . reshape ( bias_shape ) 
+def size ( self , dim = None ) : if dim : g . op ( self ) sym_help _size_helper ( g , self dim ) 
+) = symbolic_helper . input ) assert ndim is None perm = ( range ( , perm . ( . dimension ) 
+else args tensor_index index += 1 ( : args . append ( tensor_args [ tensor_index ] 
+. reshape ( ) ) conv = self _conv_forward ( input , ) conv_orig = conv reshape bias_shape ) 
+LockType = _dummy_thread LockType : akref . [ Callable , [ str , Callable ] ] . WeakKeyDictionary ( def ( ) :  
+for node in . nodes node . == cnt [ node . target . __name__ ] += 1 print ( sorted ( cnt items key = lambda x x [ 1 ] reverse True def min_cut_rematerialization_partition  
+torch . matmul ( p , q . t ( ) , out = tensor ) assert not torch . any ( torch . isnan ( tensor ) ) return [ input_tensor ] 
+else : d_weight = aten . mul ( grad_out , x_hat ) else : d_weight = None if output_mask [ 2 ] and bias is not None : if len ( outer_dim_indices ) > 0 : 
+if qconfig_propagation_list is None : qconfig_propagation_list = get_qconfig_propagation_list ( ) propagate_qconfig_ ( model , qconfig_dict = None ) 
+if not torch . jit . is_scripting ( ) : if any ( type ( t ) is not Tensor for t in operands ) and has_torch_function ( operands ) : return handle_torch_function ( einsum , operands , * operands ) if len ( operands ) == 1 and isinstance ( operands [ 0 ] , ( list , tuple ) ) : 
+training_size = 1000 = torch . linspace ( 0 . 5 , * sigma steps training_size requires_grad = Create a bunch of vectors that point along drs torch . ( r , torch . tensor 1 0 ] )  
+storage_key = ( fqn , storage_md ] . tensor ) offsets [ ] lengths = 
+target_device = _get_device_index ( target_device , True ) ctx . target_device = target_device 
+: bool : param enumerate d_p = d_p_list [ i ] not maximize else d_p_list i weight_decay != : d_p = d_p . add , alpha weight_decay 
+assert self . spec is None and self . spec == spec self . spec = spec if type ( self . spec ) in [ tuple , list ] or all ( isinstance ( i , pytree . LeafSpec ) for i in spec . children_specs ) : self . is_simple = True if isinstance ( self . spec , pytree . LeafSpec ) :  
+def load_arg ( a ) : return map_arg ( a , node env [ node ] ) for producer_node in producer_nodes [ producer_node ] graph . node_copy ( , ) graph output ( load_arg producer_nodes [ -1 ] ) graph_module = root , graph ) graph_module  
+if [ 0 ] : d_input = ( aten ) inner ) : d_input = ] and weight is if > 0  
+range ( ) : current_frame is not None Optional [ FrameType current_frame = current_frame f_back 
+if min_val . numel ( ) > 0 and max_val . numel ( ) > 0 : prev_zeros = ( min_val . item ( ) == 0 ) and ( max_val . item ( ) == 0 ) if min_val . numel ( ) == 0 or max_val . numel ( ) == 0 or prev_zeros : min_val = torch . min ( x ) max_val = torch . max ( x ) 
+logging ( "partitioner_cache hit!" ) fused_graph_module self . partitioner_cache [ graph_module ] else : partitioner = ( graph_module self supported_ops allows_single_node_partition = False ) = partitioner . partition_and_fuse ) self . partitioner_cache ] 
+paths ( ) if not found_one ( find any test reports in s3, is probably a ) paths  
+modules : [ str , types . ModuleType ]  
+def issubtype ( self other : if other . ) getattr other . param , None ) is Generic : True if ( other , ) : return . . param )  
+auto = ( ; TORCH_INTERNAL_ASSERT maybe_layer has_value cur_level = -> ( ) { textwrap ( bdims_all_none_case , " ) , auto = batch_rule ( ) } ) ; { 
+return_annotation = signature return_annotation valid_return_annotation_type = is not inspect . Parameter . empty and isinstance return_annotation , ) valid_literal_annotation : 
+= . _get_tensor_rank self assert unsqueeze_axes = list range ( 1 , tensor_rank ) = ( _unsqueeze_helper ( , boundaries , unsqueeze_axes )  
+env_callable = : { [ ComputeCodegenUnboxedKernels ( ( fn ] } num_shards = 10 , { "unboxed_ops" , )  
+getattr x , + "." ) ) ( chilli clean this up it default_partition fx_module fx . GraphModule , ) : = ) = ( output_node  
+: d_bias = grad_out : d_bias = aten . , ( , d_input , d_weight , aten . )  
+) int batch_sizes [ . size ( in_dim ) for in_dim arg in zip ( ) if in_dim not None ] if any size batch_sizes [ ] for size in : raise ValueError ( f ap : tensors to have the in the mapped mension , got batch_sizes for the mapped dimension  
+def name ( func : FunctionSchema , * , faithful_name_for_out_overloads : bool = False ) -> str : name = str ( func . name . name ) if func . is_functional_fn ( ) : name += "_functional" if func . is_symint_fn ( ) : name += "_symint" if func . is_out_fn ( ) : 
+ret func , new_type , state ) : new_type is Tensor : return ( * args ) ret func ( * args if type ) is new_type : ret = ret . as_subclass ( new_type ) 
+assert spec self . spec . spec = ( . spec ) [ tuple ] all ( pytree . LeafSpec for i spec children_specs ) : self . = True if . , pytree )  
+do_write = True if os . path . exists ( fout_path ) : with open ( fout_path , 'r' ) as fout_old : do_write = fout_old . read ( ) != output_source 
+def get_type ( arg ) : if ( arg . : n . pe pe n meta return arg ) arg_types = ( . args get_type ) assert ( ( arg_types tuple ) ) [ ) i in ] ) 
+self List BytesWriteRequest Future [ ] : req in requests : with ( self . path / req ) open ( "wb" w . write ( req . ( ) os . fsync . fileno ( ) fut : [ ] Future ) fut . 
+return new_type args state if is : return ( args ) func * ) if type ret ) is not : ret = ret . new_type ) 
+with . . graph . saved_tensors_hooks ( pack = function * ) torch cuda . and and not had_cuda_in_fwd initialized before running the , so didn stash the CUDA . 
+def sign ( self ) : if isinstance ( self . scale , numbers . Real ) : return 1 if float ( self . scale ) > 0 else -1 if float ( self . scale ) <= 0 else 0 return self . scale . sign ( )  
+fan_in , _ = init ( self . ) bound = 1 / math sqrt ( fan_in ) if fan_in > 0 else init . self . bias , + bound bound )  
+else : aten . ( else : None [ 2 ] is None if ( outer_dim_indices ) > 
+def self , max_val ) : dtype self . type ( scalarType ) is = else dtype = . . index cast_pytorch_to_onnx [ dtype ] ) 
+. node . meta [ _extract_tensor_metadata ( [ 0 ] no_dispatch ( ) real_out = func_overload ( * args , * kwargs ) def e , proxy ) : Some like native_batch_norm_backward ) undefined tensors that get  
+else : d_weight = aten . mul ( grad_out , x_hat ) else : d_weight = aten . new_empty ( input , ( 0 , ) ) if output_mask [ 2 ] and bias is not None : if len ( outer_dim_indices ) > 0 : 
+buf . ( , _should_read_directly ( buf , False . getvalue )  
+self . bn = _BN_CLASS_MAP [ dim ] ( eps momentum True , True ) self . weight_fake_quant = self . qconfig . weight ) if bias : self . bias ( torch Tensor ( out_channels ) )  
+with fx_g = make_fx ( ) ( , , ones_like out , bw_module = ( fx_g print ( fw_module code ) = randn ) ) fw_args ) 
+is_symbolic_op ( func ) return func sym_size default , aten . dim . default , aten . . aten . stride . default ] handle_symbolic_op ( , kwargs  
+padding = ( 0 , padding [ , [ 0 ] ) ) , lambda F . input , kernel_size , dilation = , = padding , stride = lambda : ( , , , stride , ) ) input = (  
+env_callable fn : { "definitions" : [ ComputeUnboxingFunctions ( Target . DEFINITION selector ) ( fn ) ] } , num_shards 1 if selected_op_num < sharding_threshold else , sharded_keys = "definitions" } , ) 
+def scalar ( name , scalar , collections = None , new_style = False , double_precision = False ) : 
+isinstance ( x , torch . Tensor ) and not isinstance ( x , FakeTensor ) and type ( x ) is not torch . Tensor ) tree_map ( check_non_fake_tensor , args ) 
+torch . matmul ( , q . t ( ) out = tensor ) assert not torch . any isnan ( tensor ) ) if use_error_feedback : state . error_dict bucket_index ] = input_tensor_cp - input_tensor [ ]  
+def __rdiv__ ( other self . dtype . : return self . ( ) other else : self . double ( reciprocal ( * ) . type_as ( self )  
+def _handle_reduce_dim_none ( , self op_name : rank = ( ) if rank is not None and [ _get_tensor_dim_size ( self , ) == 0 for in ( ) 
+assert key . size ( 0 ) == value . size ( 0 ) or key . size ( 1 ) == value . size ( 1 ) if isinstance ( embed_dim , torch . Tensor ) : head_dim = embed_dim . div ( num_heads , rounding_mode = unc else : head_dim = embed_dim assert head_dim * num_heads == embed_dim , "embed_dim must be divisible by num_heads" scaling = float ( head_dim ) * * -0 . 5  
+return * args , * kwargs torch . Tensor . backwrd = _backward  
+( ) == nsor [ ] return ConstRefCType ( binds ) ) cpp t mutable = mutable , binds ) 
+def self f : ) -> Optional [ str ] : if Variant . function not in f . : return None  
+= symbolic_helper . _get_tensor_rank ( ) assert tensor_rank is not None unsqueeze_axes = ( range ( tensor_rank 1 ) ) expanded_boundaries = symbolic_helper . ( g , boundaries ,  
+def op_name_from_native_function ( f : NativeFunction ) -> str : return f "aten::{f.func.name}" 
+if . setattr ( prop fset , , . UNUSED ) noqa  
+env_callable lambda fn "definitions" : [ ( . , ( fn ] } , num_shards = 1 selected_op_num < sharding_threshold else , sharded_keys = "definitions" } , )  
+def draw_joint_graph ( graph , joint_inputs , file_name = "full_graph.png" ) : draw_graph ( graph , file_name ) return partition_backwards ( graph , joint_inputs ) def create_compiled_function ( flat_fn , fw_compiler , bw_compiler , partition_fn ) : joint_forward_backward = create_joint_forward_backward ( flat_fn ) 
+make_fx ( f = : if decomposition_table is : = { } ( * args = . tree_map ( lambda x . 
+check ( ( self . ndim == 3 or valid_dims ) and ( self . ndim == 4 and valid_dims and self . size ( 3 ) != 0 ) , lambda : f "3D and 4D (batch mode) tensor expected for input, but got: {self}" ) if self . ndim == 4 : nbatch , nplane , input_h , input_w = self . shape  
+preserve_rng_state ( ) Set input tensors that require grad leaves flat_tensor_args . ( lambda x : . detach ( ) requires_grad_ ( x . requires_grad ) ( x Tensor ) else , flat_tensor_args ) torch . set_grad_enabled ( : = flat_fn ( * ) 
+def ( devices , op ) device propagation sketchy CPU , = aten::index , CPU ) >= CUDA tensor op aten . [ 0 ] = set ( devices ) if len devices == 1 return :  
+weights , , = extract_weights model buffers buf_descriptors _ extract_buffers ( model ) def fun ( , buffers , data : mutable_model = copy . deepcopy ( model ) 
+f ( * inps , out_tensors ) = fx_model . graph ( out_tensors is : . empty ( shape , = dtype ) for , dtype in [ ] ] = alloc_results else results out_tensors = inps  
+) ndim = symbolic_helper . _get_tensor_rank ( input ) perm = list ( range ( 0 , ndim ) ) perm . append ( perm . pop ( dimension ) ) 
+. mul_ ( beta1 . add_ ( , 1 ) exp_avg_sq mul_ beta2 ) . addcmul_ ( , grad . ( , 1 - beta2 ) if amsgrad :  
+if not torch . jit . is_scripting ( ) : tensor_ops = ( A , B , X , iK ) if not set ( map ( type , tensor_ops ) ) . issubset ( ( torch . Tensor , type ( None ) ) ) and has_torch_function ( tensor_ops ) : return handle_torch_function ( 
+if GLOBALS . export_onnx_opset_version < 13 : raise ValueError ( f "Opset version must be >= 13 for Squeeze with dynamic axes. {input.node().sourceRange()}" ) axes_t = axes_i [ 0 ] axes_rank = _get_tensor_rank ( axes_t ) if axes_rank > 1 : raise ValueError ( "For Squeeze axses as input, the axes rank must be one in ONNX spec." ) 
+check ( self . 3 valid_dims ) or self ndim 4 and and self . size 3 ) != 0 ) , lambda : f "3D 4D (batch mode) tensor expected input, but got: ) self . ndim == 4 nbatch , nplane , , = self shape 
+ndim = ( input is not range ( ) perm . ( . pop ( dimension ) )  
+qconfig_propagation_list : get_default_qconfig_propagation_list if is :  
+def , , * * : return compiled_f dict ( self . named_parameters ) ) dict ( self orig_module . named_buffers ( ) ) args * * kwargs ) 
+step 4 : assign the new grads , delete the sample grads for param , param_grad in zip ( model . parameters ( ) , grads ) : param . grad = param_grad del param . grad_sample 
+( func ) : begin = time time ) _ in range iters ) func ( ) sin sum . ( ) a . grad = None print time . time ( ) begin def ( : 
+tensor_read_requests = [ ] bytes_read_requests = [ ] for fqn , obj in state_dict . items ( ) : md = metadata_from_storage . state_dict_metadata [ fqn ] if isinstance ( obj , ShardedTensor ) : 
+results _undo_create_differentiable ( , tree_flatten diff_primals ) = ( primals_out ) def wrapper ( = create_graph : , cotangents_spec tree_flatten cotangents primals_out_spec cotangents_spec : raise RuntimeError (  
+out_args [ str ] [ ] for arg in func if arg default is : continue 
+if right is Any or left == right : return True if right == type ( None ) : return False 
+tensor_rank symbolic_helper ( self assert tensor_rank is not None unsqueeze_axes = ( 1 , expanded_boundaries = expand ( g , symbolic_helper _unsqueeze_helper , boundaries , unsqueeze_axes )  
+if self . : cuda synchronize 
+fan_in _ = ( . ) = 1 / math . sqrt ( fan_in ) fan_in else 0 init ( self - bound , ) 
+flat_args : List ) -> int : batch_sizes = [ arg . size ( in_dim ) for in_dim , arg in zip ( flat_in_dims , flat_args ) if in_dim is not None ] if batch_sizes and any ( size != batch_sizes [ 0 ] for size in batch_sizes ) : raise ValueError ( f ap : Expected all tensors to have the same size in the mapped 
+return CompiledFunction def compiled_function ( fn , fw_compiler , bw_compiler , partition_fn = partition_backwards ) : saved_fn = None def returned_function ( * args , * * kwargs ) : 
+"nCopying extension format ( ext name ) relative_site_packages sysconfig get_path ( sysconfig . ( . lstrip os . sep src join filename )  
+def __rdiv__ ( self , other ) : if self . dtype . is_floating_point and self . dtype . is_complex : return self . reciprocal ( ) * other else : return ( self . double ( ) . reciprocal ( ) * other ) . type_as ( self )  
+_check_p2p_op_list ( p2p_op_list ) backend = get_backend ( p2p_op_list [ 0 ] . group ) reqs = [ ] with _batch_p2p_manager ( backend ) : for p2p_op in p2p_op_list : op = p2p_op . op tensor = p2p_op . tensor 
+) flat_diff_primals , primals_spec = tree_flatten diff_primals , = ( primals_out True create_graph = True ) cotangents_spec = ( cotangents ) cotangents_spec : raise RuntimeError ( 
+A . shape [ : -1 , A -1 ) - D . size ( -1 ) ) dtype = dtype device = . , generator = gen ) = U_ortho . transpose -2 , -1 ) .  
+def ( args , kwargs ) = args isinstance a0 , tuple and isinstance ( tuple ) , list ) a1 list ) : results [ ] el1 zip ( , a1 : new_args = el0 , * a_other  
+for self . quantized_graph nodes node . op == self . modules target ) env node name ] = [ . [ name ] 
+start_daemon = rank == assert result . hostname is not None ( . hostname , result port , start_daemon , timeout store , rank , world_size  
+. [ nsor_meta = _extract_tensor_metadata [ with = func_overload * , * * def proxy like native_batch_norm_backward ) undefined get  
+def ( : map_arg a , node : env node ] ) for producer_node in producer_nodes : env producer_node ] = graph producer_node load_arg graph . output ( load_arg producer_nodes [ -1 ] ) GraphModule ( , ) return graph_module  
+def _logical_and a TensorLikeType : : not utils . a . dtype ) a a != 0 not . is_boolean_dtype b . ) : b return & logical_and = _make_elementwise_binary_reference (  
+assert ( len ( flat_args ) == len ( flat_inps ) ) for idx , arg in enumerate ( flat_args ) : if isinstance ( flat_inps [ idx ] , torch . Tensor ) : flat_args [ idx ] = addPythonKey ( PythonTensor ( flat_inps [ idx ] . shape , arg ) ) else : flat_args [ idx ] = flat_inps [ idx ] tree_args = pytree . tree_unflatten ( flat_args , args_spec ) 
++= 1 count >= , of converged } got { ) cannot ormat 
+fw_compiler : Callable , bw_compiler : Optional [ Callable ] = None , partition_fn : Callable = default_partition , decompositions : Dict = { } , hasher_type : str = "StaticShapeHasher" , static_argnums : Optional [ Tuple [ int ] ] = None , ) -> Callable : 
+if ( . target_device = u else target_device ( , . target_device 
+return _old_backward ( * args , * * kwargs ) setattr ( torch . Tensor , ckward _backward ) 
+def ban_recomputation ( ) : return ( op == nd get_aten_target ( node ) in ) else : if . op != ll_function 
+def get_post_build_suffix ( self ) -> str : if self . gpu_arch_type == "cuda" : return f "+cu{self.gpu_arch_version.replace('.', '')}" return f "+{self.gpu_arch_type}{self.gpu_arch_version}" 
+if mpositeImplicitAutograd n dispatchKeys or mpositeExplicitAutograd n dispatchKeys : raise RuntimeError ( "Registration to both CompositeImplicitAutograd or CompositeExplicitAutograd is not allowed." )  
+env_callable = lambda { "unboxed_ops" : [ ComputeCodegenUnboxedKernels ( } , = 1 <= 10 , } 
+def __str__ ( self ) -> str : all_arguments : List [ str ] = [ ] all_arguments . extend ( map ( str , self . flat_positional ) ) if self . flat_kwarg_only and self . out : all_arguments . append ( '*' ) all_arguments . extend ( map ( str , self . flat_kwarg_only ) ) all_arguments . extend ( map ( str , self . out ) ) return oin ( all_arguments )  
+( "'_OpNamespace' '{self.name}' object has no attribute ) from e  
+self . _module_copies = . ] . modules_params [ list parameters ( m ) for m in self _module_copies self modules_buffers [ list buffers ( ) ) m .  
+try : result = map_fun ( ) except BaseException as e : result = CheckpointException ( step , { self . rank : e } ) final_result = self . broadcast_object ( result ) if isinstance ( final_result , CheckpointException ) : raise final_result 
+weight is ( weight ) if None raise SymbolicValueError ( "Unsupported: batch_norm for unknown channel size." , input , ) weight_value torch . tensor ( 1 . 0 channel_size  
+guard_field = 0 : cuda::OptionalCUDAGuard guard_ ; elif self . dispatch_key == . :  
+return ret def _rebuild_from_type_v2 func , new_type , state ) : if new_type is Tensor : return ( * args ) = func ( * args ) type ) is new_type : = ret . new_type )  
+load_arg ( a return map_arg ( a , node : env node ] for producer_node producer_nodes producer_node ] graph . ( , . ( load_arg ( producer_nodes -1 = GraphModule ( , return graph_module 
+ops = set ( [ i . target for i in joint_module . graph . nodes if i . op == ll_function print ( ops + recomputable_ops ) AGGRESSIVE_RECOMPUTATION = False for node in full_bw_graph . nodes : if node in tangent_closure : nx_graph . add_edge ( node . name - "_in" , "sink" , capacity = math . inf )  
+for node . quantized_graph : . nd ( . modules node ) env . name ] env node [ ] . name ] 
+arranged_img_CHW ( make_np ) , ncols ) arranged_augment_square_HWC = . ( ( [ 2 arranged_img_CHW . ] , 3 ) = transpose 2 0 
+if not torch . jit . ) : = ( A B , X , iK ) if ( not ( ( type tensor_ops ) ) . ( ( torch . Tensor ( ) ) ) and tensor_ops ) ) : return (  
+isinstance ( x , torch . Tensor ) or not isinstance ( x , FakeTensor ) or type ( x ) is not torch . Tensor and type ( x ) is not torch . nn . Parameter ) tree_map ( check_non_fake_tensor , args )  
+if min_val . numel ( ) > 0 or max_val . numel ( ) > 0 : same_values = min_val . item ( ) == max_val . item ( ) if min_val . numel ( ) == 0 or max_val . numel ( ) == 0 or same_values : min_val = torch . min ( x ) max_val = torch . max ( x )  
+bn [ momentum , True self . = . qconfig ) if bias Parameter ( torch  
+def forward self : return self ( self . _forward input  
+r = torch . Tensor . _make_subclass ( cls , elem , elem . requires_grad ) r . proxy = proxy if not elem . is_sparse : proxy . node . meta [ nsor_meta = _extract_tensor_metadata ( r ) return r 
+= ( . args ) args [ 1 [ 1 ] . args tuple ( args ) for node in . graph nodes new_kwargs {  
+padding = ( 0 , padding [ = stride 0 ] ) lambda : . unfold ( input = padding padding , stride ) unfold3d ( input , , padding stride , ) ( 
+False def _maybe_size_of nsor_meta n . : _size_of ( node meta def ban_recomputation ( node ) node . ll_function get_aten_target ( unrecomputable_ops )  
+prev_node = get_normalized_nth_input gm , 0 assert isinstance ( , Node  
+( self , : if self . dtype . is_floating_point or self . . : reciprocal ( ) * other return self . ) . reciprocal ) * . ( self  
+d_col = d_row ( d_row . shape 0 ] , TODO : Consider reordering work lower - triangular R . linalg . ( SBS * d_row * d_col . transpose -1 . ( ) ) transpose ( -2 , -1 ) conj ( ) 
+if func == torch . ops . aten . is_contiguous . default : return True TODO : hack , we don currently support symbolic strides properly if func == torch . ops . aten . stride : return create_contiguous ( args [ 0 ] . shape ) TODO : An incomplete list 
+All - gather full parameters , moving them to compute device if necessary . self . _rebuild_full_params ( ) Wait for all_gather to finish before computation torch . cuda . current_stream ( ) . wait_stream ( self . _streams [ "all_gather" ] ) 
+def __init__ self dtype = torch float32 , = , compute_dtype = None ) : PlaceholderObserver , ) . ( dtype = dtype  
+else : args . extend ( func . arguments . out ) args . extend ( func . arguments . non_out ) return [ r for arg in args for r in argument ( arg ) ] 
+has_sparse_grad : bool ) : for i , param in enumerate ( params ) : d_p = d_p_list [ i ] if weight_decay != 0 : d_p = d_p . add ( param , alpha = weight_decay ) 
+flat_args : List ) -> int : batch_sizes = [ arg . size ( in_dim ) for in_dim , arg in zip ( flat_in_dims , flat_args ) if in_dim is not None ] if batch_sizes and any ( [ size != batch_sizes [ 0 ] for size in batch_sizes ] ) : raise ValueError ( f ap : Expected all tensors to have the same size in the mapped mension , got sizes { batch_sizes } for the mapped dimension 
+getattr ( x , "write_" + ext . lstrip ( "." ) ) ( fname ) todo ( chilli ) : clean this up / make it more understandable def partition_backwards ( fx_module : fx . GraphModule , _joint_inputs ) : bw_nodes = set ( ) saved_nodes = set ( ) output_node = None 
+return wrapped def ( , decomposition_table None ) : is : = { def wrapped : phs pytree ( x : args  
+observed linear_Q . weight nn . Parameter ( . q_proj_weight . weight = . ( other k_proj_weight ) . linear_V weight = nn . v_proj_weight ) other in_proj_bias is None :  
+is : = get_default_qconfig_propagation_list ) module_qconfig . type , qconfig_parent )  
+X , R = E , self . X , . R = torch norm ( , 2 , * norm X , , ( , ) * ( A_norm + E : ] * ) ) -1 converged tol 
+not torch . jit . : tensor_ops = ( A , X , iK ) if ( set tensor_ops ) ) . Tensor , type ) ) ) has_torch_function tensor_ops ) ) return handle_torch_function (  
+default_decompositions = get_decompositions ( ) print_compile fx_g , _ ) : 
+in len commits ) : = current_commits . commits i ] if categorized n str : = get_commit_data_cache ( ( . commit_hash ) = features_to_dict ( category , topic = CommitList . features ) i = c category , = topic ) current_commits . ( ) ( commit : Commit 
+symbolic_helper . ( self assert tensor_rank is not None = ( ( 1 , tensor_rank 1 ) expanded_boundaries expand ( , symbolic_helper . _unsqueeze_helper ( g , boundaries ) ,  
+def __getitem__ , ) : if isinstance . dataset [ self [ ] for idx ] return . dataset self . indices idx ] ]  
+def _handle_reduce_dim_none g , , op_name ) rank ( self ) if rank not None and any _get_tensor_dim_size ( , i ) == 0 for i in ( rank ) ] ) :  
+d_col = d_row . reshape d_row . shape [ 0 ] , 1 ) TODO : Consider work with lower triangular matrices = . linalg . cholesky ( SBS ) * d_col ) ( -2 , . conj ( ) ) . ( , -1 . conj ( 
+fut . ( 0 ] . ( world_size ) . matmul ( p . t ( ) out matrix ) state use_error_feedback : . error_dict [ input_tensor - input_tensor ret = input_tensor . resize_ total_length ) [ ret 
+if meta [ [ ( result ) return result  
+count += 1 prev_count , e number of { got } ) ormat prev_count count  
+env_callable = lambda fn : { "definitions" : [ ComputeUnboxingFunctions ( Target . DEFINITION , selector ) ( fn ) ] } , num_shards = 1 if selected_op_num <= sharding_threshold else 5 , sharded_keys = { "definitions" } , )  
+weight_descriptors , _ = extract_weights ( ) buffers , buf_descriptors , _ extract_buffers def fun , data ) : mutable_model = . deepcopy ( model 
+torch . _C . _log_api_usage_once ( "torch.package.PackageImporter" ) modules : Dict [ str , types . ModuleType ] 
+if weight None ( weight : is None . SymbolicValueError ONNX of batch_norm unknown size." ) = . tensor ( [ 1 0 ] 
+padding = 0 , 0 ] stride 1 , 0 ) ) . ( input , kernel_size , dilation = dilation , padding = padding , stride = stride ) , lambda kernel_size , ) input unfold_func ( )  
+__sizeof__ ( ) . __sizeof__ self ( ) size (  
+else : args . append ( tensor_args [ tensor_index ] += 1 index += 1 tensor_index < len ( tensor_args args append tensor_args [ tensor_index ] 
+else . ( , x_hat ) else : d_weight = None output_mask 2 and is None : if outer_dim_indices > : 
